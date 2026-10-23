@@ -1,0 +1,9 @@
+## Interface: 16001
+## Title: GoldIntelDiag
+## Notes: GoldIntel compatibility diagnostics (read-only). Type /gidiag
+## Version: 1.8
+## SavedVariables: GoldIntelDiagDB
+
+Diag.lua
+Lab.lua
+SrcCurrent.lua

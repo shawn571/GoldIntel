@@ -1,0 +1,100 @@
+GoldIntelDiag 1.8 - verification addendum sessions 19 to 23 (same text as the end of README.txt)
+
+=====
+VERIFICATION ADDENDUM (decision D-068): auction house, outgoing mail, COD. Lab version 1.8.
+INSTALL ONCE (before Session 19): replace the GoldIntelDiag folder in Interface\AddOns with the one from the new zip, then log in
+or type /reload. A /reload is ENOUGH: no file was added or removed, so no client restart is needed. Check with: /gidiag lab list
+(it must show AHS, AH1, MS1 and CO1).
+These sessions only READ and record. They change nothing and register NO event except where a step says so.
+Use two characters: A (any character that can sell something, with about 2 gold) and B (any other character on your account).
+Money matters: the lab records your copper at every "api" command, so the money change of each action is measured.
+
+SESSION 19 - AUCTION HOUSE: listing deposit, cancel, buyout, bid. Character A. No event registered.
+YOU NEED: character A next to an Auction House with a few cheap items to sell, and 1 gold or more.
+ 1. Type exactly:  /reload
+ 2. Type exactly:  /gidiag lab note AHS <CharacterName>: auction house, listing, cancel, buyout, bid
+ 3. Open the Auction House window.
+ 4. Type exactly:  /gidiag lab api AHS names
+    (lists which auction and mail event names this client knows; registers nothing)
+ 5. Type exactly:  /gidiag lab api AHS open
+ 6. Start listing ONE item for 12 hours but do NOT click Post yet. Read the Deposit shown in the window.
+    Type the note with the number you read, in this form (example for 100 copper):  /gidiag lab note AHS deposit shown 100 copper
+ 7. Click Post. Wait 3 seconds. Type exactly:  /gidiag lab api AHS listed
+ 8. Cancel that same auction (Auctions tab, select it, Cancel Auction). If the window says anything about losing the deposit or a cost,
+    type a note with what it said, for example:  /gidiag lab note AHS cancel window said no cost
+    Wait 3 seconds. Type exactly:  /gidiag lab api AHS canceled
+ 9. Buy something cheap with BUYOUT (a single item or a commodity, under 50 silver). Note the price shown, for example:
+    /gidiag lab note AHS buyout price shown 250 copper
+    Wait 3 seconds. Type exactly:  /gidiag lab api AHS bought
+10. Place a BID (not a buyout) on a cheap non-stackable item, if the House offers bidding. Note the bid, for example:
+    /gidiag lab note AHS bid shown 120 copper
+    Wait 3 seconds. Type exactly:  /gidiag lab api AHS bid
+    If this client has no bidding, type:  /gidiag lab note AHS no bidding available
+11. Close the Auction House window. Type exactly:  /gidiag lab api AHS closed
+12. Type exactly:  /gidiag lab report   then   /reload   and send me GoldIntelDiag.lua.
+    The mails created by the cancel, the buyout and the bid arrive later; they are read in Session 22.
+
+SESSION 20 - OUTGOING MAIL: postage, money sent, COD sent. Character A, sending to character B. No event registered.
+YOU NEED: character A with 3 cheap tradable items and about 50 silver; character B exists on your account.
+ 1. Type exactly:  /reload
+ 2. Type exactly:  /gidiag lab note MS1 <CharacterName>: outgoing mail to my other character, item, money, COD
+ 3. Open a mailbox and the Send Mail tab.
+ 4. Type exactly:  /gidiag lab api MS1 names
+ 5. MAIL 1 (item only): type character B's name, attach ONE cheap item, no money. Do NOT click Send yet.
+    Type exactly:  /gidiag lab api MS1 ready-item
+    Click Send. Wait 3 seconds. Type exactly:  /gidiag lab api MS1 sent-item
+ 6. MAIL 2 (money only): attach nothing, put 5 silver in the money field. Do NOT click Send yet.
+    Type exactly:  /gidiag lab api MS1 ready-money
+    Click Send. Wait 3 seconds. Type exactly:  /gidiag lab api MS1 sent-money
+ 7. MAIL 3 (COD): attach ONE cheap item, choose Cash on Delivery, set the amount to 20 silver. Do NOT click Send yet.
+    Type exactly:  /gidiag lab api MS1 ready-cod
+    Click Send. Wait 3 seconds. Type exactly:  /gidiag lab api MS1 sent-cod
+ 8. If the window showed a postage cost, or said mail to your own characters is free, type a note with what it said, for example:
+    /gidiag lab note MS1 postage shown 30 copper      or      /gidiag lab note MS1 no postage shown
+ 9. Type exactly:  /gidiag lab report   then   /reload   and send me GoldIntelDiag.lua.
+    Mail to another character can take up to 1 hour to arrive. Wait for it before Session 21.
+
+SESSION 21 - COD, PAYING. Character B (the receiver). Registers ONE event: MAIL_INBOX_UPDATE.
+ 1. Type exactly:  /reload
+ 2. Type exactly:  /gidiag lab reg MAIL_INBOX_UPDATE
+    It must answer "MAIL_INBOX_UPDATE: registered (IsEventRegistered true)". If a popup appears, copy its text and stop.
+ 3. Type exactly:  /gidiag lab note CO1 <CharacterName>: paying a COD of 20 silver
+ 4. Open the mailbox. Do NOT click any mail yet. Type exactly:  /gidiag lab api X2 cod
+ 5. Take the COD item (this pays the 20 silver). Wait 3 seconds. Type exactly:  /gidiag lab api X2 cod-paid
+ 6. Also take the other two mails (the item mail and the 5 silver mail), one at a time, waiting 3 seconds between them.
+    After each, type exactly:  /gidiag lab api X2 taken
+ 7. Type exactly:  /gidiag lab report   then   /reload   and send me GoldIntelDiag.lua.
+
+SESSION 22 - COD PAYMENT AND AUCTION MAILS. Character A. Registers ONE event: MAIL_INBOX_UPDATE.
+Do this once the COD payment mail and the auction mails (cancel, buyout win, bid) have arrived. Waiting an hour after Sessions 19 to 21 is fine.
+ 1. Type exactly:  /reload
+ 2. Type exactly:  /gidiag lab reg MAIL_INBOX_UPDATE
+    It must answer "MAIL_INBOX_UPDATE: registered (IsEventRegistered true)". If a popup appears, copy its text and stop.
+ 3. Type exactly:  /gidiag lab note CO1 <CharacterName>: COD payment mail and auction mails
+ 4. Open the mailbox. Do NOT click any mail yet. Type exactly:  /gidiag lab api X2 all-mail
+ 5. Take the money from the COD payment mail. Wait 3 seconds. Type exactly:  /gidiag lab api X2 cod-money
+ 6. Take what is in each auction mail (won item, returned item, returned bid), ONE mail at a time, waiting 3 seconds between them.
+    After each, type exactly:  /gidiag lab api X2 auction-taken
+ 7. Type exactly:  /gidiag lab report   then   /reload   and send me GoldIntelDiag.lua.
+
+AFTER SESSION 19 I will tell you whether one more session is worth it to register an auction event (for example the one that fires when an
+auction is created). Event registration is limited to one new event per game session, so I will only ask if the data shows it is needed.
+
+SESSION 23 - AUCTION HOUSE WITH ONE EVENT (repeat of the buyout and bid). Character A (the one from Session 19). Registers ONE event: AUCTION_HOUSE_AUCTION_CREATED.
+Purpose: does the game announce a new auction, and how long before or after the deposit money? The registration also makes the lab record each money change on its own, which splits the buyout from the bid (Session 19 showed -113 for both, 1 copper short of 114).
+YOU NEED: character A next to the Auction House, a few cheap items to sell, about 500 copper, and something cheap to buy by buyout and something cheap to bid on.
+ 1. Type exactly:  /reload
+ 2. Type exactly:  /gidiag lab reg AUCTION_HOUSE_AUCTION_CREATED
+    It must answer "AUCTION_HOUSE_AUCTION_CREATED: registered (IsEventRegistered true)". If a popup appears, copy its text and stop.
+ 3. Type exactly:  /gidiag lab note AH1 <CharacterName>: session 23, post, cancel, buyout, bid, one snapshot after each
+ 4. Open the Auction House. Type exactly:  /gidiag lab api AHS s23-open
+ 5. List ONE item for 12 hours. Note the deposit shown, for example:  /gidiag lab note AH1 deposit shown 100 copper
+    Click Post. Wait 3 seconds. Type exactly:  /gidiag lab api AHS s23-listed
+ 6. Cancel that auction. Wait 3 seconds. Type exactly:  /gidiag lab api AHS s23-cancelled
+ 7. Buy something cheap by BUYOUT only. Note the price, for example:  /gidiag lab note AH1 buyout price shown 13 copper
+    Wait 3 seconds. Type exactly:  /gidiag lab api AHS s23-bought
+ 8. Place a BID on something cheap. Note the bid, for example:  /gidiag lab note AH1 bid shown 101 copper
+    Wait 3 seconds. Type exactly:  /gidiag lab api AHS s23-bid
+ 9. Close the Auction House. Type exactly:  /gidiag lab api AHS s23-closed
+10. Type exactly:  /gidiag lab report   then   /reload   and send me GoldIntelDiag.lua.
+Do not do anything else that costs or earns money between steps 4 and 9 (no vendor, no mail, no quests); every snapshot must show only its own action.

@@ -1,0 +1,3 @@
+-- Loaded through a TOC line that uses a FORWARD SLASH path separator.
+local _, ns = ...
+if type(ns) == "table" then ns.fwd = true end

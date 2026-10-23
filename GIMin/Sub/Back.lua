@@ -1,0 +1,3 @@
+-- Loaded through a TOC line that uses a BACKSLASH path separator.
+local _, ns = ...
+if type(ns) == "table" then ns.back = true end

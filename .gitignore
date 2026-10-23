@@ -1,0 +1,12 @@
+# Game data and traces from play sessions (character names, GUIDs, balances): never commit
+SavedVariables/
+*.lua.bak
+WTF/
+evidence/
+GoldIntel_Docs/evidence/
+# Build output
+*.zip
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.swp

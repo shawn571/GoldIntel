@@ -1,0 +1,66 @@
+GoldIntel package manifest. Verify the files you installed against this list.
+Windows:    certutil -hashfile <file> SHA256
+PowerShell: Get-FileHash <file> -Algorithm SHA256
+
+== GoldIntel ==
+Collect/BagDiff.lua           4663 bytes  sha256 91cb61c983ce799c989713524849fa20669f1fe6f334eb8c7b1d8f8cdf272cad
+Collect/Collector.lua        16513 bytes  sha256 eb3fc640bede348e0e8aef9f5a16a380df3062bb04987092fa7c7a548489b411
+Collect/Context.lua           4895 bytes  sha256 407f94ccfa0d1f7b4f65491402074f7eff69dcf92cd12fca7556b5424a302cb6
+Collect/Expectations.lua      6956 bytes  sha256 173ff6cfee5b2f4a237bd909128a10e437b8d400991531781afb4a0ac2cab375
+Collect/ItemSources.lua      16148 bytes  sha256 881ad9aab435252f5c6799ad679134e68597a3697cc5fa8d9ac95eaf4b3fa055
+Collect/Reconciler.lua        7776 bytes  sha256 1b35a397b0cd0a90f69798adfca8ae2d43d2e7ddff150129f764c224b8d2679a
+Collect/Sources.lua          14767 bytes  sha256 8ca6b5f45dfe99db966e5f4beea1b684c43ed10bbe03c75fea9fe842007d8faa
+Collect/Stamps.lua            4553 bytes  sha256 6d5a55626d10e83464a559649340db88394d70859cd6f0e25ea95ca9a690970e
+Core/Boot.lua                  775 bytes  sha256 fe2db7e9567a223af7ce204bb8677fd0d365c3b2a64e31eab894fd50e7b78e43
+Core/Bus.lua                  6927 bytes  sha256 5ab321ea1f62ad55e4cfdabcf3db518ebf1cb445ef4574725cf0b61fcdd42f4f
+Core/Capabilities.lua        15897 bytes  sha256 c56ece103c0844d65498af97bbea93b23432e1e9d3611e74cf98fbbe1208454e
+Core/Config.lua              11786 bytes  sha256 45a76b7236734f09488c24d9c219265f9bf837c031ef053afe4714abaf382ea1
+Core/Core.lua                10819 bytes  sha256 fca37130dec0a2dbd69c49838b6e584b56225c784748cc570e2d15121e680364
+Core/Slash.lua               17502 bytes  sha256 86f2d45bce3bc78e88ebacb9cc25d5bd2d329f3b8240d20f81cdb9f361d13563
+Future/CommunityDataEngine.lua     815 bytes  sha256 537217aeabb1de236a4df3ec99e9f13598cbee69e8bd1769e16ea6de45c3e5ee
+Future/RouteEngine.lua         762 bytes  sha256 96cde4e9a7a69e03a347b728f4f1a93a343a66ab3f28cbb15c9e8cdbc8616861
+GoldIntel.toc                 1092 bytes  sha256 9926f487b3eab564a3c1cc19aff4ff894dd83ad90ba9d1f19c94d51a03098227
+Ledger/Cash.lua              10094 bytes  sha256 1b784a04a0413f253cc5d59f6eda1534a9e79732dd8c4e47f14cb47a2cf25ff8
+Ledger/Ledger.lua            19440 bytes  sha256 11f41e7393f698e47809edc80f7d5cb18026f38dca994cf9f48dd60452ed7af2
+Ledger/LotBook.lua           21037 bytes  sha256 8abc2744441130352653eb57655d2171a78b28f434f8a1635d7b170aa84145c1
+Ledger/Lots.lua              17161 bytes  sha256 fe7927db1145e97d1b3f1e5f6026471f3fcd94c98911fee48d5cd05f63f7406c
+Ledger/Trace.lua             11901 bytes  sha256 9826da13155dff7c8fdeb75f50afeb97176d0d92e48a12b8276cc4c17dc1dbb2
+Ledger/Valuation.lua          3961 bytes  sha256 38af4110fb4d09ca31e210c46cb653efc382eb9eafa9d93eda2eeb3a8ca14944
+Platform/Auction.lua          2161 bytes  sha256 5aa0c60b6857549f051f4d88bfae261779cf597565c247de163be488a7ca29e5
+Platform/Bags.lua             3703 bytes  sha256 fe4001137b02826cdbdd55bdd1e247e35bb3dfe7bd4dfefa1f0d06837451dab0
+Platform/Chat.lua             8883 bytes  sha256 df1c601df8157decc666c1810c35493c52b1080a29f80ae491a25d32fbae1ece
+Platform/Clock.lua            2237 bytes  sha256 9cf53f9c04e152c0805197dec2e9718a38a8afce4ef2a71703935ac88e83adbd
+Platform/Events.lua          20362 bytes  sha256 c9d62d903558b921deed3e16f2c4bb5944a1a300a22b5e6a43045f7490e82465
+Platform/Items.lua            2489 bytes  sha256 855f4f8fb68b555fc4de5c137616d9890170d22f3906d1edf2343ba90472b000
+Platform/Loot.lua            10288 bytes  sha256 665a2bd6810fafc22740611fce09cdfa4ed530753eb967667130bb2aa3fe6040
+Platform/Mail.lua             5713 bytes  sha256 c60843062a02b8a456fc959d467f140596742cad727f7256ef5f1fa827ec7529
+Platform/Map.lua              5020 bytes  sha256 02e4ac146d3374f0d399ac2be470cf6bb7fa2ce03745970bd303e6aeda91d2be
+Platform/Merchant.lua         1812 bytes  sha256 34cffab2389fa312d2cbf7711541d973d5adfd5a153f8103082305df8d9b0c37
+Platform/Money.lua            4441 bytes  sha256 888371b9dbe56d5eccff578c32422f14dab35ce172a6cdd11e409c5a7e0ab49b
+Platform/Platform.lua        16047 bytes  sha256 c034912a89215948fa7632d549d30ee5400a8b11b484e1a5728977d0dd397a37
+Platform/Probe.lua           14094 bytes  sha256 cd1327b571d6db885a408b7e960ae7aa27135e0d49060fd784f5c8486225281c
+Platform/Quest.lua            1344 bytes  sha256 3cda13adfa7dea0bc5960cfbec4d06075b9e0962a3aab31641ba0b64c5356d12
+Platform/SavedVars.lua        1855 bytes  sha256 74641af1b7f89f943095965763598af991e46c82cd5d49fd7b9165759313460a
+Platform/Scheduler.lua        8711 bytes  sha256 ecbd1536091c02831487fe971f49d13c771b4be589be1e6eb24d98a6e559fbd6
+Platform/Slash.lua            1595 bytes  sha256 1a5b6f7e29e818fd834494fb7dd3d8964e32e2320fe982da4adf7430a52c81f4
+Platform/Trade.lua            2482 bytes  sha256 e4da335a5e4192a5a9ee288c2ca08e2090bfd4ae36e3c23a95bff2ea89ccfe53
+Platform/Unit.lua             9241 bytes  sha256 cfc49042d972bca8ab7c66085b2e1ea5fc95adb285c644ffe7e01dbf85ffe02a
+Store/Migrations.lua          9206 bytes  sha256 9936e9909adabb657272b142c20439d95610b3af031420fa91d98488ab5a5dfb
+Store/Pruner.lua              3284 bytes  sha256 befb217cb621c5807b3f20388de336da7c690ea89ccfc3cd8d6fc3730cc660ef
+Store/Store.lua              11023 bytes  sha256 54ecad005c0be0875ab23d16fe2ec535d26d8b781548682b9675b50978d601db
+
+== GIMin ==
+GIMin.lua                     2478 bytes  sha256 5a987fc77b706cb572147e66d7256cc17a8cfd87bbbb4d6f8cd14de3a5a53984
+GIMin.toc                      246 bytes  sha256 08260d46cd7950c50c59956decc4c73d547ecdfc2093977d546a1ce7bb9d3809
+README.txt                    1614 bytes  sha256 4cc7b39314a2bfa0c717783d3196ca7bad8f146ff12bae4f15442521888f6d8f
+Sub/Back.lua                   132 bytes  sha256 a16e168119dc0abce612eaa35663cbeae9f5d0bc94bd57ab599397f7c56005a2
+Sub/Block.lua                  179 bytes  sha256 b11cf73582087d12697f80fd65597bde5dc24f896b8dc9b4ffe1ea8e2f13564d
+Sub/Fwd.lua                    135 bytes  sha256 97b264805e6d9aad1f542c97a5be725a9f641c924e12ed3a7743a258c9b9d734
+
+== GoldIntelDiag ==
+Diag.lua                     23732 bytes  sha256 e379aa7ee2777671139479124247e9dc94fc606e5c22e23c931f93fe7d5b0eb8
+GoldIntelDiag.toc              200 bytes  sha256 9d9d198e4ad56fbbde705c27566249ec718530149a43a5313ae3a7492cfdfbfd
+Lab.lua                      62730 bytes  sha256 ed5b413261b4d3dfd0a0148e3cc83d7c9ab42616ddb7ef6deeb43ed9a25ea48b
+README.txt                   25718 bytes  sha256 37ebb834a0cdc2ef7c532fdba46ac8b5cee6f53c4a1144d4170916eb8e189245
+Sessions_19_to_22.txt         8453 bytes  sha256 4dc9e6a2dd492456e6694716199a606f12d0f962851d3560bf1133fb5cb0bdf0
+SrcCurrent.lua              373844 bytes  sha256 faba93a2b7cdddc30d921146e8fb91eecfdc4ad3c7ae228db55edca66a2aa78b

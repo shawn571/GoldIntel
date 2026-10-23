@@ -1,0 +1,10 @@
+## Interface: 16001
+## Title: GIMin
+## Notes: Smallest possible WoW Forever load test for GoldIntel (loading, namespace, saved variables, slash, events)
+## Version: 1.0
+## SavedVariables: GIMinDB
+
+GIMin.lua
+Sub\Back.lua
+Sub/Fwd.lua
+Sub/Block.lua

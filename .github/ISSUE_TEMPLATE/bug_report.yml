@@ -1,0 +1,35 @@
+name: Bug report
+description: Something in GoldIntel looked wrong or the addon reported "UNEXPECTED ... please report this as a bug"
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, what did GoldIntel show?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of /gi version
+      placeholder: "GoldIntel 0.4.7-phase3b3m3 ..."
+    validations:
+      required: true
+  - type: textarea
+    id: status
+    attributes:
+      label: Status output
+      description: Paste the output of /gi lots status and /gi ledger status (and /gi ledger check if you set a mark with /gi ledger mark)
+      render: text
+  - type: textarea
+    id: trace
+    attributes:
+      label: Trace lines (optional)
+      description: With /gi collect on running, reproduce the problem, then paste /gi ledger trace 40
+      render: text
+  - type: input
+    id: character
+    attributes:
+      label: Character level and professions (optional)

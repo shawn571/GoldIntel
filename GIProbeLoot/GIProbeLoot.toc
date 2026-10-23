@@ -1,0 +1,7 @@
+## Interface: 16001
+## Title: GIProbeLoot
+## Notes: Throwaway probe for GoldIntel 3b-1: does LootFrame:IsShown() track the loot window? Reads only, registers only LOOT_OPENED and LOOT_SLOT_CLEARED.
+## Version: 0.1.0
+## SavedVariables: GIProbeLootDB
+
+GIProbeLoot.lua
