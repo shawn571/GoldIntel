@@ -29,4 +29,4 @@ restart the client. `GIMin`, `GoldIntelDiag` and `GIProbeLoot` are diagnostic to
 Open an issue with the template. Include `/gi version` and the output of `/gi lots status`.
 When GoldIntel prints "UNEXPECTED ... please report this as a bug", that message is exactly what to paste.
 
-No license has been chosen yet; all rights reserved until one is added.
+Licensed under the MIT License (see `LICENSE`).
