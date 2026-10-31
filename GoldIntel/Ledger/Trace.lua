@@ -22,7 +22,8 @@ assert(P, 'Platform/Platform.lua must be loaded before Ledger/Trace.lua')
 
 local Trace = {}
 GI.Trace = Trace
-Trace.CAP = 1500
+Trace.CAP = 3000                 -- rolling window of recent lines (passive mode records all play)
+Trace.KEEP_CAP = 400             -- lines worth keeping for the whole session history (never rolled out by routine lines)
 Trace.stats = { lines = 0, errors = 0 }
 
 local on = true
@@ -33,6 +34,14 @@ local function nowGT() local _, gt = P.Now(); return gt end
 local function char()
   local ok, c = pcall(GI.Store.Char)
   if ok and type(c) == 'table' then return c end
+end
+
+-- Lines that are evidence for open questions are also copied to trace.keep, which routine lines cannot push out:
+-- anomalies, unmatched expectations, unexplained or roll-won item adds, gathering casts, unrecognized casts.
+local function worthKeeping(text)
+  return text:find('^ANOMALY') or text:find('UNMATCHED', 1, true) or text:find('-> unexplained', 1, true)
+    or text:find('^CAST spell=%S+ kind=[hmsf]') or text:find('^CAST spell=%S+ kind=other') or text:find('^NOTE')
+    or text:find('^BAGS settle skipped', 1) or text:find('^BAGS settle: no snapshot', 1)
 end
 
 function Trace.IsOn() return on end
@@ -48,6 +57,12 @@ function Trace.Line(text)
   L[#L + 1] = string.format('%8.3f +%.3f %s', gt - t0, gt - (prev or gt), text)
   prev = gt
   if #L > Trace.CAP then table.remove(L, 1) end
+  if worthKeeping(text) then
+    if type(c.trace.keep) ~= 'table' then c.trace.keep = {} end
+    local K = c.trace.keep
+    K[#K + 1] = L[#L]
+    if #K > Trace.KEEP_CAP then table.remove(K, 1) end
+  end
   Trace.stats.lines = Trace.stats.lines + 1
 end
 

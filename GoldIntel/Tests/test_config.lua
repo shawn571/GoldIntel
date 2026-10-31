@@ -54,8 +54,9 @@ T.describe('Config definitions', function()
     T.isnil(C.Spec('nope'))
     local list = C.List()
     for i = 2, #list do T.truthy(list[i - 1].key < list[i].key) end
-    T.eq(list[1].key, 'defaultSellThrough')
+    T.eq(list[1].key, 'collect.auto')
     T.truthy(list[1].isDefault)
+    T.eq(list[1].default, true)
   end)
 end)
 

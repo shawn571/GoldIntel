@@ -1,7 +1,7 @@
 ## Interface: 16001
 ## Title: GoldIntel
 ## Notes: Gold-making intelligence and analytics for WoW Forever (Phase 2: core and store)
-## Version: 0.4.7-phase3b3m3
+## Version: 0.5.0-passive
 ## SavedVariables: GoldIntelDB
 ## SavedVariablesPerCharacter: GoldIntelCharDB
 

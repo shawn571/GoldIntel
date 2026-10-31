@@ -3,7 +3,7 @@
 DOC VERSION: 1.1.0  |  UPDATED: 2026-10-17 (session S-012)
 
 ```
-CURRENT PHASE:            Phase 3b increment 3b-3: M1 built (pure modules, 0.4.0-phase3b3m1), awaiting review. M2 (trace-only evidence build) not started; M3/M4 not authorized. 3b-2 CLOSED.
+CURRENT PHASE:            Phase 3b increment 3b-3: M3 APPROVED (2026-10-31); passive-play build 0.5.0-passive for live servers. M4 NOT authorized. 3b-2 CLOSED.
 IMPLEMENTATION APPROVED:  Phases 1 and 2, Phase 3a (closed), Phase 3b scope D-067 (ledgers only, increments 3b-0..3b-4, each reviewed before the next; only 3b-0 is started). Everything else is NOT approved.
 PHASE 0:                  COMPLETE
 OPEN BLOCKERS:            M4 evidence from the user's live sessions; then 3b-2 closure review. OI-8 closing wording, OI-5, OI-13 unchanged.

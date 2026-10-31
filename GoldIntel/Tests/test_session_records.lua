@@ -123,7 +123,11 @@ T.describe('session records: bounds', function()
     for _, line in ipairs(prev.output) do bytes = bytes + #line + 4 end
     T.truthy(bytes <= 12000, 'previous output is ' .. bytes .. ' bytes')
     T.truthy(#prev.output > 0 and #prev.output < 100)
-    T.truthy(prev.output[#prev.output]:find('line 100', 1, true), 'newest lines are kept')
+    local kept = false           -- the passive auto-start notice may be printed after line 100, so look at the tail
+    for i = math.max(1, #prev.output - 3), #prev.output do
+      if prev.output[i]:find('line 100', 1, true) then kept = true end
+    end
+    T.truthy(kept, 'newest lines are kept')
   end)
 
   T.it('the whole runtime section stays small after many sessions', function()

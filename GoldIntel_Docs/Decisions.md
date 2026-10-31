@@ -514,3 +514,11 @@ Evidence: five quick vendor sales (5 separate PLAYER_MONEY events 0.03-0.1 s apa
 Rule (deterministic, no heuristics beyond a distance): every money event belongs to exactly ONE bag settle, the nearest one within 1.0 s (ties: the earlier settle). `IS.PairMoney`. A single settle with several items still splits its own money by price (Q-8). Tests: pure pairing, quest-style late money, and a live five-sale burst (each lot gets exactly its own copper, total 156 once) with a mutation check.
 
 - D-084 progress (2026-10-21): Session V passed: ledger check 0 copper, vendor sales exact against cash entries, persistence confirmed, reagent bag confirmed, skinning fixed (name matching). Awaiting user review of the M3 report; M4 not authorized.
+
+## D-086 M3 approved; passive-play mode for live servers (user 2026-10-31) | APPROVED | 2026-10-31
+User approved M3 ("I approve M3") and asked to play normally from the live-server launch on 2026-11-04 without running test scripts, with Claude reading the SavedVariables from the user's computer (folder linked to the session) and alerting the user when a package is ready or a decision is needed. M4 (measurements, closure recommendation) is NOT authorized.
+Built (0.5.0-passive):
+1. Auto start: the collect interval starts by itself 3 s after login (`collect.auto`, default true; `/gi config set collect.auto false` disables; a hand-made `/gi collect off` is never undone in the same session). One chat line announces it. Cash and item pipelines are unchanged (AC-15 still holds).
+2. Every interval starts marked, so `/gi ledger check` works at any time without `/gi ledger mark`.
+3. Trace: rolling window of 3000 lines plus a `trace.keep` list (cap 400) of evidence lines that routine lines cannot push out: ANOMALY, UNMATCHED, "-> unexplained", gathering and unrecognized CAST lines, NOTE.
+Limits stated to the user: WoW writes SavedVariables only at `/reload` or logout, so Claude sees data per session, not live.

@@ -494,3 +494,47 @@ T.describe('collector module lifecycle', function()
     T.eq(deltas, { 8 })
   end)
 end)
+
+T.describe('passive mode: auto start after login (0.5.0)', function()
+  T.it('starts the interval by itself after the delay and says so once', function()
+    local W, _, ns = World.boot()
+    T.falsy(ns.Collector.IsEnabled())                     -- nothing before the delay
+    W:advance(ns.Collector.AUTO_DELAY + 1)
+    T.truthy(ns.Collector.IsEnabled())
+    T.truthy(ns.Sources.IsActive())
+    local n = 0
+    for _, l in ipairs(W.printed) do if l:find('recording started automatically', 1, true) then n = n + 1 end end
+    T.eq(n, 1)
+  end)
+
+  T.it('collect.auto false keeps collect off', function()
+    local W, _, ns = World.boot()
+    ns.Config.Set('collect.auto', false)
+    W:advance(ns.Collector.AUTO_DELAY + 1)
+    T.falsy(ns.Collector.IsEnabled())
+  end)
+
+  T.it('a hand-made collect off before the delay is not undone', function()
+    local W, _, ns = World.boot()
+    run(W, ns, 'collect on'); run(W, ns, 'collect off')
+    W:advance(ns.Collector.AUTO_DELAY + 1)
+    T.falsy(ns.Collector.IsEnabled())
+  end)
+
+  T.it('a collect already on is left alone and not announced twice', function()
+    local W, _, ns = World.boot()
+    run(W, ns, 'collect on')
+    W:advance(ns.Collector.AUTO_DELAY + 1)
+    T.truthy(ns.Collector.IsEnabled())
+    for _, l in ipairs(W.printed) do T.falsy(l:find('recording started automatically', 1, true)) end
+  end)
+
+  T.it('an auto interval keeps cash and lots isolated (cash difference stays 0)', function()
+    local W, _, ns = World.boot()
+    W.state.money = 100000; W:fire('PLAYER_MONEY')
+    W:advance(ns.Collector.AUTO_DELAY + 1)
+    W.state.money = W.state.money + 25; W:fire('PLAYER_MONEY'); W:advance(5)
+    local out = run(W, ns, 'ledger check')
+    T.truthy(out:find('0 copper', 1, true) or out:find('OK', 1, true), out)
+  end)
+end)

@@ -478,3 +478,10 @@ Documents superseded by this baseline: design spec "GoldIntel: WoW Forever Addon
 - 0.4.7-phase3b3m3: `/gi lots sales [n]` lists what each lot received when it left; `/gi lots status` shows conversion totals (units and copper per via). Integer-safe money formatting.
 - 0.4.7-phase3b3m3: gathering casts are recognized by spell NAME across all skill ranks (names read from the client from the verified ids 2366/2575/8617/7731). Evidence: apprentice skinning cast 8613 is named "Skinning" (user trace 2026-10-21 20:36). Verified live for skinning only; herb/mining/fishing rank names pending a cast at another rank (the CAST trace line shows them).
 - 0.4.7-phase3b3m3: `/gi lots last` shows the activity (and skinning) and "no vendor value" for items without a vendor price; the CAST trace line logs unrecognized spells once per interval (gathering casts always). Verified live: skinning at apprentice rank now GATHER/high (user trace 2026-10-21 20:44).
+
+## 0.5.0-passive (passive-play mode, M3 approved)
+- Collector: automatic start 3 s after login (`collect.auto`, default on); announced once; never overrides a hand-made `collect off`.
+- Ledger: every interval begins with a mark, so `/gi ledger check` needs no `/gi ledger mark`.
+- Trace: CAP 3000 (was 1500); new `trace.keep` list (cap 400) for anomaly/unmatched/unexplained/cast/note lines.
+- Tests: 1,250 passing (new: auto start, config switch, manual off, isolation under auto interval, keep list). Existing tests adjusted: config list order, session-records tail check, ledger "no mark" case.
+- Restart: `/reload` is enough (no new files). No cash or lot logic changed.

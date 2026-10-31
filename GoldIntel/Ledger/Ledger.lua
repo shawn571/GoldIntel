@@ -77,6 +77,7 @@ function Ledger.Begin()
   intervalStart = nowGT()
   setLastMoney(P.MoneyModule.Last())
   last = { reason = 'on' }
+  pcall(Ledger.Mark)                              -- 0.5.0: every interval starts marked, so /gi ledger check works at any time
   return true
 end
 

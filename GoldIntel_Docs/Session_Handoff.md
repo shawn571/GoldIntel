@@ -1162,3 +1162,7 @@ M2 approved by the user; M3 built: LotBook, `/gi price`, `/gi lots last|unknown|
 
 ## S-054 close (M3 validated)
 Session V passed on builds up to 0.4.7-phase3b3m3: ledger check 0 copper, exact vendor allocation, persistence, reagent bag, skinning by name. Fixes: D-085 money pairing, spell-name gathering. Waiting for the user's M3 review; M4 not authorized. Package GoldIntel_3b3_M3_AddOns.zip is current (0.4.7).
+
+## S-055 | 2026-10-31 | Claude
+- User approved M3 (D-086) and linked the Forever folder (C:\Program Files (x86)\World of Warcraft\_forever_) to the session. Built 0.5.0-passive: auto start, marked intervals, bigger trace plus keep list. 1,250 tests pass. M4 NOT authorized.
+- Next: user plays normally from 2026-11-04; after logout/`/reload` Claude reads GoldIntel.lua from WTF\Account\SHAWN313\... and reports: ledger check difference, anomalies, unexplained adds, new CAST names, roll-won items. Alert the user when a package is ready or a decision is needed. Open evidence: roll-won items, herb/mine/fish spell names, empty loot windows.

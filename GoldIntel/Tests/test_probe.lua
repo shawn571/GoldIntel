@@ -390,7 +390,7 @@ T.describe('/gi command (moved to Core/Slash.lua in Phase 2)', function()
     W:login()
     W.printed = {}
     W.env.SlashCmdList.GOLDINTEL('')
-    T.truthy(W:printedText():find('GoldIntel 0.4.7-phase3b3m3', 1, true))
+    T.truthy(W:printedText():find('GoldIntel 0.5.0-passive', 1, true))
     T.truthy(W:printedText():find('store=', 1, true))
   end)
 

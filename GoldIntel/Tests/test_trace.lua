@@ -164,3 +164,31 @@ T.describe('trace storage and command', function()
     T.eq(#lines(ns), 0)
   end)
 end)
+
+T.describe('trace keep list (0.5.0)', function()
+  T.it('evidence lines survive when routine lines roll out of the window', function()
+    local W, _, ns = boot()
+    ns.Trace.CAP = 20
+    ns.Trace.Line('ANOMALY test -- NOT EXPECTED')
+    ns.Trace.Line('CAST spell=2575 kind=mine name=Mining')
+    ns.Trace.Line('ITEM add item=1 qty=1 -> unexplained reason="x"')
+    for i = 1, 60 do pay(W, 1); W:advance(0.05) end
+    local all = ns.Trace.Lines(400)
+    T.falsy(has(all, 'ANOMALY test'))                       -- rolled out of the window ...
+    local keep = W.env.GoldIntelCharDB.trace.keep
+    local function k(text) for _, l in ipairs(keep) do if l:find(text, 1, true) then return true end end end
+    T.truthy(k('ANOMALY test'))                             -- ... but kept
+    T.truthy(k('kind=mine'))
+    T.truthy(k('-> unexplained'))
+    T.falsy(k('MONEY'))                                     -- routine lines are not kept
+    ns.Trace.CAP = 3000
+  end)
+
+  T.it('the keep list is bounded', function()
+    local W, _, ns = boot()
+    ns.Trace.KEEP_CAP = 10
+    for i = 1, 50 do ns.Trace.Line('NOTE n' .. i) end
+    T.eq(#W.env.GoldIntelCharDB.trace.keep, 10)
+    ns.Trace.KEEP_CAP = 400
+  end)
+end)

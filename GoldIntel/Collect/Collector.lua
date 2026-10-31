@@ -37,6 +37,7 @@ Collector.GROUPS = {
 }
 
 local enabled = false
+local autoDone = false          -- passive auto start: tried once per session, never after a hand-made off
 local registered = {}          -- event -> handler
 local memoryJournal = nil      -- used when the Store is not available
 Collector.recovered = nil      -- event quarantined at startup because `pending` was still set
@@ -184,6 +185,7 @@ end
 
 --- Unregisters every collector event, stops the adapters and drops all contexts.
 function Collector.Off()
+  autoDone = true                                     -- a hand-made off must not be undone by a pending auto start
   local n = 0
   if GI.Ledger then GI.Ledger.OnCollectOff() end      -- ends the ledger interval while contexts still exist (AC-9)
   for event, handler in pairs(registered) do
@@ -275,6 +277,27 @@ Collector.SummaryForSave = summaryForSave
 
 function Collector.OnInitialize()
   Collector.Recover()
+end
+
+-- Passive mode (0.5.0): the interval starts by itself after login so normal play is recorded without test scripts.
+-- `collect.auto false` turns it off; a collect that is already on (or was switched off by hand this session) is left alone.
+Collector.AUTO_DELAY = 3
+function Collector.AutoStart()
+  if autoDone or enabled then return false, 'already on' end
+  autoDone = true
+  local cfg = GI.Config and GI.Config.Get and GI.Config.Get('collect.auto')
+  if cfg == false then return false, 'collect.auto is off' end
+  local res, why = Collector.On({})
+  if not res then return false, why end
+  if enabled then P.Print('GoldIntel: recording started automatically (/gi collect off stops it; /gi config set collect.auto false disables auto-start)') end
+  return enabled, res
+end
+
+function Collector.OnEnable()
+  if P.After then P.After(Collector.AUTO_DELAY, function()
+    local ok, err = pcall(Collector.AutoStart)
+    if not ok then P.Diag('error', 'Collector', 'auto start failed: ' .. tostring(err)) end
+  end) end
 end
 
 function Collector.OnLogout()
