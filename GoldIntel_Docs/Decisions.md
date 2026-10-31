@@ -522,3 +522,4 @@ Built (0.5.0-passive):
 2. Every interval starts marked, so `/gi ledger check` works at any time without `/gi ledger mark`.
 3. Trace: rolling window of 3000 lines plus a `trace.keep` list (cap 400) of evidence lines that routine lines cannot push out: ANOMALY, UNMATCHED, "-> unexplained", gathering and unrecognized CAST lines, NOTE.
 Limits stated to the user: WoW writes SavedVariables only at `/reload` or logout, so Claude sees data per session, not live.
+- D-086 addendum (2026-10-31): user approved context event lines and a periodic check (0.5.1). Marks are not placed per event; the interval already starts marked and the check line shows where any drift began.

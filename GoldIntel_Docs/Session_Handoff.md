@@ -1166,3 +1166,4 @@ Session V passed on builds up to 0.4.7-phase3b3m3: ledger check 0 copper, exact 
 ## S-055 | 2026-10-31 | Claude
 - User approved M3 (D-086) and linked the Forever folder (C:\Program Files (x86)\World of Warcraft\_forever_) to the session. Built 0.5.0-passive: auto start, marked intervals, bigger trace plus keep list. 1,250 tests pass. M4 NOT authorized.
 - Next: user plays normally from 2026-11-04; after logout/`/reload` Claude reads GoldIntel.lua from WTF\Account\SHAWN313\... and reports: ledger check difference, anomalies, unexplained adds, new CAST names, roll-won items. Alert the user when a package is ready or a decision is needed. Open evidence: roll-won items, herb/mine/fish spell names, empty loot windows.
+- S-055 update: built and installed 0.5.1-passive (EVT lines, periodic and final check lines). 1,255 tests pass. When reading data: look at `trace.keep` first (EVT group, EVT check, ANOMALY, unexplained, CAST).

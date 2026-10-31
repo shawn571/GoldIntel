@@ -485,3 +485,8 @@ Documents superseded by this baseline: design spec "GoldIntel: WoW Forever Addon
 - Trace: CAP 3000 (was 1500); new `trace.keep` list (cap 400) for anomaly/unmatched/unexplained/cast/note lines.
 - Tests: 1,250 passing (new: auto start, config switch, manual off, isolation under auto interval, keep list). Existing tests adjusted: config list order, session-records tail check, ledger "no mark" case.
 - Restart: `/reload` is enough (no new files). No cash or lot logic changed.
+
+## 0.5.1-passive (context events and periodic check)
+- Trace: one-line context events `EVT group <old> -> <new>` (group state polled every 2 s, logged only on change), `EVT zone`, vendor/mail/trade/auction open and close, level, profs changed.
+- Trace: `EVT check` line (difference, moved, entries, pending, unseen) every 600 s and at interval end; a nonzero difference is flagged MISMATCH. `EVT group` and `EVT check` are also copied to `trace.keep`.
+- Evidence only: no cash, lot or decision logic changed. Tests: 1,255 passing. `/reload` is enough.

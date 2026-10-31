@@ -24,7 +24,7 @@ GI = GI or {}   -- real clients always pass the addon table; plain-Lua tests pas
 local P = GI.Platform or {}
 GI.Platform = P
 
-P.VERSION = '0.5.0-passive'
+P.VERSION = '0.5.1-passive'
 P.CONTRACT_VERSION = '1.9.0'
 P.env = P.env or _G
 P.debug = P.debug or false

@@ -192,3 +192,68 @@ T.describe('trace keep list (0.5.0)', function()
     ns.Trace.KEEP_CAP = 400
   end)
 end)
+
+T.describe('context events and periodic check (0.5.1)', function()
+  local function keepHas(W, text)
+    for _, l in ipairs(W.env.GoldIntelCharDB.trace.keep or {}) do if l:find(text, 1, true) then return l end end
+  end
+
+  T.it('a group change is logged and kept', function()
+    local W, _, ns = boot()
+    W:advance(3)
+    W.state.group = { n = 3 }
+    W:advance(3)
+    local l = has(lines(ns), 'EVT group')
+    T.truthy(l, 'no EVT group line')
+    T.truthy(l:find('->', 1, true))
+    T.truthy(keepHas(W, 'EVT group'))
+    local n = 0
+    for _, x in ipairs(lines(ns)) do if x:find('EVT group', 1, true) then n = n + 1 end end
+    W:advance(5)
+    local m = 0
+    for _, x in ipairs(lines(ns)) do if x:find('EVT group', 1, true) then m = m + 1 end end
+    T.eq(m, n)                                              -- no line without a change
+  end)
+
+  T.it('the periodic check records difference 0 and flags a mismatch', function()
+    local W, _, ns = boot()
+    ns.Trace.CHECK_EVERY = 5
+    W:advance(6)
+    local l = has(lines(ns), 'EVT check periodic')
+    T.truthy(l and l:find('difference=0', 1, true), tostring(l))
+    T.falsy(l:find('MISMATCH', 1, true))
+    W.state.money = W.state.money + 77                      -- money moves without PLAYER_MONEY: the check must show it
+    W:advance(6)
+    local found
+    for _, x in ipairs(lines(ns)) do if x:find('MISMATCH', 1, true) then found = x end end
+    T.truthy(found)
+    T.truthy(keepHas(W, 'MISMATCH'))
+    ns.Trace.CHECK_EVERY = 600
+  end)
+
+  T.it('a final check is written when the interval ends', function()
+    local W, _, ns = boot()
+    ns.Collector.Off()
+    local lastCheck
+    for _, x in ipairs(W.env.GoldIntelCharDB.trace.lines) do if x:find('EVT check final', 1, true) then lastCheck = x end end
+    T.truthy(lastCheck and lastCheck:find('difference=0', 1, true), tostring(lastCheck))
+  end)
+
+  T.it('vendor, mail, trade and auction windows leave one line each', function()
+    local W, P, ns = boot()
+    for _, e in ipairs({ 'P_VENDOR_OPEN', 'P_VENDOR_CLOSE', 'P_MAIL_OPEN', 'P_MAIL_CLOSE', 'P_AH_OPEN', 'P_AH_CLOSE', 'P_TRADE_OPEN', 'P_TRADE_CLOSE' }) do
+      P.Events.Emit(e, {})
+    end
+    for _, w in ipairs({ 'vendor open', 'vendor close', 'mail open', 'mail close', 'ah open', 'ah close', 'trade open', 'trade close' }) do
+      T.truthy(has(lines(ns), 'EVT ' .. w), w)
+    end
+  end)
+
+  T.it('nothing is recorded without an interval', function()
+    local W, P, ns = World.boot()
+    ns.Config.Set('collect.auto', false)
+    P.Events.Emit('P_VENDOR_OPEN', {})
+    W:advance(5)
+    T.falsy(W.env.GoldIntelCharDB and W.env.GoldIntelCharDB.trace and #(W.env.GoldIntelCharDB.trace.lines or {}) > 0)
+  end)
+end)

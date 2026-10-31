@@ -40,7 +40,7 @@ end
 -- anomalies, unmatched expectations, unexplained or roll-won item adds, gathering casts, unrecognized casts.
 local function worthKeeping(text)
   return text:find('^ANOMALY') or text:find('UNMATCHED', 1, true) or text:find('-> unexplained', 1, true)
-    or text:find('^CAST spell=%S+ kind=[hmsf]') or text:find('^CAST spell=%S+ kind=other') or text:find('^NOTE')
+    or text:find('^CAST spell=%S+ kind=[hmsf]') or text:find('^CAST spell=%S+ kind=other') or text:find('^NOTE') or text:find('^EVT group', 1) or text:find('^EVT check', 1)
     or text:find('^BAGS settle skipped', 1) or text:find('^BAGS settle: no snapshot', 1)
 end
 
@@ -223,10 +223,61 @@ P.On('P_CAST', function(p)
   if not ok then Trace.stats.errors = (Trace.stats.errors or 0) + 1 end
 end)
 
+---------------------------------------------------------------------------
+-- 0.5.1: context events (one line each) and a periodic ledger check. Evidence only: nothing here changes a decision.
+--   EVT group  <old> -> <new>      group state changed (grp=members/inGroup/inRaid), polled every GROUP_POLL seconds
+--   EVT zone / vendor / mail / trade / ah open|close, level, profs
+--   EVT check  difference=<c> ...  every CHECK_EVERY seconds and at interval end (difference must be 0)
+---------------------------------------------------------------------------
+Trace.GROUP_POLL = 2.0
+Trace.CHECK_EVERY = 600
+local lastGroup, groupAcc, checkAcc = nil, 0, 0
+
+local function checkLine(why)
+  local L = GI.Ledger
+  local r = L and L.Check and L.Check()
+  if not r then Trace.Line('EVT check ' .. why .. ' none'); return end
+  Trace.Line(string.format('EVT check %s difference=%d moved=%d entries=%d pending=%d unseen=%d seconds=%d%s', why, r.difference, r.moved,
+    r.entries, r.pending, r.unseen, r.seconds, r.difference ~= 0 and ' MISMATCH' or ''))
+end
+
+local function evt(fn)
+  return function(p)
+    if not t0 then return end
+    local ok = pcall(fn, p)
+    if not ok then Trace.stats.errors = (Trace.stats.errors or 0) + 1 end
+  end
+end
+
+P.On('P_TICK', evt(function(p)
+  local dt = (p and p.dt) or 0
+  groupAcc = groupAcc + dt
+  checkAcc = checkAcc + dt
+  if groupAcc >= Trace.GROUP_POLL then
+    groupAcc = 0
+    local g = groupText()
+    if lastGroup ~= nil and g ~= lastGroup then Trace.Line('EVT group ' .. lastGroup .. ' -> ' .. g) end
+    lastGroup = g
+  end
+  if checkAcc >= Trace.CHECK_EVERY then checkAcc = 0; checkLine('periodic') end
+end))
+P.On('P_ZONE', evt(function(p)
+  local l = p and p.loc or {}
+  Trace.Line(string.format('EVT zone map=%s zone=%s sub=%s', tostring(l.mapID), clean(l.zone), clean(l.sub)))
+end))
+for _, e in ipairs({ { 'P_VENDOR_OPEN', 'vendor open' }, { 'P_VENDOR_CLOSE', 'vendor close' }, { 'P_MAIL_OPEN', 'mail open' },
+  { 'P_MAIL_CLOSE', 'mail close' }, { 'P_TRADE_OPEN', 'trade open' }, { 'P_TRADE_CLOSE', 'trade close' },
+  { 'P_AH_OPEN', 'ah open' }, { 'P_AH_CLOSE', 'ah close' } }) do
+  P.On(e[1], evt(function() Trace.Line('EVT ' .. e[2]) end))
+end
+P.On('P_LEVEL', evt(function(p) Trace.Line('EVT level ' .. tostring(p and p.level)) end))
+P.On('P_PROFS', evt(function() Trace.Line('EVT profs changed') end))
+
 --- Starts a trace for a ledger interval (called by Ledger.Begin after Sources.Begin).
 function Trace.Begin()
   t0, prev = nowGT(), nil
   castSeen = {}
+  lastGroup, groupAcc, checkAcc = nil, 0, 0
   GI.Sources.tap = safe(onSources)
   if P.LootModule then P.LootModule.tap = safe(onLoot) end
   if P.ChatModule then P.ChatModule.tap = safe(onChat); P.ChatModule.lootTap = safe(onChatLoot) end
@@ -241,6 +292,7 @@ end
 
 function Trace.End()
   if not t0 then return end
+  pcall(checkLine, 'final')
   Trace.Line('INTERVAL end')
   t0, prev = nil, nil
   GI.Sources.tap = nil
