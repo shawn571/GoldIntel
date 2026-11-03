@@ -544,3 +544,13 @@ Affected: process only. Migration: none.
 - **OI-8** is formally open only for its closing wording (TODO.md); Phase 3b was built on signals verified in Phase 3a. **OI-9** residue is part of Phase 2 exceptions PX-1..PX-8 (D-056); its "needed by Phase 2 closure" is past. **OI-10** belongs to the D-028 release checklist: due at launch together with **OI-11**.
 - **D-084** heading "M3 approved" means M3 was AUTHORIZED to be built (M2 evidence approved). M3 itself was approved by the user in D-086.
 - New open items OI-14 to OI-17 added to the open-issues table.
+
+## D-088 Item recording is ON by default (user 2026-11-03; closes OI-14) | APPROVED | 2026-11-03
+Supersedes the default in AC-19 (D-080, kept by D-081): `/gi lots` is ON by default whenever a collect interval runs, including the automatic start after login (D-086). It is no longer "OFF after every login and `/reload`". The separate switch itself stays: `/gi lots off` stops item recording for the rest of that load while the cash ledger keeps running. This is what the code has done since 0.4.7 (`Ledger/Ledger.lua`, `lotsSwitch = true`), so no code change follows.
+Affected: Architecture AC-19 text only. Migration: none.
+
+## D-089 Beta data stays in the live account's SavedVariables (user 2026-11-03; closes OI-15) | APPROVED | 2026-11-03
+Beta characters and beta lots are kept as they are: no wipe, no beta marker. Revisit when Account Best is built (D-061, AM-11, Phase 7), where beta characters could otherwise win a location.
+Affected: none now; a design item for Account Best. Migration: none.
+
+- Status note 2026-11-03 (user): OI-16 (privacy scrub) is DEFERRED and stays open; the repository stays private. OI-17 (status of D-029..D-031) stays open.

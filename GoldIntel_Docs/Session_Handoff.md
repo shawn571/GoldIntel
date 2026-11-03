@@ -10,7 +10,9 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 - Folder link attempt: the folder is in the user's Remote Control list on the laptop but is not offered to cloud sessions (likely the Windows desktop app needs an update). Fallback in use.
 - Done (docs only, branch docs/catch-up-2026-11-03, pull request): Decisions D-087, status notes, OI-14..OI-17; Contracts doc 1.9.1 with F18; README; TODO; Changelog and Session_Handoff entry order (moved unchanged, newest first); Project_Bible header, reviewer names, inventory rows; Compatibility_Notes header; Architecture AC-19 note; new PreLaunch_Review_2026-11-03.md. No code changed.
 
-OPEN ISSUES: OI-14 item recording default (AC-19 says OFF, code ON); OI-15 beta data in the live account; OI-16 privacy scrub scope (D-073 fixtures); OI-17 status of D-029..D-031; installed TOC reads 0.5.0-passive (user to re-copy); OI-5, OI-8 wording, OI-10/OI-11 at launch, OI-13; D-062 Proposed; roll-won item label; money sinks in 3b-4 (only for the OTHER share).
+- Update: user decided OI-14 (item recording ON by default, D-088) and OI-15 (beta data kept, revisit with Account Best, D-089); OI-16 deferred (repo stays private), OI-17 open. PR merged.
+
+OPEN ISSUES: OI-16 privacy scrub (deferred, repo private; D-073 fixtures); OI-17 status of D-029..D-031; installed TOC reads 0.5.0-passive (user to re-copy); OI-5, OI-8 wording, OI-10/OI-11 at launch, OI-13; D-062 Proposed; roll-won item label; money sinks in 3b-4 (only for the OTHER share).
 BLOCKERS: none for live play. Remote Control link unavailable until the desktop app is updated.
 NEXT RECOMMENDED TASK: user plays from 2026-11-04 (checklist in PreLaunch_Review_2026-11-03.md section 4); on "logged out, check" read the SavedVariables per D-087 and report. M4, 3b-4 and new features NOT authorized.
 

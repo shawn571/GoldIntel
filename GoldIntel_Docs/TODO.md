@@ -6,7 +6,7 @@ DOC VERSION: 1.2.0  |  UPDATED: 2026-11-03 (session S-057)
 CURRENT PHASE:            Phase 3b increment 3b-3: M3 APPROVED (2026-10-31); passive-play build 0.5.1-passive for live servers (launch 2026-11-04). M4 NOT authorized. 3b-0, 3b-1, 3b-2 CLOSED.
 IMPLEMENTATION APPROVED:  Phases 1 and 2, Phase 3a (closed), Phase 3b scope D-067 (ledgers only, increments 3b-0..3b-4, each reviewed before the next; 3b-0..3b-2 closed, 3b-3 at M3 approved, 3b-4 NOT started). Everything else is NOT approved.
 PHASE 0:                  COMPLETE
-OPEN BLOCKERS:            None for live play. Before analysis of live data: OI-14 (item recording default), OI-15 (beta data). M4 needs the user's go-ahead. OI-8 closing wording, OI-5, OI-13, OI-16, OI-17 unchanged.
+OPEN BLOCKERS:            None. M4 needs the user's go-ahead. OI-14 and OI-15 decided (D-088, D-089). OI-16 deferred (repo stays private); OI-8 closing wording, OI-5, OI-13, OI-17 unchanged.
 ```
 
 Note (2026-11-03, S-057): the per-phase checklists for Phases 1 to 3a below are kept as a historical record. Some boxes stay unticked for work that was later finished or waived; the authoritative status is the closure decisions (D-056 Phase 2, D-066 Phase 3a, D-076 3b-1, D-079 3b-2) and the CURRENT PHASE block above.
@@ -256,6 +256,8 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [ ] User: update the Claude desktop app on the laptop, then retry the folder link (D-087).
 - [ ] Launch day: `/gi caps` and `/gi version`; compare game version, build and Interface with 1.60.1 / 16001; if the client calls the addon out of date, update `## Interface:` (D-028, OI-10, OI-11). Confirm the client folder is still `_forever_`.
 - [ ] First live login is a validation event for 0.5.x: one "recording started automatically" line about 3 s after login; `/gi ledger check` difference 0 copper; any "UNEXPECTED item condition" line is a bug report.
-- [ ] User decisions: OI-14 item recording default; OI-15 beta data; OI-16 privacy scrub scope; OI-17 status of D-029..D-031.
+- [x] 2026-11-03 (S-057) User decisions: OI-14 item recording ON by default (D-088); OI-15 beta data kept, revisit with Account Best (D-089).
+- [ ] Open: OI-16 privacy scrub (deferred, repo stays private); OI-17 status of D-029..D-031.
+- [ ] Phase 7 design item: beta characters and Account Best (D-089).
 - [ ] After each play session ("logged out, check"): read SavedVariables per D-087 and report.
 - [ ] M4 (lot size, CPU, memory, 3b-3 closure recommendation): NOT authorized.

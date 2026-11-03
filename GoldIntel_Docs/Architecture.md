@@ -358,4 +358,5 @@ Scope: D-067 (ledgers only). Everything below is design, not yet built.
 - **AC-18 Lot retention** is capped per character (open 1,500, closed ring 300, interim); closed lots fold into closedSummary; equal-valued open lots of one item may merge. Final values from measurement (D-072).
 - **AC-19 Separate enable switch** `/gi lots on|off`, independent of `/gi ledger`, OFF after login and `/reload`; while OFF the diff is not computed and the next ON reconciles through the gap rule.
   - Note 2026-11-03 (S-057): the code (0.4.7 to 0.5.1) has `/gi lots` ON by default whenever an interval runs, and from 0.5.0 the interval starts automatically (D-086). The "OFF after login" default above is not what is built; the user decides under OI-14 (Decisions.md).
+  - Decided 2026-11-03 (D-088): item recording is ON by default; the "OFF after login" default is superseded. The switch itself stays.
 - **Item invariants:** I-2 created once, consumed once; I-3 open quantity equals carried; I-4 a diff is applied at most once; I-5 value created only for loot and quest free lots; I-6 lots never touch the cash ledger.

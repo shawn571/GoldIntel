@@ -9,6 +9,7 @@ Append-only. Newest entry first. Format: `VERSION | DATE | AI/session | summary`
 - Decisions D-087 (evidence route: Remote Control link to the `_forever_` folder, attach GoldIntel.lua as fallback; replaces the chat-session wording of D-086), status notes, open items OI-14..OI-17.
 - Contracts doc 1.9.1: header now matches contract 1.9.0; new F18 documents the 0.5.0/0.5.1 additions; trace cap and `/gi lots sales` caught up.
 - README, TODO, Project_Bible header, Compatibility_Notes header updated. New PreLaunch_Review_2026-11-03.md.
+- User decisions recorded: D-088 (item recording ON by default, supersedes the AC-19 default; closes OI-14), D-089 (beta data kept; closes OI-15). OI-16 deferred, OI-17 open.
 - Entry order: the 0.4.1, 0.4.7, 0.5.0 and 0.5.1 entries were appended at the bottom of this file; they are moved here unchanged (newest first, as the header says), with their dates and sessions added to the headings. Session_Handoff.md sections S-054 update to S-056 likewise moved to the top.
 
 ## 0.5.1-passive (context events and periodic check) | 2026-10-31 | Claude (session S-055)

@@ -29,7 +29,7 @@ No finding blocks the launch. Nothing below needs a code change before 2026-11-0
 | R-6 | info | `EVT group` and the periodic `EVT check` run on `P_TICK` (Platform/Map.lua, every 0.5 s while in the world). The same tick feeds the location stamps of Sources and ItemSources, which worked live in 3b-2 and 3b-3, so the tick is proven indirectly [inferred]. The new lines themselves have never run live. |
 | R-7 | info | The group poll calls `GetNumGroupMembers`, `IsInGroup`, `IsInRaid` through `P.Call` every 2 s and writes a line only on change; a missing function gives `grp=unavailable`, not an error. |
 | R-8 | doc | The header comment of `Ledger/Trace.lua` still says CAP 1500 (code is 3000). Fix with the next approved code change; Contracts F18 has the correct values. |
-| R-9 | open decision | Item recording (`/gi lots`) is ON by default, unlike the AC-19 text (OI-14). With auto start, items are recorded from the first login. |
+| R-9 | decided | Item recording (`/gi lots`) is ON by default; the user confirmed this on 2026-11-03 (D-088, replaces the AC-19 text). With auto start, items are recorded from the first login. |
 
 ## 3. Risks that stay open at launch
 
@@ -39,7 +39,7 @@ No finding blocks the launch. Nothing below needs a code change before 2026-11-0
 - The one client crash on `/reload` with the M2 build (0.4.1) was never reproduced; cause unknown.
 - Interplay with the user's other addons (about 60) and login time with auto start: unmeasured.
 - Open evidence: roll-won items, herbalism/mining/fishing spell names at other ranks, empty loot windows, item 279912 never ready.
-- Decisions to make before live data is analyzed: OI-14 (item recording default) and OI-15 (beta data in the live account).
+- Decided 2026-11-03: item recording ON by default (D-088); beta data kept in the live account, revisit with Account Best (D-089).
 
 ## 4. Launch-day checklist (for the user)
 
