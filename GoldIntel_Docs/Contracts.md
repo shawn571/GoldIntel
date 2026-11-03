@@ -1,12 +1,14 @@
 # GoldIntel Contracts
 
-DOC VERSION: 1.8.0  |  CONTRACT VERSION: 1.8.0  |  DATE: 2026-10-18
+DOC VERSION: 1.9.1  |  CONTRACT VERSION: 1.9.0  |  DATE: 2026-11-03 (catch-up to code 0.5.1-passive)
 
 Contracts.md wins over Architecture.md on data shapes. A breaking change to any contract requires a Decisions.md entry (Project_Bible section 4) and a CONTRACT VERSION bump. Additive optional fields are non-breaking.
 
 Notation: Lua tables. `copper` = integer. `t` = Unix seconds (`time()`); `gt` = fractional seconds (`GetTime()`). `?` = optional. Enumerations are listed in F0.
 
 ## Change log (contract versions)
+
+- **1.9.0 doc 1.9.1 (2026-11-03, S-057, catch-up, no code change):** the header said 1.8.0 while `P.CONTRACT_VERSION` has been 1.9.0 since 0.4.0. Documented the 0.4.7 and 0.5.0/0.5.1 additions that were built without a contract update (D-031 gap): `/gi lots sales`, setting `collect.auto`, `Collector.AutoStart`/`AUTO_DELAY`, `Ledger.Begin` marks, trace caps and `trace.keep`, `EVT` lines, `Trace.GROUP_POLL`, `Trace.CHECK_EVERY`. All additive; contract version unchanged. See section F18.
 
 - **1.9.0 (2026-10-19, D-080 Q-13, increment 3b-3, additive; M1 modules implemented, nothing wired):** Lot gains `src` (`loot|quest|vendor|mail|trade|disenchant|unknown`), `vc` (boolean, counts as value created: only src loot or quest, free lots, none of the flags transfer/conversion/opening/gap/unattributed/unexplained), `vt` (valuation time), `ref`, `out` (copper received through conversions), and flags `transfer`, `unattributed`, `opening`, `gap`, `unexplained`, `invalid`, `merged` (existing: `unknown`, `bound`, `pendingInfo`, `noVendor`, `conversion`). Conversion gains `itemID`, `ref`, `alloc`. See F17.
 
@@ -388,6 +390,7 @@ Config.Load() -> { invalid = { key = reason } }            Config.List() -> sort
 -- Shipped settings: idleSec 120 [10..3600], minSegSec 600 [30..7200], minBinSec 60 [1..3600], heatGrid 32 (read-only),
 --   valuation 'conservative', defaultSellThrough 0.6 [0..1], prune.days 90, prune.maxBytes 2000000,
 --   normalization.minHours 5, normalization.bracketSize 5
+--   collect.auto true (0.5.0, D-086; see F18)
 -- Invalid saved values are ignored (default applies); unknown saved keys are preserved; every change fires CONFIG_CHANGED.
 ```
 
@@ -585,7 +588,7 @@ rec = { id, t (unix s), c (signed copper), src, conf, act, ac (actConf), lc (loc
 
 **Rules**: a single-group `collect on Gn` does not start the ledger. Collect on starts the interval; collect off ends it (pending -> OTHER at once). Login: first run stores a baseline; saved `lastMoney` != balance gives one gap entry (`comp = 'gap'`, `ctx = 'login'`) only when the store is writable. `lastMoney` is written at begin, after each entry, at End and at logout.
 
-**Trace (diagnostic, after E-46)**: `GI.Trace` (Ledger/Trace.lua) writes `GoldIntelCharDB.trace = { lines }` (max 400, newest last) while an interval is on; optional taps `Expectations.tap(event, e, gt)`, `Sources.tap(kind, ...)`, `Loot.tap(kind, ...)`; `Loot.ReadWindow()` additionally returns `raw`, `slots`, `detail`. CharDB `lmv = 2` marks a trusted `lastMoney`. No classification behaviour depends on any of it.
+**Trace (diagnostic, after E-46)**: `GI.Trace` (Ledger/Trace.lua) writes `GoldIntelCharDB.trace = { lines }` (max 400 when written; 1500 from 0.4.1, 3000 plus a `keep` list from 0.5.0, see F18; newest last) while an interval is on; optional taps `Expectations.tap(event, e, gt)`, `Sources.tap(kind, ...)`, `Loot.tap(kind, ...)`; `Loot.ReadWindow()` additionally returns `raw`, `slots`, `detail`. CharDB `lmv = 2` marks a trusted `lastMoney`. No classification behaviour depends on any of it.
 
 **Commands**: `/gi ledger [status|last [n]|mark|check|on|off|trace [n|clear|on|off]]`; `/gi collect on` prints a `ledger:` line; `/gi diag` prints the ledger quality block first (OTHER share by value and entries, largest OTHER, gap count/value, unmatched, intervals).
 
@@ -608,3 +611,14 @@ rec = { id, t (unix s), c (signed copper), src, conf, act, ac (actConf), lc (loc
 - `GI.ItemSources.sink(decisions, info)`: optional consumer of one entry's decisions; decisions gain `loc`, `locConf` (loot adds).
 - Storage: `lots[charKey]` = Lots state (nextId, open, closed, closedSummary, conv, totals, quality, anomalies); `prices.manual[itemID] = { copper, t }`.
 - Commands: `/gi lots status|last [n]|unknown|check|on|off|reset confirm|decisions [n]|iteminfo`, `/gi price set|list|clear`.
+- 0.4.7 addition: `/gi lots sales [n]` lists what each lot received when it left; `/gi lots status` adds conversion totals (units and copper per via).
+
+## F18 Passive-play additions (0.5.0 and 0.5.1, D-086; contract 1.9.0, additive; documented 2026-11-03)
+- **Setting** `collect.auto` (boolean, default `true`, F6/F12): start collecting a few seconds after login. `/gi config set collect.auto false` disables it.
+- **`GI.Collector.AutoStart() -> enabled, result | false, reason`**, scheduled once by `Collector.OnEnable` after `Collector.AUTO_DELAY = 3` seconds. Runs at most once per load (`autoDone`); does nothing if collect is already on, if `collect.auto` is false, or after a hand-made `/gi collect off` in the same session. On success prints one chat line: `GoldIntel: recording started automatically (...)`. Supersedes the "collect always OFF after login" rule of D-074 A-3.
+- **`GI.Ledger.Begin()`** now calls `Ledger.Mark()` (protected), so every interval starts marked and `/gi ledger check` works without `/gi ledger mark`.
+- **`GI.Ledger.Check() -> { moved, entries, pending, unseen, difference, seconds } | nil, reason`**; `difference = moved - entries - pending` must be 0.
+- **Trace storage:** `GoldIntelCharDB.trace = { lines = {...}, keep = {...} }`, newest last. `Trace.CAP = 3000` (rolling window of all lines). `Trace.KEEP_CAP = 400`: lines that are evidence for open questions are also copied to `keep`, which routine lines cannot push out. Kept: lines starting `ANOMALY`, `NOTE`, `EVT group`, `EVT check`, `BAGS settle skipped`, `BAGS settle: no snapshot`, `CAST spell=<id> kind=h|m|s|f...` (gathering) or `kind=other`; lines containing `UNMATCHED` or `-> unexplained`. Both lists survive across sessions until their cap; `/gi ledger trace clear` empties both.
+- **Context event lines (0.5.1, evidence only; no decision depends on them):** `EVT group <old> -> <new>` (group state `grp=members/inGroup/inRaid`, polled every `Trace.GROUP_POLL = 2.0` s on `P_TICK`, logged only on change), `EVT zone map=<id> zone=<text> sub=<text>`, `EVT vendor|mail|trade|ah open|close`, `EVT level <n>`, `EVT profs changed`.
+- **Check line (0.5.1):** `EVT check <periodic|final> difference=<c> moved=<c> entries=<c> pending=<c> unseen=<c> seconds=<s>[ MISMATCH]`, every `Trace.CHECK_EVERY = 600` s of ticks while an interval runs and once at interval end; `MISMATCH` is appended when difference is not 0. Written only while an interval is on.
+

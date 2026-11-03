@@ -1,6 +1,6 @@
 # WoW Forever Compatibility Notes
 
-DOC VERSION: 1.2.0  |  DATE: 2026-10-15 (first Phase 2 live session added)  |  Verified against: client 1.60.1, build 70338, Interface 16001 (one build only)
+DOC VERSION: 1.2.1  |  DATE: 2026-11-03 (header only; the newest entries are from 2026-10-21)  |  Verified against: client 1.60.1, Interface 16001, beta builds 70338, 70374 and 70450. The launch client is NOT yet re-probed (section 8, OI-11)
 
 Single place for facts about the target client. Every fact carries an evidence tag: **[file]** observed in an attached evidence file, **[reported]** stated by the user, **[inferred]** deduced, **[assumed]** not verified. Re-verify after every client patch and at launch (section 8).
 

@@ -493,6 +493,10 @@ Part 7 is resolved by 9 and 11. Part 3: with no AH data the value is vendor-base
 | OI-13 | The ChatGPT and Gemini review DOCUMENTS (only six relayed findings were evaluated) | **OPEN** | Next review |
 | OI-12 (2026-10-17) | Phase 2 live validation | **CLOSED with exceptions PX-1..PX-8 (D-056)** | done |
 | A-4 | Subzone key (mapID + localized text + locale) | Unconfirmed by you; supported by evidence | Phase 5 |
+| OI-14 (2026-11-03) | Item recording default. AC-19 (D-080, kept by D-081) says `/gi lots` is OFF after every login and `/reload`; the code (`Ledger/Ledger.lua`, `lotsSwitch = true`) has it ON by default, and the M2 script expected ON. Precedence cannot settle a decision against the code | **OPEN**, user to decide (recommendation: keep ON and supersede the AC-19 default) | Before analysis of live data |
+| OI-15 (2026-11-03) | Beta characters and beta lots in the live account's SavedVariables: keep, wipe, or mark as beta | **OPEN**, user to decide | Before analysis of live data |
+| OI-16 (2026-11-03) | Privacy scrub before the repo can go public: a character GUID, six character names (about 480 occurrences in about 20 files, including replay fixtures that D-073 says are never edited), the account folder name in Session_Handoff.md, personal details in HANDOFF_Code_Session_2026-11-02.md | **OPEN**, user to decide scope and whether D-073 fixtures may be anonymized | Before the repo goes public |
+| OI-17 (2026-11-03) | D-029, D-030, D-031 are still Proposed although the work follows them (D-031 is cited as a rule) | **OPEN**, user to confirm | Next review |
 
 - D-080 progress: M2 delivered (trace only); evidence gate open.
 
@@ -523,3 +527,30 @@ Built (0.5.0-passive):
 3. Trace: rolling window of 3000 lines plus a `trace.keep` list (cap 400) of evidence lines that routine lines cannot push out: ANOMALY, UNMATCHED, "-> unexplained", gathering and unrecognized CAST lines, NOTE.
 Limits stated to the user: WoW writes SavedVariables only at `/reload` or logout, so Claude sees data per session, not live.
 - D-086 addendum (2026-10-31): user approved context event lines and a periodic check (0.5.1). Marks are not placed per event; the interval already starts marked and the check line shows where any drift began.
+
+## D-087 Evidence route for live play: Remote Control link, attach as fallback (user 2026-11-03) | APPROVED | 2026-11-03
+Supersedes the evidence-route wording of D-086 ("Claude reading the SavedVariables from the user's computer (folder linked to the session)"), which described the claude.ai chat session. Development moved to a Claude Code cloud session (S-056, S-057); everything else in D-086 stands.
+1. **Preferred route:** the user's computer is linked to the Code session through Remote Control, limited to exactly `C:\Program Files (x86)\World of Warcraft\_forever_` (addon files and SavedVariables).
+2. **Fallback:** if the link is unavailable, the user attaches `GoldIntel.lua` (character SavedVariables, and the account-wide file when asked) after play.
+3. **Trigger:** the user says "logged out, check" (or says `/reload` was typed). No automatic timer or polling (the user declined it).
+4. **Each check:** read the GoldIntel SavedVariables read-only; `trace.keep` first; the cash check (difference must be 0 copper); report the ledger difference, `EVT check` lines, anomalies, unexplained adds, new CAST names, roll-won items and anything that needs a user decision.
+5. **Guardrails:** never write to WTF or SavedVariables; nothing on the user's computer outside that folder; no code change without the user's approval of a proposal; changes go on a branch with tests and a pull request; files are copied into the AddOns folder only after the user approves that specific build, stating `/reload` or full restart each time.
+Status 2026-11-03: the folder is in the user's Remote Control list on the laptop, but that computer does not offer it to cloud sessions (likely cause: the Claude desktop app on Windows needs an update). The fallback (2) is in use until the link works.
+Affected: process only. Migration: none.
+
+## Status notes 2026-11-03 (document catch-up, S-057; append-only, nothing above is edited)
+- **D-074 A-3** ("collect state not persisted, always OFF after login and /reload") is superseded by D-086 part 1 (auto start 3 s after login, `collect.auto`). A hand-made `/gi collect off` still holds for the rest of that session.
+- **Open-issues table, row X-2** is stale: D-027 and D-028 were both approved on 2026-10-18 (P3B-4). Nothing about them is open.
+- **OI-8** is formally open only for its closing wording (TODO.md); Phase 3b was built on signals verified in Phase 3a. **OI-9** residue is part of Phase 2 exceptions PX-1..PX-8 (D-056); its "needed by Phase 2 closure" is past. **OI-10** belongs to the D-028 release checklist: due at launch together with **OI-11**.
+- **D-084** heading "M3 approved" means M3 was AUTHORIZED to be built (M2 evidence approved). M3 itself was approved by the user in D-086.
+- New open items OI-14 to OI-17 added to the open-issues table.
+
+## D-088 Item recording is ON by default (user 2026-11-03; closes OI-14) | APPROVED | 2026-11-03
+Supersedes the default in AC-19 (D-080, kept by D-081): `/gi lots` is ON by default whenever a collect interval runs, including the automatic start after login (D-086). It is no longer "OFF after every login and `/reload`". The separate switch itself stays: `/gi lots off` stops item recording for the rest of that load while the cash ledger keeps running. This is what the code has done since 0.4.7 (`Ledger/Ledger.lua`, `lotsSwitch = true`), so no code change follows.
+Affected: Architecture AC-19 text only. Migration: none.
+
+## D-089 Beta data stays in the live account's SavedVariables (user 2026-11-03; closes OI-15) | APPROVED | 2026-11-03
+Beta characters and beta lots are kept as they are: no wipe, no beta marker. Revisit when Account Best is built (D-061, AM-11, Phase 7), where beta characters could otherwise win a location.
+Affected: none now; a design item for Account Best. Migration: none.
+
+- Status note 2026-11-03 (user): OI-16 (privacy scrub) is DEFERRED and stays open; the repository stays private. OI-17 (status of D-029..D-031) stays open.
