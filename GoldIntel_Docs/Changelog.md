@@ -4,6 +4,43 @@ Append-only. Newest entry first. Format: `VERSION | DATE | AI/session | summary`
 
 ---
 
+## DOC-ONLY | 2026-11-03 | Claude (session S-057)
+- Document catch-up and pre-launch review; no code change (code stays a21e071, 0.5.1-passive, 1,255 tests).
+- Decisions D-087 (evidence route: Remote Control link to the `_forever_` folder, attach GoldIntel.lua as fallback; replaces the chat-session wording of D-086), status notes, open items OI-14..OI-17.
+- Contracts doc 1.9.1: header now matches contract 1.9.0; new F18 documents the 0.5.0/0.5.1 additions; trace cap and `/gi lots sales` caught up.
+- README, TODO, Project_Bible header, Compatibility_Notes header updated. New PreLaunch_Review_2026-11-03.md.
+- Entry order: the 0.4.1, 0.4.7, 0.5.0 and 0.5.1 entries were appended at the bottom of this file; they are moved here unchanged (newest first, as the header says), with their dates and sessions added to the headings. Session_Handoff.md sections S-054 update to S-056 likewise moved to the top.
+
+## 0.5.1-passive (context events and periodic check) | 2026-10-31 | Claude (session S-055)
+- Trace: one-line context events `EVT group <old> -> <new>` (group state polled every 2 s, logged only on change), `EVT zone`, vendor/mail/trade/auction open and close, level, profs changed.
+- Trace: `EVT check` line (difference, moved, entries, pending, unseen) every 600 s and at interval end; a nonzero difference is flagged MISMATCH. `EVT group` and `EVT check` are also copied to `trace.keep`.
+- Evidence only: no cash, lot or decision logic changed. Tests: 1,255 passing. `/reload` is enough.
+
+## 0.5.0-passive (passive-play mode, M3 approved) | 2026-10-31 | Claude (session S-055)
+- Collector: automatic start 3 s after login (`collect.auto`, default on); announced once; never overrides a hand-made `collect off`.
+- Ledger: every interval begins with a mark, so `/gi ledger check` needs no `/gi ledger mark`.
+- Trace: CAP 3000 (was 1500); new `trace.keep` list (cap 400) for anomaly/unmatched/unexplained/cast/note lines.
+- Tests: 1,250 passing (new: auto start, config switch, manual off, isolation under auto interval, keep list). Existing tests adjusted: config list order, session-records tail check, ledger "no mark" case.
+- Restart: `/reload` is enough (no new files). No cash or lot logic changed.
+
+## 0.4.7-phase3b3m3 (3b-3 M3: lots stored) | 2026-10-19 to 2026-10-21 | Claude (session S-054)
+- New Ledger/LotBook.lua: lots created from loot, quest rewards, vendor purchases and disenchant materials; consumed by vendor sales, quest turn-ins, disenchant and trade-outs; stored per character in `lots[charKey]` (schema 2, additive). Mail/trade arrivals, other additions and inventory-only removals are only counted (D-081, D-083, D-084).
+- `/gi lots` gains last, unknown, check, reset confirm; new `/gi price set|list|clear` (optional manual override, units required).
+- Lots carry location and activity stamps from the loot window (for Phase 4/5). Purchase lots carry `cost`.
+- Tests: 1,230 passing, including mutation checks for the lot book. Rollback check: the 0.3.8 build runs on data that contains lots and manual prices. Existing cash replays unchanged with the item pipeline active.
+- 0.4.7-phase3b3m3: money events are paired with exactly one bag settle (nearest within 1.0 s), fixing double counting when several stacks are sold within a second (D-085). Tests 1,235 passing.
+- 0.4.7-phase3b3m3: the trace records the player's casts (`CAST spell=<id> kind=<kind> name=<name>`) to collect gathering spell ids of other skill ranks. Found in the user's Session V: an Apprentice skinner (skill 49) was not detected as skinning because only spell 8617 is known (E-23: "ranks differ by skill").
+- 0.4.7-phase3b3m3: `/gi lots sales [n]` lists what each lot received when it left; `/gi lots status` shows conversion totals (units and copper per via). Integer-safe money formatting.
+- 0.4.7-phase3b3m3: gathering casts are recognized by spell NAME across all skill ranks (names read from the client from the verified ids 2366/2575/8617/7731). Evidence: apprentice skinning cast 8613 is named "Skinning" (user trace 2026-10-21 20:36). Verified live for skinning only; herb/mining/fishing rank names pending a cast at another rank (the CAST trace line shows them).
+- 0.4.7-phase3b3m3: `/gi lots last` shows the activity (and skinning) and "no vendor value" for items without a vendor price; the CAST trace line logs unrecognized spells once per interval (gathering casts always). Verified live: skinning at apprentice rank now GATHER/high (user trace 2026-10-21 20:44).
+
+## 0.4.1-phase3b3m2 (3b-3 M2, trace only) | 2026-10-19 | Claude (session S-054)
+- New: Collect/ItemSources.lua (attribution of bag changes, trace only; stores nothing, touches no cash module), CHAT_MSG_LOOT evidence recorder (group G8), `/gi lots` (status, on, off, decisions, iteminfo; check/last/unknown/reset arrive with M3).
+- Bags: bags 0..5 with completeness flag and Ranges(); Items.Get adds classID/subclassID; P_LOOT_OPEN carries guid; skinning detected as repeat loot window of the same guid after a skin cast; Contract 1.9.0; Trace cap 1500.
+- Tests: 1,196 passing incl. cash isolation (cash entries identical with item pipeline on/off) and mutation checks.
+- M2 live evidence collected 2026-10-19; see Phase3b_3b-3_M2_Report.md. No code change since 0.4.1-phase3b3m2.
+
+
 ## 0.4.0-phase3b3m1 (3b-3 M1: pure item modules) | 2026-10-19 | Claude (session S-054)
 - D-082: manual price is an optional override; `Valuation.Value` uses the highest of vendor and manual (manual only when strictly higher, only with ready item data). Tests 1174 passed, 0 failed.
 - D-081 (option B): the item side is acquisition and conversion accounting, not a mirrored inventory. Lots: converting items no tracked lot covers is normal (counted, not an alarm); `Check` is an optional diagnostic. Tests 1168 passed, 0 failed.
@@ -461,32 +498,3 @@ Documentation baseline. No code exists; nothing was implemented.
 - Reconciled drift between earlier drafts and charter: scope (D-013), schema numbering (D-014), metric definitions (D-012, pending confirmation), added Future/ placeholders (D-015)
 
 Documents superseded by this baseline: design spec "GoldIntel: WoW Forever Addon Design" Part 1 (v0 draft) and Part 2 (review). Those remain as historical input; where they differ from these documents, these documents win.
-
-## 0.4.1-phase3b3m2 (3b-3 M2, trace only)
-- New: Collect/ItemSources.lua (attribution of bag changes, trace only; stores nothing, touches no cash module), CHAT_MSG_LOOT evidence recorder (group G8), `/gi lots` (status, on, off, decisions, iteminfo; check/last/unknown/reset arrive with M3).
-- Bags: bags 0..5 with completeness flag and Ranges(); Items.Get adds classID/subclassID; P_LOOT_OPEN carries guid; skinning detected as repeat loot window of the same guid after a skin cast; Contract 1.9.0; Trace cap 1500.
-- Tests: 1,196 passing incl. cash isolation (cash entries identical with item pipeline on/off) and mutation checks.
-- M2 live evidence collected 2026-10-19; see Phase3b_3b-3_M2_Report.md. No code change since 0.4.1-phase3b3m2.
-
-## 0.4.7-phase3b3m3 (3b-3 M3: lots stored)
-- New Ledger/LotBook.lua: lots created from loot, quest rewards, vendor purchases and disenchant materials; consumed by vendor sales, quest turn-ins, disenchant and trade-outs; stored per character in `lots[charKey]` (schema 2, additive). Mail/trade arrivals, other additions and inventory-only removals are only counted (D-081, D-083, D-084).
-- `/gi lots` gains last, unknown, check, reset confirm; new `/gi price set|list|clear` (optional manual override, units required).
-- Lots carry location and activity stamps from the loot window (for Phase 4/5). Purchase lots carry `cost`.
-- Tests: 1,230 passing, including mutation checks for the lot book. Rollback check: the 0.3.8 build runs on data that contains lots and manual prices. Existing cash replays unchanged with the item pipeline active.
-- 0.4.7-phase3b3m3: money events are paired with exactly one bag settle (nearest within 1.0 s), fixing double counting when several stacks are sold within a second (D-085). Tests 1,235 passing.
-- 0.4.7-phase3b3m3: the trace records the player's casts (`CAST spell=<id> kind=<kind> name=<name>`) to collect gathering spell ids of other skill ranks. Found in the user's Session V: an Apprentice skinner (skill 49) was not detected as skinning because only spell 8617 is known (E-23: "ranks differ by skill").
-- 0.4.7-phase3b3m3: `/gi lots sales [n]` lists what each lot received when it left; `/gi lots status` shows conversion totals (units and copper per via). Integer-safe money formatting.
-- 0.4.7-phase3b3m3: gathering casts are recognized by spell NAME across all skill ranks (names read from the client from the verified ids 2366/2575/8617/7731). Evidence: apprentice skinning cast 8613 is named "Skinning" (user trace 2026-10-21 20:36). Verified live for skinning only; herb/mining/fishing rank names pending a cast at another rank (the CAST trace line shows them).
-- 0.4.7-phase3b3m3: `/gi lots last` shows the activity (and skinning) and "no vendor value" for items without a vendor price; the CAST trace line logs unrecognized spells once per interval (gathering casts always). Verified live: skinning at apprentice rank now GATHER/high (user trace 2026-10-21 20:44).
-
-## 0.5.0-passive (passive-play mode, M3 approved)
-- Collector: automatic start 3 s after login (`collect.auto`, default on); announced once; never overrides a hand-made `collect off`.
-- Ledger: every interval begins with a mark, so `/gi ledger check` needs no `/gi ledger mark`.
-- Trace: CAP 3000 (was 1500); new `trace.keep` list (cap 400) for anomaly/unmatched/unexplained/cast/note lines.
-- Tests: 1,250 passing (new: auto start, config switch, manual off, isolation under auto interval, keep list). Existing tests adjusted: config list order, session-records tail check, ledger "no mark" case.
-- Restart: `/reload` is enough (no new files). No cash or lot logic changed.
-
-## 0.5.1-passive (context events and periodic check)
-- Trace: one-line context events `EVT group <old> -> <new>` (group state polled every 2 s, logged only on change), `EVT zone`, vendor/mail/trade/auction open and close, level, profs changed.
-- Trace: `EVT check` line (difference, moved, entries, pending, unseen) every 600 s and at interval end; a nonzero difference is flagged MISMATCH. `EVT group` and `EVT check` are also copied to `trace.keep`.
-- Evidence only: no cash, lot or decision logic changed. Tests: 1,255 passing. `/reload` is enough.

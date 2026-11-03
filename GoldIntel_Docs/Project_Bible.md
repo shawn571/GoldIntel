@@ -1,6 +1,6 @@
 # GoldIntel Project Bible
 
-DOC VERSION: 1.0.0  |  DATE: 2026-10-09  |  PROJECT VERSION: 0.0.1-planning  |  STATUS: Active
+DOC VERSION: 1.0.1  |  DATE: 2026-11-03 (header, reviewer names and inventory rows only; governance unchanged)  |  PROJECT VERSION: 0.5.1-passive  |  STATUS: Active
 
 > Read this file first. It is self-contained. If any other project document conflicts with it on governance, this file wins; on product scope, Requirements_v1.md wins.
 
@@ -12,7 +12,7 @@ Goal: become the definitive gold analytics platform for WoW Forever.
 
 ## 2. Multi-AI collaboration contract
 
-The project is developed across several AI systems (Claude, ChatGPT, Copilot). Any session can end at any time.
+The project is developed across several AI systems (Claude, ChatGPT, Gemini; roles in D-032). Any session can end at any time.
 
 Every AI MUST:
 
@@ -159,3 +159,6 @@ Cash GPH (always visible), Wealth GPH, Net GPH, Zone rankings, Subzone rankings,
 | Phase3_Planning_Package.md | Phase 3 PLANNING ONLY: value attribution, loot valuation, location credit, activity, AFK, signal selection (D-042..D-050) | Update with the user's decisions |
 | Phase3a_Closure_Recommendation.md | Phase 3a closure (accepted, D-066) | Closed |
 | Phase3b_Scope_and_Readiness.md | Phase 3b scope, readiness, exit criteria (PROPOSED, not authorization) | Update with the user's decisions |
+| Phase3b_Increment_*, Phase3b_3b-*_* | Increment plans, milestone reports, validation session scripts for 3b-1..3b-3 | Historical once the increment is closed |
+| HANDOFF_Code_Session_2026-11-02.md | Bridge from the claude.ai chat session to the Claude Code session (2026-11-02) | Historical; newer Session_Handoff sections win |
+| PreLaunch_Review_2026-11-03.md | Pre-launch review of 0.5.1-passive and the launch-day checklist | Update after the first live session |

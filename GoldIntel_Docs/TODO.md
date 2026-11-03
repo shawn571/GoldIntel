@@ -1,13 +1,15 @@
 # GoldIntel TODO
 
-DOC VERSION: 1.1.0  |  UPDATED: 2026-10-17 (session S-012)
+DOC VERSION: 1.2.0  |  UPDATED: 2026-11-03 (session S-057)
 
 ```
-CURRENT PHASE:            Phase 3b increment 3b-3: M3 APPROVED (2026-10-31); passive-play build 0.5.0-passive for live servers. M4 NOT authorized. 3b-2 CLOSED.
-IMPLEMENTATION APPROVED:  Phases 1 and 2, Phase 3a (closed), Phase 3b scope D-067 (ledgers only, increments 3b-0..3b-4, each reviewed before the next; only 3b-0 is started). Everything else is NOT approved.
+CURRENT PHASE:            Phase 3b increment 3b-3: M3 APPROVED (2026-10-31); passive-play build 0.5.1-passive for live servers (launch 2026-11-04). M4 NOT authorized. 3b-0, 3b-1, 3b-2 CLOSED.
+IMPLEMENTATION APPROVED:  Phases 1 and 2, Phase 3a (closed), Phase 3b scope D-067 (ledgers only, increments 3b-0..3b-4, each reviewed before the next; 3b-0..3b-2 closed, 3b-3 at M3 approved, 3b-4 NOT started). Everything else is NOT approved.
 PHASE 0:                  COMPLETE
-OPEN BLOCKERS:            M4 evidence from the user's live sessions; then 3b-2 closure review. OI-8 closing wording, OI-5, OI-13 unchanged.
+OPEN BLOCKERS:            None for live play. Before analysis of live data: OI-14 (item recording default), OI-15 (beta data). M4 needs the user's go-ahead. OI-8 closing wording, OI-5, OI-13, OI-16, OI-17 unchanged.
 ```
+
+Note (2026-11-03, S-057): the per-phase checklists for Phases 1 to 3a below are kept as a historical record. Some boxes stay unticked for work that was later finished or waived; the authoritative status is the closure decisions (D-056 Phase 2, D-066 Phase 3a, D-076 3b-1, D-079 3b-2) and the CURRENT PHASE block above.
 
 Rules: work only on the current phase. Do not start the next phase without explicit approval. Mark tasks `[x]` with date and session when done. Each phase has an exit test; a phase is complete only when its exit test passes.
 
@@ -243,4 +245,17 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [x] Session E (reduced) done. [ ] User approval of M2 evidence. Open: roll-awarded items (needs group). M3 relabels `unexplained` per D-083.
 - [x] 3b-3 M3 build (lot book, price command, rollback check). [ ] Session V live validation (user). [ ] M3 review and approval. M4 (measurements, closure recommendation) NOT authorized.
 - [x] gathering casts of other ranks: fixed by name matching in 0.4.6 (verified for skinning; herbalism, mining, fishing at other ranks await a CAST trace line from a character with those professions).
-- [x] Session V (M3) passed 2026-10-21. [ ] User review/approval of M3. [ ] M4 (measurements, closure recommendation) NOT authorized. Open: roll-won items, herb/mine/fish names at other ranks, empty loot windows.
+- [x] Session V (M3) passed 2026-10-21. [x] User review/approval of M3 (D-086, 2026-10-31). [ ] M4 (measurements, closure recommendation) NOT authorized. Open: roll-won items, herb/mine/fish names at other ranks, empty loot windows.
+
+### Live launch and passive play (2026-11-03, S-057)
+- [x] 2026-10-31 (S-055) 0.5.0-passive and 0.5.1-passive built (D-086 and addendum); 1,255 tests.
+- [x] 2026-11-03 (S-057) Handoff verified against the repo (last code commit a21e071; 1,255 tests pass; all 52 addon Lua files parse under Lua 5.1).
+- [x] 2026-11-03 (S-057) Evidence route recorded (D-087). Remote Control link not available yet (laptop does not offer the folder to cloud sessions); fallback: user attaches GoldIntel.lua after play.
+- [x] 2026-11-03 (S-057) Document catch-up (Contracts F18, README, TODO, Decisions status notes, entry order of Changelog and Session_Handoff, Bible and Compatibility_Notes headers) and pre-launch review (PreLaunch_Review_2026-11-03.md).
+- [ ] User: re-copy `GoldIntel/GoldIntel.toc` from main so the AddOns list shows 0.5.1-passive (installed copy reads 0.5.0-passive; cosmetic). Confirm AddOns holds GoldIntel and GIMin only.
+- [ ] User: update the Claude desktop app on the laptop, then retry the folder link (D-087).
+- [ ] Launch day: `/gi caps` and `/gi version`; compare game version, build and Interface with 1.60.1 / 16001; if the client calls the addon out of date, update `## Interface:` (D-028, OI-10, OI-11). Confirm the client folder is still `_forever_`.
+- [ ] First live login is a validation event for 0.5.x: one "recording started automatically" line about 3 s after login; `/gi ledger check` difference 0 copper; any "UNEXPECTED item condition" line is a bug report.
+- [ ] User decisions: OI-14 item recording default; OI-15 beta data; OI-16 privacy scrub scope; OI-17 status of D-029..D-031.
+- [ ] After each play session ("logged out, check"): read SavedVariables per D-087 and report.
+- [ ] M4 (lot size, CPU, memory, 3b-3 closure recommendation): NOT authorized.

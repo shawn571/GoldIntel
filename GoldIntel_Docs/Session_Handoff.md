@@ -4,6 +4,36 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-057 | 2026-11-03 | Claude (Claude Code cloud session)
+- Verified HANDOFF_Code_Session_2026-11-02.md against the repo: last code commit a21e071 (later commits docs only), 0.5.1-passive, contract 1.9.0, schema 2, 1,255 tests pass (Lua 5.4.6), all 52 addon Lua files parse under Lua 5.1. Disagreements reported to the user; corrections in the files below.
+- User decisions: D-087 evidence route (Remote Control link to exactly `C:\Program Files (x86)\World of Warcraft\_forever_`, read-only on SavedVariables; fallback the user attaches GoldIntel.lua; trigger "logged out, check"; no timer). Document catch-up and pre-launch review approved.
+- Folder link attempt: the folder is in the user's Remote Control list on the laptop but is not offered to cloud sessions (likely the Windows desktop app needs an update). Fallback in use.
+- Done (docs only, branch docs/catch-up-2026-11-03, pull request): Decisions D-087, status notes, OI-14..OI-17; Contracts doc 1.9.1 with F18; README; TODO; Changelog and Session_Handoff entry order (moved unchanged, newest first); Project_Bible header, reviewer names, inventory rows; Compatibility_Notes header; Architecture AC-19 note; new PreLaunch_Review_2026-11-03.md. No code changed.
+
+OPEN ISSUES: OI-14 item recording default (AC-19 says OFF, code ON); OI-15 beta data in the live account; OI-16 privacy scrub scope (D-073 fixtures); OI-17 status of D-029..D-031; installed TOC reads 0.5.0-passive (user to re-copy); OI-5, OI-8 wording, OI-10/OI-11 at launch, OI-13; D-062 Proposed; roll-won item label; money sinks in 3b-4 (only for the OTHER share).
+BLOCKERS: none for live play. Remote Control link unavailable until the desktop app is updated.
+NEXT RECOMMENDED TASK: user plays from 2026-11-04 (checklist in PreLaunch_Review_2026-11-03.md section 4); on "logged out, check" read the SavedVariables per D-087 and report. M4, 3b-4 and new features NOT authorized.
+
+## S-056 | 2026-11-02 | Claude
+- Wrote HANDOFF_Code_Session_2026-11-02.md and CODE_SESSION_OPENING_PROMPT.md for the move of GoldIntel development to a Claude Code cloud session. Docs only; no code changed. Read the handoff first: it lists what is approved, open decisions, known bugs, package state (0.5.1 zip matches main), pre-launch tasks, working rules, what exists only in chat or memory, and known document staleness. M4 NOT authorized.
+
+## S-055 | 2026-10-31 | Claude
+- User approved M3 (D-086) and linked the Forever folder (C:\Program Files (x86)\World of Warcraft\_forever_) to the session. Built 0.5.0-passive: auto start, marked intervals, bigger trace plus keep list. 1,250 tests pass. M4 NOT authorized.
+- Next: user plays normally from 2026-11-04; after logout/`/reload` Claude reads GoldIntel.lua from WTF\Account\SHAWN313\... and reports: ledger check difference, anomalies, unexplained adds, new CAST names, roll-won items. Alert the user when a package is ready or a decision is needed. Open evidence: roll-won items, herb/mine/fish spell names, empty loot windows.
+- S-055 update: built and installed 0.5.1-passive (EVT lines, periodic and final check lines). 1,255 tests pass. When reading data: look at `trace.keep` first (EVT group, EVT check, ANOMALY, unexplained, CAST).
+
+## S-054 close (M3 validated)
+Session V passed on builds up to 0.4.7-phase3b3m3: ledger check 0 copper, exact vendor allocation, persistence, reagent bag, skinning by name. Fixes: D-085 money pairing, spell-name gathering. Waiting for the user's M3 review; M4 not authorized. Package GoldIntel_3b3_M3_AddOns.zip is current (0.4.7).
+
+## S-054 M3 (build 0.4.7-phase3b3m3)
+M2 approved by the user; M3 built: LotBook, `/gi price`, `/gi lots last|unknown|check|reset confirm`. 1,230 tests pass; rollback to 0.3.8 verified on data with lots. Package GoldIntel_3b3_M3_AddOns.zip; script Phase3b_3b-3_M3_Session_V.md. Restart required (new file). Next: user runs Session V; then review. M4 not authorized.
+
+## S-054 close (M2 evidence)
+Evidence collected and reviewed with the user; report in Phase3b_3b-3_M2_Report.md. Waiting for the user to approve the evidence; M3 not authorized. D-083 recorded.
+
+## S-054 update (M2)
+M2 built (0.4.1-phase3b3m2): ItemSources trace-only, `/gi lots`, G8 chat evidence. Package GoldIntel_3b3_M2_AddOns.zip; script Phase3b_3b-3_M2_Session_E.md. Next: user runs Session E, we review evidence; no lot persistence until approved. Restart client required.
+
 ## S-054 | 2026-10-19 | Claude
 - (update 2) User approved Q-1..Q-14 and D-080; 3b-3 authorized at M1 ONLY. Built 0.4.0-phase3b3m1: pure modules BagDiff, Valuation, Lots with 116 new tests and 35 mutants; 1152 passed, 0 failed. Nothing is wired: no events, no storage, no commands, so no client behavior changes. Package GoldIntel_3b3_M1_AddOns.zip (optional to install; `/reload` is enough if you do). M2 is NOT started and needs the M1 review first; M3/M4 not authorized; no lot persistence before the M2 evidence is approved.
 - (update 1) User CLOSED 3b-2 (D-079). Wrote the 3b-3 scope and readiness package.
@@ -1150,23 +1180,3 @@ RESUME CHECKLIST FOR THE NEXT AI:
 3. If implementation is approved, set TODO.md `IMPLEMENTATION APPROVED: YES (Phase 1)` and begin Phase 1 only.
 
 ==================================================
-
-## S-054 update (M2)
-M2 built (0.4.1-phase3b3m2): ItemSources trace-only, `/gi lots`, G8 chat evidence. Package GoldIntel_3b3_M2_AddOns.zip; script Phase3b_3b-3_M2_Session_E.md. Next: user runs Session E, we review evidence; no lot persistence until approved. Restart client required.
-
-## S-054 close (M2 evidence)
-Evidence collected and reviewed with the user; report in Phase3b_3b-3_M2_Report.md. Waiting for the user to approve the evidence; M3 not authorized. D-083 recorded.
-
-## S-054 M3 (build 0.4.7-phase3b3m3)
-M2 approved by the user; M3 built: LotBook, `/gi price`, `/gi lots last|unknown|check|reset confirm`. 1,230 tests pass; rollback to 0.3.8 verified on data with lots. Package GoldIntel_3b3_M3_AddOns.zip; script Phase3b_3b-3_M3_Session_V.md. Restart required (new file). Next: user runs Session V; then review. M4 not authorized.
-
-## S-054 close (M3 validated)
-Session V passed on builds up to 0.4.7-phase3b3m3: ledger check 0 copper, exact vendor allocation, persistence, reagent bag, skinning by name. Fixes: D-085 money pairing, spell-name gathering. Waiting for the user's M3 review; M4 not authorized. Package GoldIntel_3b3_M3_AddOns.zip is current (0.4.7).
-
-## S-055 | 2026-10-31 | Claude
-- User approved M3 (D-086) and linked the Forever folder (C:\Program Files (x86)\World of Warcraft\_forever_) to the session. Built 0.5.0-passive: auto start, marked intervals, bigger trace plus keep list. 1,250 tests pass. M4 NOT authorized.
-- Next: user plays normally from 2026-11-04; after logout/`/reload` Claude reads GoldIntel.lua from WTF\Account\SHAWN313\... and reports: ledger check difference, anomalies, unexplained adds, new CAST names, roll-won items. Alert the user when a package is ready or a decision is needed. Open evidence: roll-won items, herb/mine/fish spell names, empty loot windows.
-- S-055 update: built and installed 0.5.1-passive (EVT lines, periodic and final check lines). 1,255 tests pass. When reading data: look at `trace.keep` first (EVT group, EVT check, ANOMALY, unexplained, CAST).
-
-## S-056 | 2026-11-02 | Claude
-- Wrote HANDOFF_Code_Session_2026-11-02.md and CODE_SESSION_OPENING_PROMPT.md for the move of GoldIntel development to a Claude Code cloud session. Docs only; no code changed. Read the handoff first: it lists what is approved, open decisions, known bugs, package state (0.5.1 zip matches main), pre-launch tasks, working rules, what exists only in chat or memory, and known document staleness. M4 NOT authorized.
