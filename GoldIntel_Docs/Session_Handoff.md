@@ -11,6 +11,7 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 - Done (docs only, branch docs/catch-up-2026-11-03, pull request): Decisions D-087, status notes, OI-14..OI-17; Contracts doc 1.9.1 with F18; README; TODO; Changelog and Session_Handoff entry order (moved unchanged, newest first); Project_Bible header, reviewer names, inventory rows; Compatibility_Notes header; Architecture AC-19 note; new PreLaunch_Review_2026-11-03.md. No code changed.
 
 - Update: user decided OI-14 (item recording ON by default, D-088) and OI-15 (beta data kept, revisit with Account Best, D-089); OI-16 deferred (repo stays private), OI-17 open. PR merged.
+- Update 2: user rule D-090 (every stage ends with a package block; added to the handoff working rules). User re-copied and verified the installed TOC; launch checklist step 1 removed. Package GoldIntel_0.5.1_passive_AddOns.zip built from 1e42dd8 (GoldIntel and GIMin identical to main) plus a 0.4.7 rollback zip from fa78ade.
 
 OPEN ISSUES: OI-16 privacy scrub (deferred, repo private; D-073 fixtures); OI-17 status of D-029..D-031; installed TOC reads 0.5.0-passive (user to re-copy); OI-5, OI-8 wording, OI-10/OI-11 at launch, OI-13; D-062 Proposed; roll-won item label; money sinks in 3b-4 (only for the OTHER share).
 BLOCKERS: none for live play. Remote Control link unavailable until the desktop app is updated.

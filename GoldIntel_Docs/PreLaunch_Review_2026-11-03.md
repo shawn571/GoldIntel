@@ -13,7 +13,7 @@ Approved by the user on 2026-11-03 together with the document catch-up. Launch i
 | Test suite | 1,255 passed, 0 failed (Lua 5.4.6, same harness as texlua) | `lua5.4 run.lua` from GoldIntel/Tests |
 | Lua 5.1 syntax (the game's Lua) | all 52 addon `.lua` files outside Tests parse with `luac5.1 -p` | new check this session; the harness alone runs on 5.4 |
 | Files changed 0.4.7 to 0.5.1 | exactly GoldIntel.toc, Platform.lua, Config.lua, Collector.lua, Ledger.lua, Trace.lua | `git diff fa78ade a21e071`; matches the six files installed on 2026-10-31 |
-| Installed copy on the user's laptop | NOT checked: the Remote Control link is not available yet (D-087) | handoff 2026-11-02 says the installed TOC reads 0.5.0-passive |
+| Installed copy on the user's laptop | Not checked by Claude (no Remote Control link yet, D-087). The user re-copied `GoldIntel.toc` from main and verified it on 2026-11-03 | user report; before that the installed TOC read 0.5.0-passive |
 
 ## 2. Code review of the 0.5.0 and 0.5.1 changes
 
@@ -43,18 +43,19 @@ No finding blocks the launch. Nothing below needs a code change before 2026-11-0
 
 ## 4. Launch-day checklist (for the user)
 
-Before starting the game:
-1. With the game closed, copy `GoldIntel/GoldIntel.toc` from the repository (main) over `...\_forever_\Interface\AddOns\GoldIntel\GoldIntel.toc`. Expected: nothing else changes; the other files already match 0.5.1.
-2. Check that `...\_forever_\Interface\AddOns` contains `GoldIntel` and `GIMin`, and NOT `GoldIntelDiag` or `GIProbeLoot`.
+The installed `GoldIntel.toc` was re-copied from main and verified by the user on 2026-11-03, so the old step 1 is removed.
 
-In the game (full client start, because the TOC file changed):
-3. On the character screen open AddOns. Expected: GoldIntel listed as 0.5.1-passive. If it says "out of date", tell Claude (the `## Interface:` line needs updating, D-028).
-4. Log in. Expected, about 3 seconds later: `GoldIntel: recording started automatically (...)`.
-5. Type `/gi version`. Expected two lines: `GoldIntel 0.5.1-passive  (contract 1.9.0)` and `client <version> build <build>  interface <number>  locale <locale>`. Copy back the second line (beta was client 1.60.1, interface 16001).
-6. Type `/gi caps`. Copy back the output (capability check after the launch patch).
-7. Type `/gi ledger check`. Expected: a line ending `-> DIFFERENCE 0 copper (OK)`.
-8. Play normally. If a line `GoldIntel: UNEXPECTED item condition: ...` appears, copy it or take a screenshot.
-9. Do not type `/gi ledger trace clear` or `/gi lots reset confirm`.
-10. After play: log out (or `/reload`), then attach the character file `...\_forever_\WTF\Account\<account>\...\<character>\SavedVariables\GoldIntel.lua` (and the account-wide `...\WTF\Account\<account>\SavedVariables\GoldIntel.lua` if asked) and write "logged out, check".
+Before starting the game:
+1. Check that `...\_forever_\Interface\AddOns` contains `GoldIntel` and `GIMin`, and NOT `GoldIntelDiag` or `GIProbeLoot`.
+
+In the game:
+2. On the character screen open AddOns. Expected: GoldIntel listed as 0.5.1-passive. If it says "out of date", tell Claude (the `## Interface:` line needs updating, D-028).
+3. Log in. Expected, about 3 seconds later: `GoldIntel: recording started automatically (...)`.
+4. Type `/gi version`. Expected two lines: `GoldIntel 0.5.1-passive  (contract 1.9.0)` and `client <version> build <build>  interface <number>  locale <locale>`. Copy back the second line (beta was client 1.60.1, interface 16001).
+5. Type `/gi caps`. Copy back the output (capability check after the launch patch).
+6. Type `/gi ledger check`. Expected: a line ending `-> DIFFERENCE 0 copper (OK)`.
+7. Play normally. If a line `GoldIntel: UNEXPECTED item condition: ...` appears, copy it or take a screenshot.
+8. Do not type `/gi ledger trace clear` or `/gi lots reset confirm`.
+9. After play: log out (or `/reload`), then attach the character file `...\_forever_\WTF\Account\<account>\...\<character>\SavedVariables\GoldIntel.lua` (and the account-wide `...\WTF\Account\<account>\SavedVariables\GoldIntel.lua` if asked) and write "logged out, check".
 
 Escape hatches if anything misbehaves: `/gi collect off` (this session) and `/gi config set collect.auto false` (stops the automatic start).

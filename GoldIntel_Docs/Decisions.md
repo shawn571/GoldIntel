@@ -554,3 +554,7 @@ Beta characters and beta lots are kept as they are: no wipe, no beta marker. Rev
 Affected: none now; a design item for Account Best. Migration: none.
 
 - Status note 2026-11-03 (user): OI-16 (privacy scrub) is DEFERRED and stays open; the repository stays private. OI-17 (status of D-029..D-031) stays open.
+
+## D-090 Every stage ends with a ready-to-install package block (user 2026-11-03) | APPROVED | 2026-11-03
+Process rule set by the user. When a stage is finished, the message ends with the latest addon version as a ready-to-install package: the version string `/gi version` will show; whether it matches main (commit named); `/reload` or full restart; exact install steps; how to roll back; the zip itself or how to get it. If the addon did not change, the block says "unchanged, <version> is current" and is still given in full. Written into the working rules of HANDOFF_Code_Session_2026-11-02.md section 8.
+Affected: process only. Migration: none.

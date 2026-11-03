@@ -141,6 +141,7 @@ The user plays the real client and wants instructions he can follow exactly:
 
 ### Delivery and style
 - Deliver packages as zips built by the build tool; send files to the user, do not just describe them. Say what the package contains and whether it matches main.
+- **End every stage with a package block (user rule 2026-11-03, D-090).** Whenever a stage is finished, the last part of the message is the latest addon version as a ready-to-install package: (1) the version string `/gi version` will show; (2) whether it matches main, naming the commit; (3) `/reload` or full restart; (4) the exact install steps; (5) how to roll back; (6) the zip itself, or how to get it. If nothing in the addon changed, say "unchanged, 0.5.1-passive is current" (with the then-current version) and still give the whole block. Build with `tools/build_package.py` from a clean checkout of the commit (the tool rewrites `GoldIntelDiag/SrcCurrent.lua` and `MANIFEST.txt`, so do not run it in the working tree).
 - Be plain and short with the user. Report outcomes, not effort. Say right away when a limitation changes what he gets.
 - Do not narrate tool use or memory use. Do not guess; say what is unverified.
 - Every change goes through tests; mutation checks guard Cash, Ledger and LotBook (Loader.override mutants). Boundary test forbids identifiers named like WoW globals. Money formatting must use `string.format('%d')` (Lua 5.4 floats).

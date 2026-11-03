@@ -252,7 +252,8 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [x] 2026-11-03 (S-057) Handoff verified against the repo (last code commit a21e071; 1,255 tests pass; all 52 addon Lua files parse under Lua 5.1).
 - [x] 2026-11-03 (S-057) Evidence route recorded (D-087). Remote Control link not available yet (laptop does not offer the folder to cloud sessions); fallback: user attaches GoldIntel.lua after play.
 - [x] 2026-11-03 (S-057) Document catch-up (Contracts F18, README, TODO, Decisions status notes, entry order of Changelog and Session_Handoff, Bible and Compatibility_Notes headers) and pre-launch review (PreLaunch_Review_2026-11-03.md).
-- [ ] User: re-copy `GoldIntel/GoldIntel.toc` from main so the AddOns list shows 0.5.1-passive (installed copy reads 0.5.0-passive; cosmetic). Confirm AddOns holds GoldIntel and GIMin only.
+- [x] 2026-11-03 User re-copied `GoldIntel/GoldIntel.toc` from main and verified it (reported). Still confirm at launch that AddOns holds GoldIntel and GIMin only.
+- [x] 2026-11-03 (S-057) Rule D-090: every stage ends with a ready-to-install package block (handoff section 8).
 - [ ] User: update the Claude desktop app on the laptop, then retry the folder link (D-087).
 - [ ] Launch day: `/gi caps` and `/gi version`; compare game version, build and Interface with 1.60.1 / 16001; if the client calls the addon out of date, update `## Interface:` (D-028, OI-10, OI-11). Confirm the client folder is still `_forever_`.
 - [ ] First live login is a validation event for 0.5.x: one "recording started automatically" line about 3 s after login; `/gi ledger check` difference 0 copper; any "UNEXPECTED item condition" line is a bug report.
