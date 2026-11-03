@@ -19,8 +19,8 @@ Evidence tags used below:
 |---|---|
 | Product | GoldIntel, a gold analytics addon for WoW: Forever (client 1.60.1, Interface 16001, Lua 5.1) |
 | Repo | github.com/shawn571/GoldIntel, **private**, MIT license (copyright Shawn Robinson) |
-| `main` HEAD | `a21e071` "0.5.1: context event lines and periodic ledger check in the trace"; local and remote agree |
-| Commit history | 912a5d6 initial import (0.4.7) > 8de6ce2 MIT > fa78ade copyright holder > eed0156 0.5.0 > a21e071 0.5.1 |
+| `main` HEAD | The **last code commit is `a21e071`** "0.5.1: context event lines and periodic ledger check in the trace". Commits after it are docs-only (the one adding this handoff and the opening prompt). `git diff a21e071 HEAD --stat` must show only files under GoldIntel_Docs/. Local and remote agreed when written. |
+| Commit history | 912a5d6 initial import (0.4.7) > 8de6ce2 MIT > fa78ade copyright holder > eed0156 0.5.0 > a21e071 0.5.1 > (docs-only handoff commit) |
 | Addon version | `0.5.1-passive` (`P.VERSION` in GoldIntel/Platform/Platform.lua and `## Version` in GoldIntel.toc) |
 | Contract version | 1.9.0 (`P.CONTRACT_VERSION`; Contracts.md header still says 1.8.0, see section 11) |
 | Store schema | 2 (additive; the 0.3.8 build still runs on current data, tested at 0.4.7) |
@@ -78,7 +78,7 @@ Nothing below is a confirmed defect in released behavior except where marked. Al
 
 ## 6. Package and repo state
 
-- `main` (a21e071) is the source of truth from now on. [verified]
+- `main` is the source of truth from now on (code as of a21e071). [verified]
 - **The 0.5.1 package matches main**: `GoldIntel_0.5.1_passive_AddOns.zip` (built 2026-10-31 from the same tree) has GoldIntel/ and GIMin/ byte-identical to main (Tests excluded by design). GoldIntelDiag/ differs only in `MANIFEST.txt` and `SrcCurrent.lua`, which are regenerated on every build (timestamps and embedded source), not source changes. [verified]
 - The zips are build output and are **gitignored**; they live only in the chat session's `/mnt/user-data/outputs` and were sent to the user. Rebuild with the build tool. Older packages exist there too (3b0..3b3_M3, 0.5.0, 0.5.1) and are not in the repo.
 - **Installed on the user's machine** (`C:\Program Files (x86)\World of Warcraft\_forever_\Interface\AddOns\GoldIntel`): I replaced exactly six files on 2026-10-31: GoldIntel.toc, Platform/Platform.lua, Core/Config.lua, Collect/Collector.lua, Ledger/Ledger.lua, Ledger/Trace.lua. Five now match main byte for byte [verified]; the TOC reads 0.5.0 (see section 5). Other files in that folder are the 0.4.7 build. [verified for the six; assumed for the rest, since 0.4.7 files were unchanged between 0.4.7 and 0.5.1 in the repo history]
@@ -161,7 +161,7 @@ These are not (all) in the repo. The next session should treat the user as the s
 
 ## 10. Confirmed facts versus assumptions
 
-**Confirmed [verified 2026-11-02]:** repo HEAD a21e071 equals remote main; versions in Platform.lua and the TOC; 1,255 tests pass; the 0.5.1 zip matches main (excluding regenerated Diag files and excluded Tests); five of six installed files match main; the installed TOC reads 0.5.0; the AddOns listing of 2026-10-31 showed GIMin and GoldIntel only; the GUID text exists in two docs; README and Contracts.md header are stale (section 11).
+**Confirmed [verified 2026-11-02]:** the last code commit a21e071 is on remote main and the working tree was clean; versions in Platform.lua and the TOC; 1,255 tests pass; the 0.5.1 zip matches main (excluding regenerated Diag files and excluded Tests); five of six installed files match main; the installed TOC reads 0.5.0; the AddOns listing of 2026-10-31 showed GIMin and GoldIntel only; the GUID text exists in two docs; README and Contracts.md header are stale (section 11).
 
 **Confirmed by the user in the chat [stated]:** M2 and M3 approvals; passive-play request; MIT; GitHub; private repo; the item-side principle; the facts listed in section 9.
 
