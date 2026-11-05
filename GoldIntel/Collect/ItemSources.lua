@@ -26,6 +26,9 @@
 --
 -- Skinning (D-082): a loot window of a creature already looted in this interval, after a skin cast made since that
 -- first window, is skinning = GATHER (E-24: the skinning window is a second LOOT_OPENED of the same guid).
+-- 0.5.2 (D-091): a creature window that opens at most SKIN_FIRST seconds after the player's own skin cast is also
+-- skinning, even when it is the corpse's first window here (corpses left unskinned or unlooted by other players;
+-- live 2026-11-04: 7 of 7 such windows opened 0.25-0.29 s after the cast and were booked GRIND).
 
 local ADDON, GI = ...
 GI = GI or {}
@@ -39,6 +42,7 @@ IS.WAIT = 2.0                 -- a decision waits this long after the settle (mo
 IS.LOOT_KEEP = 6.0            -- a loot item expectation outlives its window by this long
 IS.MONEY_PAIR = 1.0           -- a money event can belong to a bag settle at most this far away (before or after)
 IS.SEEN_KEEP = 600            -- how long a looted creature guid is remembered (for the skinning rule)
+IS.SKIN_FIRST = 1.0           -- a first creature window this soon after a skin cast is the skinning window (D-091)
 IS.RING = 50
 IS.DISENCHANT_SPELL = 13262   -- E-26
 IS.CAST_BEFORE = 8.0          -- a disenchant cast this long before the settle explains the removal
@@ -145,7 +149,7 @@ local c
 
 local function freshCounters()
   c = { settles = 0, baselines = 0, empty = 0, skipped = 0, snapFail = 0, diffs = 0, decisions = 0, handlerErrors = 0,
-        windows = 0, lootSlots = 0, skinWindows = 0, noGuid = 0, how = {}, itemInfoEvents = 0 }
+        windows = 0, lootSlots = 0, skinWindows = 0, skinFirst = 0, noGuid = 0, how = {}, itemInfoEvents = 0 }
 end
 freshCounters()
 
@@ -198,9 +202,12 @@ local function onLootOpen(p)
   if p.sourceType == 'creature' then
     if type(p.guid) == 'string' then
       local prev = seen[p.guid]
+      local castGT = P.LastCast and P.LastCast('skin')
       if prev then
-        local castGT = P.LastCast and P.LastCast('skin')
         if castGT and castGT >= prev and castGT <= gt + 1e-9 then skinning = true end
+      elseif castGT and gt - castGT >= -1e-9 and gt - castGT <= IS.SKIN_FIRST then
+        skinning = true                                    -- D-091: first window right after the skin cast
+        c.skinFirst = c.skinFirst + 1
       end
       seen[p.guid] = gt
     else

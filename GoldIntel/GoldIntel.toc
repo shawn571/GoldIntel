@@ -1,7 +1,7 @@
 ## Interface: 16001
 ## Title: GoldIntel
 ## Notes: Gold-making intelligence and analytics for WoW Forever (Phase 2: core and store)
-## Version: 0.5.1-passive
+## Version: 0.5.2-passive
 ## SavedVariables: GoldIntelDB
 ## SavedVariablesPerCharacter: GoldIntelCharDB
 
@@ -12,6 +12,7 @@ Platform/Scheduler.lua
 Platform/Unit.lua
 Platform/Loot.lua
 Platform/Merchant.lua
+Platform/Trainer.lua
 Platform/Quest.lua
 Platform/Trade.lua
 Platform/Chat.lua

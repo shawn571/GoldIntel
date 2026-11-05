@@ -50,6 +50,8 @@ local SPEC = {
   P_TRADE_OPEN    = { partner = 'string?' },
   P_TRADE_DONE    = { gave = 'number', got = 'number', partner = 'string?' },
   P_AH_OPEN       = {},
+  P_TRAINER_OPEN  = {},                                  -- 0.5.2 (D-093): TRAINER_SHOW
+  P_TRAINER_CLOSE = {},                                  -- 0.5.2 (D-093): TRAINER_CLOSED
   P_AH_CLOSE      = {},
   P_AH_LISTED     = { itemID = 'number', qty = 'number', price = 'number',
                       deposit = 'number?', duration = 'number?' },

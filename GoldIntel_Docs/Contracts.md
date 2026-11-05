@@ -1,12 +1,14 @@
 # GoldIntel Contracts
 
-DOC VERSION: 1.9.1  |  CONTRACT VERSION: 1.9.0  |  DATE: 2026-11-03 (catch-up to code 0.5.1-passive)
+DOC VERSION: 1.10.0  |  CONTRACT VERSION: 1.10.0  |  DATE: 2026-11-05 (code 0.5.2-passive)
 
 Contracts.md wins over Architecture.md on data shapes. A breaking change to any contract requires a Decisions.md entry (Project_Bible section 4) and a CONTRACT VERSION bump. Additive optional fields are non-breaking.
 
 Notation: Lua tables. `copper` = integer. `t` = Unix seconds (`time()`); `gt` = fractional seconds (`GetTime()`). `?` = optional. Enumerations are listed in F0.
 
 ## Change log (contract versions)
+
+- **1.10.0 (2026-11-05, D-091..D-094, build 0.5.2-passive, additive):** source `trainer`, activity `TRAINER`, events `P_TRAINER_OPEN` / `P_TRAINER_CLOSE`, collector group G9, context kind `trainer`, probe capability `trainer.events`, `Ledger.Check().atLogout`, `ItemSources.SKIN_FIRST` and counter `skinFirst`, trace lines `EVT trainer open|close`, `EVT quest done`, `EVIDENCE trainerRegistered=`. See F19.
 
 - **1.9.0 doc 1.9.1 (2026-11-03, S-057, catch-up, no code change):** the header said 1.8.0 while `P.CONTRACT_VERSION` has been 1.9.0 since 0.4.0. Documented the 0.4.7 and 0.5.0/0.5.1 additions that were built without a contract update (D-031 gap): `/gi lots sales`, setting `collect.auto`, `Collector.AutoStart`/`AUTO_DELAY`, `Ledger.Begin` marks, trace caps and `trace.keep`, `EVT` lines, `Trace.GROUP_POLL`, `Trace.CHECK_EVERY`. All additive; contract version unchanged. See section F18.
 
@@ -32,14 +34,15 @@ Notation: Lua tables. `copper` = integer. `t` = Unix seconds (`time()`); `gt` = 
 ## F0. Enumerations
 
 ```lua
-ActivityKey = 'GRIND' | 'GATHER' | 'FISH' | 'LOOT' | 'VENDOR' | 'QUEST' | 'AH' | 'TRADE' | 'MAIL' | 'OTHER'
+ActivityKey = 'GRIND' | 'GATHER' | 'FISH' | 'LOOT' | 'VENDOR' | 'QUEST' | 'AH' | 'TRADE' | 'MAIL' | 'TRAINER' | 'OTHER'
+  -- TRAINER (1.10.0, D-093): class and profession training fees; never a LocationAct.
   -- LOOT (0.3.7, user 2026-10-18): coin known to be loot (coin chat share) whose corpse or object is unknown; actConf med;
   -- not a LocationAct, so never credited to a heat bin; the entry still carries the stamped location and its locConf.
   -- RESERVED (no auto-detection in v1; manual override may set them):
   -- 'DISENCHANT' | 'ARBITRAGE' | 'CRAFT' | 'DUNGEON' | 'RARE' | 'BOOST'
   -- | 'SERVICE_MAGE' | 'SERVICE_LOCK' | 'SERVICE_ENCHANT'
 SourceKey   = 'loot' | 'vendor' | 'quest' | 'ahSale' | 'ahDeposit' | 'ahPurchase' | 'trade'
-            | 'codIn' | 'codOut' | 'mailMoney' | 'repair' | 'purchase' | 'unknown'
+            | 'codIn' | 'codOut' | 'mailMoney' | 'repair' | 'purchase' | 'trainer' | 'unknown'   -- trainer: 1.10.0 (D-093)
 Confidence  = 'high' | 'med' | 'low'
 LocationActs = { GRIND, GATHER, FISH }   -- the only activities credited to heat bins
 ```
@@ -621,4 +624,10 @@ rec = { id, t (unix s), c (signed copper), src, conf, act, ac (actConf), lc (loc
 - **Trace storage:** `GoldIntelCharDB.trace = { lines = {...}, keep = {...} }`, newest last. `Trace.CAP = 3000` (rolling window of all lines). `Trace.KEEP_CAP = 400`: lines that are evidence for open questions are also copied to `keep`, which routine lines cannot push out. Kept: lines starting `ANOMALY`, `NOTE`, `EVT group`, `EVT check`, `BAGS settle skipped`, `BAGS settle: no snapshot`, `CAST spell=<id> kind=h|m|s|f...` (gathering) or `kind=other`; lines containing `UNMATCHED` or `-> unexplained`. Both lists survive across sessions until their cap; `/gi ledger trace clear` empties both.
 - **Context event lines (0.5.1, evidence only; no decision depends on them):** `EVT group <old> -> <new>` (group state `grp=members/inGroup/inRaid`, polled every `Trace.GROUP_POLL = 2.0` s on `P_TICK`, logged only on change), `EVT zone map=<id> zone=<text> sub=<text>`, `EVT vendor|mail|trade|ah open|close`, `EVT level <n>`, `EVT profs changed`.
 - **Check line (0.5.1):** `EVT check <periodic|final> difference=<c> moved=<c> entries=<c> pending=<c> unseen=<c> seconds=<s>[ MISMATCH]`, every `Trace.CHECK_EVERY = 600` s of ticks while an interval runs and once at interval end; `MISMATCH` is appended when difference is not 0. Written only while an interval is on.
+
+## F19 0.5.2 additions (contract 1.10.0, additive, D-091..D-094)
+- **Trainer source (D-093):** Platform/Trainer.lua maps `TRAINER_SHOW` -> `P_TRAINER_OPEN {}` and `TRAINER_CLOSED` -> `P_TRAINER_CLOSE {}` (idempotent; `P.TrainerModule.stats = { opened, closed, duplicateOpens, duplicateCloses }`). Collector group `G9` = { TRAINER_SHOW, TRAINER_CLOSED } (registered last; allow-list entries by user decision, not yet observed live). `Context.KINDS` gains `trainer`. Sources window `trainer = { { src = 'trainer', sign = -1 } }` (window mode, ttl 1.0 s): money out while the window is open or inside the linger becomes `src = 'trainer'`, `act = 'TRAINER'`, `conf = 'med'`, not creditable. Probe capability `trainer.events` checks the two names with `IsEventValid` (never registers).
+- **Skinning, first window (D-091):** `ItemSources.SKIN_FIRST = 1.0`. A creature `P_LOOT_OPEN` whose guid was not seen in this interval is skinning when `LastCast('skin')` is at most SKIN_FIRST seconds earlier. `ItemSources.Stats().skinFirst` counts these windows (also included in `skinWindows`).
+- **Logout check (D-092):** `Ledger.Check()` may return `atLogout = true`; then `moved` uses `Money.Last()` instead of GetMoney() (which reads 0 during a real logout, E-46) and `unseen` is 0. The trace line is `EVT check final ... seconds=<s> logout` (seconds are floored). Outside the logout handler nothing changes.
+- **Trace (D-093, D-094):** `EVT trainer open`, `EVT trainer close` (also copied to `trace.keep`), `EVT quest done id=<questID> copper=<n>`, and at interval begin `EVIDENCE trainerRegistered=<true|false|nil>`.
 

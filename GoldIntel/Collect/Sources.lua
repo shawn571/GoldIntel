@@ -25,6 +25,7 @@
 --                                 ahDepositRefund components; any other money mail -> mailMoney
 --   vendor      vendor context    window: + -> vendor, - -> purchase
 --   trade       trade context     window: + and - -> trade
+--   trainer     trainer context   window: - -> trainer (0.5.2, D-093; class and profession training fees)
 --  NOT sources yet (stay OTHER until 3b-4): AH deposit, AH buyout and bid, COD paid, postage.
 --
 -- Mail diff (E-28, E-34, E-39, E-40): the first update after the mailbox opened is only a baseline. After that, a
@@ -178,6 +179,7 @@ end
 local WINDOWS = {
   vendor = { { src = 'vendor', sign = 1 }, { src = 'purchase', sign = -1 } },
   trade = { { src = 'trade', sign = 1 }, { src = 'trade', sign = -1 } },
+  trainer = { { src = 'trainer', sign = -1 } },          -- 0.5.2 (D-093): fees paid while the trainer window is open
 }
 
 local function onContext(p)

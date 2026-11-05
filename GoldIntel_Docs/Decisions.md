@@ -558,3 +558,22 @@ Affected: none now; a design item for Account Best. Migration: none.
 ## D-090 Every stage ends with a ready-to-install package block (user 2026-11-03) | APPROVED | 2026-11-03
 Process rule set by the user. When a stage is finished, the message ends with the latest addon version as a ready-to-install package: the version string `/gi version` will show; whether it matches main (commit named); `/reload` or full restart; exact install steps; how to roll back; the zip itself or how to get it. If the addon did not change, the block says "unchanged, <version> is current" and is still given in full. Written into the working rules of HANDOFF_Code_Session_2026-11-02.md section 8.
 Affected: process only. Migration: none.
+
+## D-091 Skinning a corpse GoldIntel never looted is GATHER (user 2026-11-05) | APPROVED | 2026-11-05
+Evidence (user's live session 2026-11-04): 7 of 7 skinning windows were booked GRIND because the corpse's first loot window was never seen here (corpses left unskinned or unlooted by other players; each window opened 0.25-0.29 s after the skin cast). User: "some people leave unskinned corpses and that is good profit since it's gold without having to spend time killing."
+Rule: a creature loot window that opens at most `ItemSources.SKIN_FIRST` = 1.0 s after the player's own skin cast (`UNIT_SPELLCAST_SUCCEEDED`, kind skin by spell name) is skinning (GATHER, high), even when it is the corpse's first window. The existing repeat-window rule (E-24) is unchanged. This restores D-082 part 1 ("creature loot following a skin cast within the cast window is GATHER"), which the M2 implementation had narrowed. New counter `skinFirst`.
+Affected: Collect/ItemSources.lua. Migration: none (new lots only). Build 0.5.2-passive.
+
+## D-092 The final check at a real logout uses the last seen balance (user 2026-11-05) | APPROVED | 2026-11-05
+Evidence: `EVT check final difference=-17 ... MISMATCH` at a logout on 2026-11-04 although no money moved: GetMoney() reads 0 during a real logout (E-46). Rule: while the logout handler ends the interval, `Ledger.Check()` uses `Money.Last()` (the last balance PLAYER_MONEY reported) and returns `atLogout = true`; the check line ends with ` logout`. `unseen` cannot be measured then; money the client never reported is still caught by the next login's gap check. `/gi ledger check` and the periodic check are unchanged.
+Affected: Ledger/Ledger.lua, Ledger/Trace.lua. Migration: none. Build 0.5.2-passive.
+
+## D-093 Trainer fees are a source (user 2026-11-05) | APPROVED | 2026-11-05
+Evidence: 5 of 7 OTHER entries on 2026-11-04/05 (410 of 447 copper) were trainer fees (two right after level 4, three followed by a profession change). User: "yes add trainer source". Rule: `TRAINER_SHOW` / `TRAINER_CLOSED` (new collector group G9, Platform/Trainer.lua) open a `trainer` context; money OUT inside it (window mode, 1.0 s linger, like the vendor) is source `trainer`, activity `TRAINER` (not a LocationAct, never creditable), confidence med. Money IN inside the window is not matched.
+NOT verified live: the two events were never registered by GoldIntel in the Forever client (Accountant Classic registers TRAINER_SHOW on Forever [reported, Reference_AccountantClassic.md]). They are on the allow-list by this user decision; Events.Bind verifies registration and the Collector journal quarantines a faulting event. The first trainer visit is the live check (`EVIDENCE trainerRegistered=`, `EVT trainer open|close`, probe capability `trainer.events`). A new event means a FULL CLIENT RESTART for this build.
+Scope note: this brings one money sink from the 3b-4 candidate list forward as a post-closure fix of the cash ledger (D-079 policy); 3b-4 itself stays NOT authorized. Taxi, respec, barber, guild bank, repairs stay OTHER.
+Affected: Platform/Trainer.lua (new, TOC), Platform/Events.lua, Platform/Platform.lua (allow-list), Platform/Probe.lua, Collect/Collector.lua, Collect/Context.lua, Collect/Sources.lua, Collect/Stamps.lua, Ledger/Trace.lua. Contract 1.10.0 (additive). Migration: none.
+
+## D-094 Quest turn-ins leave an evidence line in the trace (user 2026-11-05) | APPROVED | 2026-11-05
+Evidence: one quest reward (Rugged Mail Vest, 2026-11-04) arrived without quest context and became "other additions"; the trace had no quest event line to show why. Rule: `EVT quest done id=<questID> copper=<n>` for every P_QUEST_DONE while an interval runs. Evidence only; no decision depends on it.
+Affected: Ledger/Trace.lua. Migration: none.

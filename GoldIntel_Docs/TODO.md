@@ -262,3 +262,9 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [ ] Phase 7 design item: beta characters and Account Best (D-089).
 - [ ] After each play session ("logged out, check"): read SavedVariables per D-087 and report.
 - [ ] M4 (lot size, CPU, memory, 3b-3 closure recommendation): NOT authorized.
+
+### 0.5.2 (2026-11-05, S-058)
+- [x] User approved fixes after the first live sessions: D-091 skinning first window, D-092 logout check, D-093 trainer source, D-094 quest evidence line. Built as 0.5.2-passive on a branch with tests and a PR.
+- [ ] User: install 0.5.2 (FULL restart) after approving the build. Live checks: first trainer visit (`EVIDENCE trainerRegistered=true`, `EVT trainer open`, fee booked as trainer); next skin of a corpse someone else left (GATHER); next logout shows `EVT check final ... logout` with difference 0.
+- [ ] Open evidence: lag case (chat line before late money, fix 1 held); quest reward without quest context (watch `EVT quest done` timing); herbalism and fishing casts; roll-won items.
+- [ ] Still OTHER by design until 3b-4: taxi, respec, barber, guild bank, repairs (repairs at a vendor are already vendor purchases).

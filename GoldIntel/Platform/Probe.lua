@@ -156,6 +156,7 @@ local PROBES = {
   { cap = 'loot.slotinfo',        fn = fnProbe({ 'GetLootSlotInfo' }) },
   { cap = 'merchant.events',      fn = eventProbe({ 'MERCHANT_SHOW', 'MERCHANT_CLOSED' }) },
   { cap = 'quest.event',          fn = eventProbe({ 'QUEST_TURNED_IN' }) },
+  { cap = 'trainer.events',       fn = eventProbe({ 'TRAINER_SHOW', 'TRAINER_CLOSED' }) },   -- 0.5.2 (D-093)
   -- Mail and trade
   { cap = 'mail.events',          fn = eventProbe({ 'MAIL_SHOW', 'MAIL_CLOSED', 'MAIL_INBOX_UPDATE' }) },
   { cap = 'mail.api',             fn = fnProbe({ 'GetInboxItem', 'GetInboxHeaderInfo', 'TakeInboxMoney' }) },
