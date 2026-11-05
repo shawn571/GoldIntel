@@ -192,7 +192,7 @@ T.describe('Cash and Ledger mutation checks', function()
     { C, 'Last hands out stored records', "out[#out + 1] = Cash.Expand(led.cash[i], led, key)", "out[#out + 1] = led.cash[i]" },
     { L, 'lastMoney not refreshed per entry', "if id and c and c.lmv == 2 and type(c.lastMoney) == 'number' then setLastMoney(c.lastMoney + entry.copper)", "if false then" },
     { L, 'lastMoney follows the live balance (pending lost)', "setLastMoney(c.lastMoney + entry.copper)", "setLastMoney(P.MoneyModule.Last())" },
-    { L, 'logout does not end the interval', "if GI.Sources.IsActive() then Ledger.End() end\n  if GI.Store.IsWritable() then", "if GI.Store.IsWritable() then" },
+    { L, 'logout does not end the interval', "local ok, err = pcall(Ledger.End)", "local ok, err = true, nil" },
     { L, 'logout stores the live (zero) balance', "local v = P.MoneyModule.Last()\n    if not v then\n      local live = balance()\n      if live and live > 0 then v = live end\n    end", "local v = balance()" },
     { L, 'untrusted lastMoney creates a gap', "if c.lmv ~= 2 then setLastMoney(now); return 0 end", "" },
     { L, 'logout lastMoney missing', "if v then setLastMoney(v) end", "" },

@@ -252,7 +252,8 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [x] 2026-11-03 (S-057) Handoff verified against the repo (last code commit a21e071; 1,255 tests pass; all 52 addon Lua files parse under Lua 5.1).
 - [x] 2026-11-03 (S-057) Evidence route recorded (D-087). Remote Control link not available yet (laptop does not offer the folder to cloud sessions); fallback: user attaches GoldIntel.lua after play.
 - [x] 2026-11-03 (S-057) Document catch-up (Contracts F18, README, TODO, Decisions status notes, entry order of Changelog and Session_Handoff, Bible and Compatibility_Notes headers) and pre-launch review (PreLaunch_Review_2026-11-03.md).
-- [ ] User: re-copy `GoldIntel/GoldIntel.toc` from main so the AddOns list shows 0.5.1-passive (installed copy reads 0.5.0-passive; cosmetic). Confirm AddOns holds GoldIntel and GIMin only.
+- [x] 2026-11-03 User re-copied `GoldIntel/GoldIntel.toc` from main and verified it (reported). Still confirm at launch that AddOns holds GoldIntel and GIMin only.
+- [x] 2026-11-03 (S-057) Rule D-090: every stage ends with a ready-to-install package block (handoff section 8).
 - [ ] User: update the Claude desktop app on the laptop, then retry the folder link (D-087).
 - [ ] Launch day: `/gi caps` and `/gi version`; compare game version, build and Interface with 1.60.1 / 16001; if the client calls the addon out of date, update `## Interface:` (D-028, OI-10, OI-11). Confirm the client folder is still `_forever_`.
 - [ ] First live login is a validation event for 0.5.x: one "recording started automatically" line about 3 s after login; `/gi ledger check` difference 0 copper; any "UNEXPECTED item condition" line is a bug report.
@@ -261,3 +262,9 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [ ] Phase 7 design item: beta characters and Account Best (D-089).
 - [ ] After each play session ("logged out, check"): read SavedVariables per D-087 and report.
 - [ ] M4 (lot size, CPU, memory, 3b-3 closure recommendation): NOT authorized.
+
+### 0.5.2 (2026-11-05, S-058)
+- [x] User approved fixes after the first live sessions: D-091 skinning first window, D-092 logout check, D-093 trainer source, D-094 quest evidence line. Built as 0.5.2-passive on a branch with tests and a PR.
+- [ ] User: install 0.5.2 (FULL restart) after approving the build. Live checks: first trainer visit (`EVIDENCE trainerRegistered=true`, `EVT trainer open`, fee booked as trainer); next skin of a corpse someone else left (GATHER); next logout shows `EVT check final ... logout` with difference 0.
+- [ ] Open evidence: lag case (chat line before late money, fix 1 held); quest reward without quest context (watch `EVT quest done` timing); herbalism and fishing casts; roll-won items.
+- [ ] Still OTHER by design until 3b-4: taxi, respec, barber, guild bank, repairs (repairs at a vendor are already vendor purchases).

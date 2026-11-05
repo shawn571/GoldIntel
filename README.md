@@ -3,7 +3,7 @@
 A gold analytics addon for **WoW Forever** (client 1.60.1, Interface 16001). It records where gold comes from, with
 which repeatable activity and at which location, so a player can later see where the most gold per hour is earned.
 
-**Status:** under development (Phase 3b-3: item lots; build 0.5.1-passive for passive play from the live launch). It is not a finished release.
+**Status:** under development (Phase 3b-3: item lots; build 0.5.2-passive for passive play). It is not a finished release.
 
 ## What it does today
 - **Cash ledger:** every copper change is attributed to a source (loot, vendor, quest, mail, trade, auction) with a

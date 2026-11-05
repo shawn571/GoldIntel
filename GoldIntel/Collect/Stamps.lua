@@ -16,7 +16,7 @@
 -- Activity (judgment calls made in M2, listed in the M2 report): creature loot GRIND (med); game-object loot
 -- GATHER (herb or mine cast within 30 s) or FISH (fish cast within 30 s) with high confidence, otherwise OTHER
 -- (low); coin from a chat share with no known corpse or object LOOT (med, never credited to a place);
--- vendor and purchase VENDOR; quest QUEST; trade TRADE; every mail-paid source MAIL; unknown OTHER.
+-- vendor and purchase VENDOR; quest QUEST; trade TRADE; trainer TRAINER (0.5.2); every mail-paid source MAIL; unknown OTHER.
 
 local ADDON, GI = ...
 GI = GI or {}
@@ -29,7 +29,7 @@ S.CAST_WINDOW = 30.0
 
 S.BY_SOURCE = {
   vendor = 'VENDOR', purchase = 'VENDOR', repair = 'VENDOR', buyback = 'VENDOR',
-  quest = 'QUEST', trade = 'TRADE',
+  quest = 'QUEST', trade = 'TRADE', trainer = 'TRAINER',     -- TRAINER: 0.5.2 (D-093), never a LocationAct
   mailMoney = 'MAIL', codIn = 'MAIL', codOut = 'MAIL', ahSale = 'MAIL', ahCut = 'MAIL', ahDepositRefund = 'MAIL',
 }
 

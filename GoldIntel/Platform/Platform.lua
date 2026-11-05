@@ -24,8 +24,8 @@ GI = GI or {}   -- real clients always pass the addon table; plain-Lua tests pas
 local P = GI.Platform or {}
 GI.Platform = P
 
-P.VERSION = '0.5.1-passive'
-P.CONTRACT_VERSION = '1.9.0'
+P.VERSION = '0.5.2-passive'
+P.CONTRACT_VERSION = '1.10.0'
 P.env = P.env or _G
 P.debug = P.debug or false
 P.modules = P.modules or {}
@@ -167,6 +167,9 @@ P.COLLECTOR_EVENTS = P.COLLECTOR_EVENTS or {
   AUCTION_HOUSE_AUCTION_CREATED = true,      -- E-36, approved A-1 (D-074)
   CHAT_MSG_MONEY = true,                     -- loot coin signal (E-48/E-49, user approval 2026-10-18); read by Platform/Chat.lua
   CHAT_MSG_LOOT = true,                      -- item loot lines: EVIDENCE RECORDER ONLY (D-080 Q-10, user 2026-10-19); read by Platform/Chat.lua
+  -- 0.5.2 (D-093, user 2026-11-05): trainer fees. NOT yet observed in the Forever client; the first trainer visit is the
+  -- live check (Events.Bind still verifies registration, the Collector journal quarantines a faulting event).
+  TRAINER_SHOW = true, TRAINER_CLOSED = true,
 }
 
 -- Phase 3b-1 collector adapters register themselves here: { name, handlers = { WOW_EVENT = fn },

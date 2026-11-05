@@ -1,7 +1,7 @@
 -- GoldIntel / Collect / Context.lua                                     (Phase 3b-1, Architecture AC-3)
 --
 -- PURPOSE
---  Knows which game windows are open (loot, vendor, mail, trade, auction house) and for how long, from the
+--  Knows which game windows are open (loot, vendor, mail, trade, auction house, trainer) and for how long, from the
 --  normalized events the Platform adapters emit. Nothing here touches the client.
 --      Context.Active()   -> array of { kind, id, open, openedGT, closedGT, by }   open or inside the linger
 --      Context.Stats()    -> per kind { opened, closed, byCounts, duplicateOpens, strayCloses }
@@ -23,7 +23,7 @@ local Context = Core.Module('Context', {})
 GI.Context = Context
 
 Context.LINGER = 1.0
-Context.KINDS = { 'loot', 'vendor', 'mail', 'trade', 'ah', 'quest' }
+Context.KINDS = { 'loot', 'vendor', 'mail', 'trade', 'ah', 'quest', 'trainer' }
 
 local records = {}      -- kind -> { id, open, openedGT, closedGT, by }
 local stats = {}
@@ -136,6 +136,8 @@ P.On('P_TRADE_OPEN', function() openKind('trade') end)
 P.On('P_TRADE_CLOSE', function() closeKind('trade', 'close') end)
 P.On('P_AH_OPEN', function() openKind('ah') end)
 P.On('P_AH_CLOSE', function() closeKind('ah', 'close') end)
+P.On('P_TRAINER_OPEN', function() openKind('trainer') end)          -- 0.5.2 (D-093)
+P.On('P_TRAINER_CLOSE', function() closeKind('trainer', 'close') end)
 P.On('P_QUEST_DONE', function()
   if openKind('quest') then closeKind('quest', 'instant') end
 end)

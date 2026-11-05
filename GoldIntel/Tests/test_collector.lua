@@ -5,7 +5,7 @@ Tests / test_collector.lua            (Phase 3b-1: Collect/Collector.lua, journa
 local T = require('testlib')
 local World = require('collectworld')
 
-local ALL14 = 16
+local ALL14 = 18                 -- 16 + TRAINER_SHOW, TRAINER_CLOSED (0.5.2, D-093)
 
 local function run(W, ns, text)
   local from = #W.printed
@@ -49,7 +49,7 @@ T.describe('collect is off by default and never persisted (A-3)', function()
 end)
 
 T.describe('Collector.On', function()
-  T.it('registers all 16 events in group order and reports them', function()
+  T.it('registers all 18 events in group order and reports them', function()
     local W, _, ns = World.boot()
     local r = ns.Collector.On({})
     T.eq(r.registered, ALL14); T.eq(#r.failed, 0); T.eq(#r.skipped, 0)
@@ -57,11 +57,11 @@ T.describe('Collector.On', function()
     local order = {}
     for _, e in ipairs(W.registerCalls) do order[#order + 1] = e end
     local tail = {}
-    for i = #order - 15, #order do tail[#tail + 1] = order[i] end
+    for i = #order - 17, #order do tail[#tail + 1] = order[i] end
     T.eq(tail, { 'LOOT_OPENED', 'LOOT_SLOT_CLEARED', 'QUEST_TURNED_IN', 'MERCHANT_SHOW', 'MERCHANT_CLOSED',
                  'MAIL_INBOX_UPDATE', 'TRADE_SHOW', 'TRADE_CLOSED', 'TRADE_ACCEPT_UPDATE', 'TRADE_MONEY_CHANGED',
                  'BAG_UPDATE_DELAYED', 'GET_ITEM_INFO_RECEIVED', 'UNIT_SPELLCAST_SUCCEEDED',
-                 'AUCTION_HOUSE_AUCTION_CREATED', 'CHAT_MSG_MONEY', 'CHAT_MSG_LOOT' })
+                 'AUCTION_HOUSE_AUCTION_CREATED', 'CHAT_MSG_MONEY', 'CHAT_MSG_LOOT', 'TRAINER_SHOW', 'TRAINER_CLOSED' })
   end)
 
   T.it('the riskiest event is registered last among the original 13, in its own group', function()
@@ -71,10 +71,10 @@ T.describe('Collector.On', function()
     T.eq(g[6].events, { 'AUCTION_HOUSE_AUCTION_CREATED' })
   end)
 
-  T.it('after collect on there are 12 + 16 = 28 raw events registered with the frame', function()
+  T.it('after collect on there are 12 + 18 = 30 raw events registered with the frame', function()
     local _, P, ns = World.boot()
     ns.Collector.On({})
-    T.eq(#P.Events.BoundEvents(), 28)
+    T.eq(#P.Events.BoundEvents(), 30)
   end)
 
   T.it('can register one group alone', function()
@@ -89,8 +89,8 @@ T.describe('Collector.On', function()
 
   T.it('an unknown group is refused', function()
     local _, _, ns = World.boot()
-    local r, err = ns.Collector.On({ group = 'G9' })
-    T.isnil(r); T.truthy(err:find('G9', 1, true))
+    local r, err = ns.Collector.On({ group = 'G10' })
+    T.isnil(r); T.truthy(err:find('G10', 1, true))
   end)
 
   T.it('calling On twice is a no-op the second time', function()
@@ -300,7 +300,7 @@ T.describe('Collector statistics', function()
     W:fire('MERCHANT_SHOW'); W:fire('MERCHANT_CLOSED'); W:fire('MERCHANT_CLOSED')
     local s = ns.Collector.Stats()
     T.eq(#s.rows, ALL14)
-    T.eq(s.rows[1].event, 'LOOT_OPENED'); T.eq(s.rows[14].event, 'AUCTION_HOUSE_AUCTION_CREATED'); T.eq(s.rows[15].event, 'CHAT_MSG_MONEY'); T.eq(s.rows[16].event, 'CHAT_MSG_LOOT')
+    T.eq(s.rows[1].event, 'LOOT_OPENED'); T.eq(s.rows[14].event, 'AUCTION_HOUSE_AUCTION_CREATED'); T.eq(s.rows[15].event, 'CHAT_MSG_MONEY'); T.eq(s.rows[16].event, 'CHAT_MSG_LOOT'); T.eq(s.rows[17].event, 'TRAINER_SHOW'); T.eq(s.rows[18].event, 'TRAINER_CLOSED')
     local closed
     for _, r in ipairs(s.rows) do if r.event == 'MERCHANT_CLOSED' then closed = r end end
     T.eq(closed.received, 2); T.eq(closed.kept, 1); T.eq(closed.dropped, 1); T.truthy(closed.registered)
@@ -374,8 +374,8 @@ T.describe('/gi collect', function()
   T.it('on registers everything and prints the counts', function()
     local W, _, ns = World.boot()
     local out = run(W, ns, 'collect on')
-    T.truthy(out:find('collect: on, 16 registered now, 0 already, 0 failed, 0 skipped', 1, true))
-    T.truthy(run(W, ns, 'collect status'):find('collect: ON, 16 events registered', 1, true))
+    T.truthy(out:find('collect: on, 18 registered now, 0 already, 0 failed, 0 skipped', 1, true))
+    T.truthy(run(W, ns, 'collect status'):find('collect: ON, 18 events registered', 1, true))
   end)
 
   T.it('on G3 registers one group', function()
@@ -399,7 +399,7 @@ T.describe('/gi collect', function()
 
   T.it('on plain is accepted', function()
     local W, _, ns = World.boot()
-    T.truthy(run(W, ns, 'collect on plain'):find('16 registered now', 1, true))
+    T.truthy(run(W, ns, 'collect on plain'):find('18 registered now', 1, true))
   end)
 
   T.it('failed and skipped events are listed', function()
@@ -413,7 +413,7 @@ T.describe('/gi collect', function()
   T.it('off reports how many events were unregistered', function()
     local W, _, ns = World.boot()
     run(W, ns, 'collect on')
-    T.truthy(run(W, ns, 'collect off'):find('collect: off, 16 events unregistered', 1, true))
+    T.truthy(run(W, ns, 'collect off'):find('collect: off, 18 events unregistered', 1, true))
   end)
 
   T.it('stats prints a header, one line per event, totals and the loot close paths', function()

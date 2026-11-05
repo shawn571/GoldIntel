@@ -4,12 +4,22 @@ Append-only. Newest entry first. Format: `VERSION | DATE | AI/session | summary`
 
 ---
 
+## 0.5.2-passive (skinning, trainer fees, logout check, quest line) | 2026-11-05 | Claude (session S-058)
+- D-091: a creature loot window opening at most 1.0 s after the player's own skin cast is skinning (GATHER) even when it is the corpse's first window (corpses left by other players). Live evidence 2026-11-04: 7 of 7 such windows had been booked GRIND.
+- D-093: new trainer source. Platform/Trainer.lua (new file in the TOC), collector group G9 (TRAINER_SHOW, TRAINER_CLOSED), context `trainer`, money out inside the window = src `trainer`, activity TRAINER. Probe capability `trainer.events`. The two events are not yet verified in the Forever client; the first trainer visit is the check.
+- D-092: the final check at a real logout uses the last seen balance (GetMoney() reads 0 then, E-46): no more false `MISMATCH` at logout; the line ends with ` logout`.
+- D-094: `EVT quest done id=.. copper=..` trace line (evidence only).
+- Pre-launch review items fixed on the way: `EVT check` floors the seconds (R-3), the Trace.lua header comment shows CAP 3000 (R-8).
+- Contract 1.10.0 (additive, F19). Tests: 1,278 passing (23 new incl. 6 mutation checks; count updates for 18 collector events). All addon Lua files parse under Lua 5.1.
+- FULL CLIENT RESTART required (new TOC file, two new events).
+
 ## DOC-ONLY | 2026-11-03 | Claude (session S-057)
 - Document catch-up and pre-launch review; no code change (code stays a21e071, 0.5.1-passive, 1,255 tests).
 - Decisions D-087 (evidence route: Remote Control link to the `_forever_` folder, attach GoldIntel.lua as fallback; replaces the chat-session wording of D-086), status notes, open items OI-14..OI-17.
 - Contracts doc 1.9.1: header now matches contract 1.9.0; new F18 documents the 0.5.0/0.5.1 additions; trace cap and `/gi lots sales` caught up.
 - README, TODO, Project_Bible header, Compatibility_Notes header updated. New PreLaunch_Review_2026-11-03.md.
 - User decisions recorded: D-088 (item recording ON by default, supersedes the AC-19 default; closes OI-14), D-089 (beta data kept; closes OI-15). OI-16 deferred, OI-17 open.
+- D-090 (user rule: every stage ends with a ready-to-install package block) added to the handoff working rules; launch checklist step 1 (TOC re-copy) removed after the user verified it.
 - Entry order: the 0.4.1, 0.4.7, 0.5.0 and 0.5.1 entries were appended at the bottom of this file; they are moved here unchanged (newest first, as the header says), with their dates and sessions added to the headings. Session_Handoff.md sections S-054 update to S-056 likewise moved to the top.
 
 ## 0.5.1-passive (context events and periodic check) | 2026-10-31 | Claude (session S-055)

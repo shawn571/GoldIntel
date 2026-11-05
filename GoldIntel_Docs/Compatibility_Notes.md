@@ -192,3 +192,15 @@ See Phase1_PostValidation_Review.md section 2 (24 rows). Short list: interface n
 - Apprentice skinning (skill 49) is not detected: only spell 8617 is a known skin id (E-23). Ids for other ranks are to be collected with the CAST trace line.
 - Spell names (user, 2026-10-21): C_Spell.GetSpellName(8617)="Skinning", (2366)="Herbalism", (2575)="Mining", (7731)="Fishing". The apprentice skinning cast (skill 60) is spell 8613, name "Skinning" (trace CAST line). Rank spells of one profession share the name, so casts are matched by name (Unit.SpellName).
 - Verified live (user trace 2026-10-21 20:44): apprentice skinning cast 8613 "Skinning" -> kind=skin; second window of the same corpse -> skinning=true act=GATHER/high; the leather lot carries act=GATHER and skinning. Reagent-bag character: BAGRANGE 0:20 1:6 2:0 3:0 4:0 5:4.
+
+## Live launch evidence (user files 2026-11-04 and 2026-11-05, build 0.5.1-passive)
+- [file] Launch client: game version 1.60.1, build 70790 (beta ended at 70450), Interface 16001 unchanged, locale enUS, WOW_PROJECT_ID 18; every capability `ok` except `combatlog.event` (never registered by design); no event failed to register. The live realm field of the character GUID differs from beta.
+- [file] `GetMoney()` read 0 during one logout (E-46 again): the final check showed a false difference of the whole balance. Fixed in 0.5.2 (D-092).
+- [file] Launch lag: one loot window where the coin chat line came 0.7 s after the close and PLAYER_MONEY 2.4 s after the close (beta: about 0.05 s). Order chat-before-money was not seen in beta.
+- [file] Mining at apprentice rank casts spell 2575 "Mining"; ore windows are game-object windows and were booked GATHER (high). Skinning casts 8613 "Skinning". Herbalism and fishing not yet seen.
+- [file] Skin windows on corpses whose first loot window was never opened by the player open 0.25-0.29 s after the skin cast (7 of 7). Basis of D-091.
+- [file] A loot window with source unknown and 0 items opened and was replaced by the real creature window within 0.33 s (2 of 2): empty loot windows are a brief false start.
+- [file] The same corpse raised LOOT_OPENED twice within 0.09 s once (window `replaced`), leaving one extra unmatched expectation; no money effect.
+- [file] Trainer fees (class after level-up, profession training) arrive as plain PLAYER_MONEY with no other signal; TRAINER_SHOW was not registered then. Basis of D-093.
+- [file] Quest reward items arrive as `You receive item:` (CHAT_MSG_LOOT kind pushed); equipping gear returns the old item to the bags (unexplained add, inventory-only, D-081).
+

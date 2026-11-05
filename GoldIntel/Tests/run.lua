@@ -58,6 +58,7 @@ local FILES = {
   'test_ledger',
   'test_ledger_mutation',
   'test_trace',
+  'test_passive052',
   'test_chat',
   'test_bagdiff',
   'test_lots',

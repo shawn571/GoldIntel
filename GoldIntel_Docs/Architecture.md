@@ -360,3 +360,10 @@ Scope: D-067 (ledgers only). Everything below is design, not yet built.
   - Note 2026-11-03 (S-057): the code (0.4.7 to 0.5.1) has `/gi lots` ON by default whenever an interval runs, and from 0.5.0 the interval starts automatically (D-086). The "OFF after login" default above is not what is built; the user decides under OI-14 (Decisions.md).
   - Decided 2026-11-03 (D-088): item recording is ON by default; the "OFF after login" default is superseded. The switch itself stays.
 - **Item invariants:** I-2 created once, consumed once; I-3 open quantity equals carried; I-4 a diff is applied at most once; I-5 value created only for loot and quest free lots; I-6 lots never touch the cash ledger.
+
+## 0.5.2 amendments (D-091..D-094, 2026-11-05)
+- New Platform adapter `Platform/Trainer.lua` (collector group G9) and context kind `trainer`; Sources gains the trainer window (money out = `trainer`). Activity TRAINER is not location-creditable (D-064, D-082).
+- ItemSources: first-window skinning rule (SKIN_FIRST 1.0 s after the player's skin cast) next to the repeat-window rule.
+- Ledger.Check uses the last seen balance while the logout handler runs (E-46).
+- Trace: trainer and quest evidence lines. Details in Contracts F19.
+

@@ -147,8 +147,15 @@ function Ledger.OnEnable()
   last.gap = ok and res or nil
 end
 
+local loggingOut = false          -- 0.5.2 (D-092): set while the logout handler ends the interval
+
 function Ledger.OnLogout()
-  if GI.Sources.IsActive() then Ledger.End() end
+  if GI.Sources.IsActive() then
+    loggingOut = true
+    local ok, err = pcall(Ledger.End)
+    loggingOut = false
+    if not ok then error(err, 0) end
+  end
   if GI.Store.IsWritable() then
     -- E-46: GetMoney() returns 0 during a real logout, so the balance this module has accounted for is stored instead
     -- (Money tracks every PLAYER_MONEY, also while collect is off). The live read is only a fallback when it is positive.
@@ -179,9 +186,16 @@ function Ledger.Mark()
 end
 
 --- Compares the live balance change since the mark with what the ledger holds. difference must be 0.
+-- 0.5.2 (D-092): during a real logout GetMoney() reads 0 (E-46), so the check then uses the last balance the Money
+-- module saw (every PLAYER_MONEY updates it) and says so with `atLogout = true`; `unseen` cannot be measured then (0).
 function Ledger.Check()
   if not mark then return nil, 'no mark (use /gi ledger mark first)' end
   local bal = balance()
+  local atLogout = false
+  if loggingOut then
+    local seenBal = P.MoneyModule.Last()
+    if type(seenBal) == 'number' then bal, atLogout = seenBal, true end
+  end
   if not bal then return nil, 'balance unreadable' end
   local moved = bal - mark.balance
   local entries = GI.Cash.Cumulative() - mark.cumulative
@@ -192,6 +206,7 @@ function Ledger.Check()
     unseen = seen and (bal - seen) or 0,                       -- money that moved but PLAYER_MONEY has not been processed yet
     difference = moved - entries - pending,
     seconds = nowGT() - mark.gt,
+    atLogout = atLogout or nil,
   }
 end
 

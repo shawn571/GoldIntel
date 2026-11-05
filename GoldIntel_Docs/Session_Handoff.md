@@ -4,6 +4,15 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-058 | 2026-11-04 to 2026-11-05 | Claude (Claude Code cloud session)
+- Read the first live data (fallback route D-087, files attached): 0.5.1 auto start works; launch client 1.60.1 build 70790, Interface 16001 unchanged; every `EVT check` 0 copper except one false MISMATCH at logout; lots and anomalies clean.
+- Findings: lag put 1 copper in OTHER (chat line before a 2.4 s late money change; fix held at the user's choice); skinning of corpses never looted here booked GRIND (7 of 7); trainer fees are most of OTHER (410 of 447 copper); one quest reward without quest context; one login gap +36 (probably a crash or disconnect, user not yet asked back); empty loot windows are brief false starts (2 of 2).
+- User approved D-091..D-094. Built 0.5.2-passive on branch fix/0.5.2-skin-trainer (based on the open PR #2 branch), 1,278 tests, PR opened. Not installed. FULL restart needed.
+
+OPEN ISSUES: TRAINER_SHOW/TRAINER_CLOSED unverified live (first trainer visit); OI-16 deferred; OI-17 open; lag fix held; login gap question to the user.
+BLOCKERS: none.
+NEXT RECOMMENDED TASK: user reviews the 0.5.2 PR and approves the build; install with a full restart; next "logged out, check" verifies the trainer source, first-window skinning and the logout line. M4, 3b-4 NOT authorized.
+
 ## S-057 | 2026-11-03 | Claude (Claude Code cloud session)
 - Verified HANDOFF_Code_Session_2026-11-02.md against the repo: last code commit a21e071 (later commits docs only), 0.5.1-passive, contract 1.9.0, schema 2, 1,255 tests pass (Lua 5.4.6), all 52 addon Lua files parse under Lua 5.1. Disagreements reported to the user; corrections in the files below.
 - User decisions: D-087 evidence route (Remote Control link to exactly `C:\Program Files (x86)\World of Warcraft\_forever_`, read-only on SavedVariables; fallback the user attaches GoldIntel.lua; trigger "logged out, check"; no timer). Document catch-up and pre-launch review approved.
@@ -11,6 +20,7 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 - Done (docs only, branch docs/catch-up-2026-11-03, pull request): Decisions D-087, status notes, OI-14..OI-17; Contracts doc 1.9.1 with F18; README; TODO; Changelog and Session_Handoff entry order (moved unchanged, newest first); Project_Bible header, reviewer names, inventory rows; Compatibility_Notes header; Architecture AC-19 note; new PreLaunch_Review_2026-11-03.md. No code changed.
 
 - Update: user decided OI-14 (item recording ON by default, D-088) and OI-15 (beta data kept, revisit with Account Best, D-089); OI-16 deferred (repo stays private), OI-17 open. PR merged.
+- Update 2: user rule D-090 (every stage ends with a package block; added to the handoff working rules). User re-copied and verified the installed TOC; launch checklist step 1 removed. Package GoldIntel_0.5.1_passive_AddOns.zip built from 1e42dd8 (GoldIntel and GIMin identical to main) plus a 0.4.7 rollback zip from fa78ade.
 
 OPEN ISSUES: OI-16 privacy scrub (deferred, repo private; D-073 fixtures); OI-17 status of D-029..D-031; installed TOC reads 0.5.0-passive (user to re-copy); OI-5, OI-8 wording, OI-10/OI-11 at launch, OI-13; D-062 Proposed; roll-won item label; money sinks in 3b-4 (only for the OTHER share).
 BLOCKERS: none for live play. Remote Control link unavailable until the desktop app is updated.
