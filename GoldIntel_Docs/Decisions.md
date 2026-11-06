@@ -577,3 +577,15 @@ Affected: Platform/Trainer.lua (new, TOC), Platform/Events.lua, Platform/Platfor
 ## D-094 Quest turn-ins leave an evidence line in the trace (user 2026-11-05) | APPROVED | 2026-11-05
 Evidence: one quest reward (Rugged Mail Vest, 2026-11-04) arrived without quest context and became "other additions"; the trace had no quest event line to show why. Rule: `EVT quest done id=<questID> copper=<n>` for every P_QUEST_DONE while an interval runs. Evidence only; no decision depends on it.
 Affected: Ledger/Trace.lua. Migration: none.
+
+## D-095 Item rolls the player wins are loot (user 2026-11-06) | APPROVED | 2026-11-06
+Evidence (user files 2026-11-05): two items won by roll in Ragefire Chasm (Birchwood Maul, vendor 9s 22c; Ancestral Tunic, 2s 3c) became "other additions" (unexplained, no value created). The live line is `|HlootHistory:..|h[Loot]|h: You won: [item]`; the old pattern `^You won:` missed it, so it was classified as another player's roll. The item lands about 1.4 s after the line.
+Rule: a CHAT_MSG_LOOT line containing `: You won: ` (or starting `You won:`) emits `P_LOOT_WON { itemID, qty }`. ItemSources turns it into a loot expectation for that item id (closed at once, kept LOOT_KEEP + WAIT seconds, used once): the matching bag add is `loot` (value created), activity LOOT (med), at the stamped location, reason `roll won`. Another player's win, a different item, or an item arriving after the expectation expired stay unexplained.
+Supersedes in part D-080 Q-10 ("CHAT_MSG_LOOT evidence only, no rule until reviewed"): this is the one rule; every other CHAT_MSG_LOOT kind stays evidence only. Cash pipeline untouched (AC-15).
+Affected: Platform/Chat.lua, Platform/Events.lua, Collect/ItemSources.lua, Ledger/Trace.lua. Migration: none. Build 0.5.3-passive.
+
+## D-096 A group share line claims the money pieces that sum to it (user 2026-11-06) | APPROVED | 2026-11-06
+Evidence: five times (2026-11-05, groups of 3 to 5, two of them with normal latency) one "Your share of the loot is N Copper." line followed two separate PLAYER_MONEY changes summing to exactly N (12+5, 13+4, 7+16, 1+4, 3+2); both pieces became OTHER. Explanation (user, 2026-11-06): several corpses looted at the same moment by different players; the game pays each share separately and prints one line with the total. There is no area loot in this version of the game [reported, user 2026-11-06].
+Rule: when a share line of N arrives, `Reconciler:ClaimPendingSum(N, spec)` books 2 or 3 PENDING positive deltas whose sum is exactly N as loot entries (conf high, comp split, the share's window source if one was split). It refuses when a single pending delta equals N (the normal exact match applies), when no set sums to N, and when more than one set does (ambiguous). Pieces already written as OTHER are never edited. Solo "You loot N" lines never claim several deltas.
+Supersedes in part 3b-2 Q-4 ("no expectation is ever matched across two deltas") for this one case only. The Reconciler stays source-agnostic (the caller passes src, ctx, ref, comp).
+Affected: Collect/Reconciler.lua, Collect/Sources.lua. Migration: none. Build 0.5.3-passive.

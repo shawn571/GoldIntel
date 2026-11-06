@@ -367,3 +367,7 @@ Scope: D-067 (ledgers only). Everything below is design, not yet built.
 - Ledger.Check uses the last seen balance while the logout handler runs (E-46).
 - Trace: trainer and quest evidence lines. Details in Contracts F19.
 
+## 0.5.3 amendments (D-095, D-096, 2026-11-06)
+- Platform/Chat.lua emits P_LOOT_WON for the player's roll wins (the only CHAT_MSG_LOOT rule); ItemSources treats it as a one-time loot expectation for that item.
+- Reconciler gains ClaimPendingSum, a narrow, exact exception to Q-4 used only for group share lines (Sources). Details in Contracts F20.
+

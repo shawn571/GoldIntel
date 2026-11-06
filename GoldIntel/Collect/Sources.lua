@@ -61,7 +61,7 @@ local sink
 local c
 
 local function freshCounters()
-  c = { chatLines = 0, chatClaimed = 0, chatLate = 0, chatCovered = 0, chatSplit = 0, chatExp = 0, lootExp = 0, questExp = 0, mailExp = 0, mailVanished = 0, mailBaselines = 0, mailSkippedCod = 0,
+  c = { chatLines = 0, chatClaimed = 0, chatLate = 0, chatCovered = 0, chatSplit = 0, chatSum = 0, chatExp = 0, lootExp = 0, questExp = 0, mailExp = 0, mailVanished = 0, mailBaselines = 0, mailSkippedCod = 0,
         windowsOpened = 0, ticks = 0, handlerErrors = 0 }
 end
 freshCounters()
@@ -158,6 +158,17 @@ local function onLootChat(p)
   end
   local ref = { chat = true }
   if best then ref.sourceType = best.ref and best.ref.sourceType; X:Consume(best.id); c.chatSplit = c.chatSplit + 1 end
+  -- D-096 (0.5.3): several corpses looted at once by different players are paid as separate money changes, but the
+  -- client prints ONE share line with the total (live 2026-11-05: 12 + 5 = 17, 13 + 4 = 17, 7 + 16 = 23, 1 + 4 = 5,
+  -- 3 + 2 = 5). The line claims the pending deltas that sum to exactly N; nothing is guessed (see R:ClaimPendingSum).
+  if R and p.kind == 'share' then
+    local ok = R:ClaimPendingSum(n, { src = 'loot', ctx = 'loot', ref = ref, comp = 'split' })
+    if ok then
+      c.chatSum = c.chatSum + 1
+      tapped('chat', 'sum', p, best)
+      return
+    end
+  end
   local id = add({ src = 'loot', mode = 'exact', copper = n, sign = 1, t0 = gt, ttl = Sources.LINGER, ctx = 'loot',
     ref = ref, comp = p.kind == 'share' and 'split' or nil })
   if id then c.chatExp = c.chatExp + 1 end

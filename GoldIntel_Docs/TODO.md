@@ -267,4 +267,9 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [x] User approved fixes after the first live sessions: D-091 skinning first window, D-092 logout check, D-093 trainer source, D-094 quest evidence line. Built as 0.5.2-passive on a branch with tests and a PR.
 - [ ] User: install 0.5.2 (FULL restart) after approving the build. Live checks: first trainer visit (`EVIDENCE trainerRegistered=true`, `EVT trainer open`, fee booked as trainer); next skin of a corpse someone else left (GATHER); next logout shows `EVT check final ... logout` with difference 0.
 - [ ] Open evidence: lag case (chat line before late money, fix 1 held); quest reward without quest context (watch `EVT quest done` timing); herbalism and fishing casts; roll-won items.
+- [x] 2026-11-06 Live checks of 0.5.2 passed: trainer events registered and fees booked (4 characters' sessions), first-window skinning 3 of 3 GATHER, every logout check 0 (MISMATCH only on old 0.5.1 lines). Persistence across 46 loads and 31 intervals: ledger ids without a hole, lots carried over.
+- [x] 2026-11-06 (S-059) User approved D-095 (roll-won items) and D-096 (split shares); built 0.5.3-passive, PR opened.
+- [ ] User: install 0.5.3 (`/reload` is enough) after approving the build.
+- [ ] Remaining evidence before M4: coin in silver or gold (wording of the share and loot lines); optional herbalism/fishing cast, money taken from mail, money in a trade.
+- [ ] Phase 7 design note: inside an instance the map id is nil and only the zone name is known (Ragefire Chasm, 2026-11-05); D-060 places instance runs at the entrance.
 - [ ] Still OTHER by design until 3b-4: taxi, respec, barber, guild bank, repairs (repairs at a vendor are already vendor purchases).

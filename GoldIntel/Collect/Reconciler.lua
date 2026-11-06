@@ -22,6 +22,8 @@
 --                   and at Tick. After WAIT (1.0 s, D-065; opts.wait may lengthen it, 3b-2 M5: the coin chat line
 --                   arrives up to 1.0 s after the money change) a pending delta becomes OTHER, conf low.
 -- No expectation is ever matched across two deltas (Q-4): an unmatched expectation just expires.
+-- ONE narrow exception, called by Sources only (D-096, 0.5.3): R:ClaimPendingSum(n, spec) books 2 or 3 PENDING deltas
+-- whose sum is exactly n as entries of `spec`, when exactly one such set exists and no single pending delta equals n.
 
 local ADDON, GI = ...
 GI = GI or {}
@@ -172,6 +174,41 @@ function Rec:End(gt)
   self.pending = {}
   self.exp:Clear()
   self.active = false
+end
+
+--- D-096: books 2..3 pending deltas of n's sign that sum to exactly n, one entry per delta built from spec
+-- { src, ctx?, ref?, comp? } (conf high). Refuses (false, reason) when a single pending delta equals n (the normal
+-- exact match handles it), when no set sums to n, or when more than one set does (ambiguous: no guessing).
+function Rec:ClaimPendingSum(n, spec)
+  if not self.active or type(n) ~= 'number' or n == 0 then return false, 'inactive' end
+  local sign = n > 0 and 1 or -1
+  local idx = {}
+  for i, p in ipairs(self.pending) do
+    if p.copper == n then return false, 'single' end
+    if (p.copper > 0 and 1 or -1) == sign then idx[#idx + 1] = i end
+  end
+  local found = {}
+  for a = 1, #idx do for b = a + 1, #idx do
+    local pa, pb = self.pending[idx[a]], self.pending[idx[b]]
+    if pa.copper + pb.copper == n then found[#found + 1] = { idx[a], idx[b] } end
+    for c = b + 1, #idx do
+      if pa.copper + pb.copper + self.pending[idx[c]].copper == n then found[#found + 1] = { idx[a], idx[b], idx[c] } end
+    end
+  end end
+  if #found == 0 then return false, 'nosum' end
+  if #found > 1 then return false, 'ambiguous' end
+  local take = {}
+  for _, i in ipairs(found[1]) do take[i] = true end
+  local keep = {}
+  for i, p in ipairs(self.pending) do
+    if take[i] then
+      self:_emit({ t = p.t, copper = p.copper, src = spec.src, conf = 'high', ctx = spec.ctx, ref = spec.ref, comp = spec.comp })
+    else
+      keep[#keep + 1] = p
+    end
+  end
+  self.pending = keep
+  return true, #found[1]
 end
 
 function Rec:PendingSum()

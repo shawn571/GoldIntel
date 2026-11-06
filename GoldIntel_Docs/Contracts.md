@@ -1,12 +1,14 @@
 # GoldIntel Contracts
 
-DOC VERSION: 1.10.0  |  CONTRACT VERSION: 1.10.0  |  DATE: 2026-11-05 (code 0.5.2-passive)
+DOC VERSION: 1.11.0  |  CONTRACT VERSION: 1.11.0  |  DATE: 2026-11-06 (code 0.5.3-passive)
 
 Contracts.md wins over Architecture.md on data shapes. A breaking change to any contract requires a Decisions.md entry (Project_Bible section 4) and a CONTRACT VERSION bump. Additive optional fields are non-breaking.
 
 Notation: Lua tables. `copper` = integer. `t` = Unix seconds (`time()`); `gt` = fractional seconds (`GetTime()`). `?` = optional. Enumerations are listed in F0.
 
 ## Change log (contract versions)
+
+- **1.11.0 (2026-11-06, D-095, D-096, build 0.5.3-passive, additive):** event `P_LOOT_WON { itemID, qty }`, `Chat.ClassifyLoot` recognises the live won line, ItemSources roll expectation (`rollWon` counter, reason `roll won`), `Reconciler:ClaimPendingSum(n, spec)`, Sources counter `chatSum`, trace lines `ITEM_WON` and `CHATSIG sum`. See F20.
 
 - **1.10.0 (2026-11-05, D-091..D-094, build 0.5.2-passive, additive):** source `trainer`, activity `TRAINER`, events `P_TRAINER_OPEN` / `P_TRAINER_CLOSE`, collector group G9, context kind `trainer`, probe capability `trainer.events`, `Ledger.Check().atLogout`, `ItemSources.SKIN_FIRST` and counter `skinFirst`, trace lines `EVT trainer open|close`, `EVT quest done`, `EVIDENCE trainerRegistered=`. See F19.
 
@@ -630,4 +632,9 @@ rec = { id, t (unix s), c (signed copper), src, conf, act, ac (actConf), lc (loc
 - **Skinning, first window (D-091):** `ItemSources.SKIN_FIRST = 1.0`. A creature `P_LOOT_OPEN` whose guid was not seen in this interval is skinning when `LastCast('skin')` is at most SKIN_FIRST seconds earlier. `ItemSources.Stats().skinFirst` counts these windows (also included in `skinWindows`).
 - **Logout check (D-092):** `Ledger.Check()` may return `atLogout = true`; then `moved` uses `Money.Last()` instead of GetMoney() (which reads 0 during a real logout, E-46) and `unseen` is 0. The trace line is `EVT check final ... seconds=<s> logout` (seconds are floored). Outside the logout handler nothing changes.
 - **Trace (D-093, D-094):** `EVT trainer open`, `EVT trainer close` (also copied to `trace.keep`), `EVT quest done id=<questID> copper=<n>`, and at interval begin `EVIDENCE trainerRegistered=<true|false|nil>`.
+
+## F20 0.5.3 additions (contract 1.11.0, additive, D-095, D-096)
+- **`P_LOOT_WON { itemID:number, qty:number }`** (Platform/Chat.lua): emitted for a CHAT_MSG_LOOT line of kind `won`. `Chat.ClassifyLoot` returns `won` for text containing `: You won: ` (live shape `|HlootHistory:..|h[Loot]|h: You won: |c..|Hitem:<id>..`) or starting `You won:`; `X won: ` (another player) stays `roll`.
+- **ItemSources roll expectation:** on P_LOOT_WON a loot expectation `{ itemID, left = qty, sourceType = 'roll', act = 'LOOT', actConf = 'med', loc, locConf, closeGT = now }` joins the loot-window expectations; it is pruned after LOOT_KEEP + WAIT seconds and consumed once. A matching add is decision `how = 'loot'`, `reason = 'roll won'`. Counter `Stats().rollWon`. Trace `ITEM_WON item=<id> qty=<n>` (kept).
+- **`Reconciler:ClaimPendingSum(n, spec) -> true, setSize | false, 'inactive'|'single'|'nosum'|'ambiguous'`**: among pending deltas with n's sign, finds every set of 2 or 3 whose sum is exactly n; books the set when it is the only one and no single pending delta equals n; each delta becomes `{ t, copper, src = spec.src, conf = 'high', ctx = spec.ctx, ref = spec.ref, comp = spec.comp }`. Sources calls it for share lines only (`kind == 'share'`), with `{ src = 'loot', ctx = 'loot', ref = { chat = true, sourceType? }, comp = 'split' }`; counter `Stats().sources.chatSum`; trace `CHATSIG sum share <n>c`.
 

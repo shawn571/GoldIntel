@@ -26,6 +26,9 @@
 --
 -- Skinning (D-082): a loot window of a creature already looted in this interval, after a skin cast made since that
 -- first window, is skinning = GATHER (E-24: the skinning window is a second LOOT_OPENED of the same guid).
+-- 0.5.3 (D-095): an item roll the player won ('You won: [item]', P_LOOT_WON) is a loot expectation for that item id:
+-- the bag add that follows is loot (value created), activity LOOT (med) at the stamped location, reason 'roll won'.
+-- Live 2026-11-05: two won items (Birchwood Maul, Ancestral Tunic) arrived 1.4 s after the line and were 'unexplained'.
 -- 0.5.2 (D-091): a creature window that opens at most SKIN_FIRST seconds after the player's own skin cast is also
 -- skinning, even when it is the corpse's first window here (corpses left unskinned or unlooted by other players;
 -- live 2026-11-04: 7 of 7 such windows opened 0.25-0.29 s after the cast and were booked GRIND).
@@ -106,7 +109,7 @@ function IS.Attribute(diff, facts)
         e.left = e.left - n
         left = left - n
         out[#out + 1] = { dir = 'add', itemID = id, qty = n, how = e.sourceType == 'item' and 'disenchantMat' or 'loot',
-          reason = 'loot window slot', act = e.act, actConf = e.actConf, window = e.windowId, skinning = e.skinning,
+          reason = e.sourceType == 'roll' and 'roll won' or 'loot window slot', act = e.act, actConf = e.actConf, window = e.windowId, skinning = e.skinning,
           loc = e.loc, locConf = e.locConf }
       end
     end
@@ -149,7 +152,7 @@ local c
 
 local function freshCounters()
   c = { settles = 0, baselines = 0, empty = 0, skipped = 0, snapFail = 0, diffs = 0, decisions = 0, handlerErrors = 0,
-        windows = 0, lootSlots = 0, skinWindows = 0, skinFirst = 0, noGuid = 0, how = {}, itemInfoEvents = 0 }
+        windows = 0, lootSlots = 0, skinWindows = 0, skinFirst = 0, rollWon = 0, noGuid = 0, how = {}, itemInfoEvents = 0 }
 end
 freshCounters()
 
@@ -248,6 +251,18 @@ local function onMoney(p)
   moneyRing[#moneyRing + 1] = { gt = nowGT(), copper = p.copper }
 end
 
+-- D-095: the won item becomes a loot expectation like a window slot (closed at once, kept LOOT_KEEP + WAIT seconds).
+local function onLootWon(p)
+  local gt = nowGT()
+  prune(gt)
+  local loc, locConf = stamps:Loc(gt)
+  local e = { itemID = p.itemID, left = p.qty, qty = p.qty, sourceType = 'roll', skinning = false, act = 'LOOT', actConf = 'med',
+              loc = loc, locConf = locConf, openGT = gt, closeGT = gt }
+  lootExp[#lootExp + 1] = e
+  c.rollWon = c.rollWon + 1
+  tapped('won', e)
+end
+
 local function onCast(p)
   if p.spellID == IS.DISENCHANT_SPELL then lastDE = nowGT() end
 end
@@ -338,6 +353,7 @@ local function wire()
   P.On('P_LOOT_OPEN', guard(function(p) if active then onLootOpen(p) end end))
   P.On('P_LOOT_ITEM', guard(function(p) if active then onLootItem(p) end end))
   P.On('P_LOOT_CLOSE', guard(function(p) if active then onLootClose(p) end end))
+  P.On('P_LOOT_WON', guard(function(p) if active then onLootWon(p) end end))
   P.On('P_MONEY', guard(function(p) if active then onMoney(p) end end))
   P.On('P_CAST', guard(function(p) if active then onCast(p) end end))
   P.On('P_TICK', guard(function(p) if active and stamps and p.loc then stamps:NoteLoc(p.loc, nowGT()) end end))

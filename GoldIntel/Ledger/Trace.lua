@@ -41,6 +41,7 @@ end
 local function worthKeeping(text)
   return text:find('^ANOMALY') or text:find('UNMATCHED', 1, true) or text:find('-> unexplained', 1, true)
     or text:find('^CAST spell=%S+ kind=[hmsf]') or text:find('^CAST spell=%S+ kind=other') or text:find('^NOTE') or text:find('^EVT group', 1) or text:find('^EVT check', 1) or text:find('^EVT trainer', 1)
+    or text:find('^ITEM_WON', 1) or text:find('reason="roll won"', 1, true)
     or text:find('^BAGS settle skipped', 1) or text:find('^BAGS settle: no snapshot', 1)
 end
 
@@ -152,6 +153,8 @@ local function onItems(kind, a, b, cc)
     Trace.Line(string.format('ITEM_WIN #%d src=%s skinning=%s act=%s/%s guid=%s', a.id, tostring(a.sourceType), tostring(a.skinning), tostring(a.act), tostring(a.actConf), tostring(a.guid)))
   elseif kind == 'slot' then
     Trace.Line(string.format('ITEM_SLOT win=#%s item=%d qty=%d', tostring(a.windowId), a.itemID, a.qty))
+  elseif kind == 'won' then                                -- 0.5.3 (D-095)
+    Trace.Line(string.format('ITEM_WON item=%d qty=%d', a.itemID, a.qty))
   elseif kind == 'windowClose' then
     Trace.Line(string.format('ITEM_WIN_CLOSE #%s by=%s', a and tostring(a.id) or '?', tostring(b)))
   elseif kind == 'ranges' then

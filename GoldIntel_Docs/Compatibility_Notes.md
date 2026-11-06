@@ -204,3 +204,13 @@ See Phase1_PostValidation_Review.md section 2 (24 rows). Short list: interface n
 - [file] Trainer fees (class after level-up, profession training) arrive as plain PLAYER_MONEY with no other signal; TRAINER_SHOW was not registered then. Basis of D-093.
 - [file] Quest reward items arrive as `You receive item:` (CHAT_MSG_LOOT kind pushed); equipping gear returns the old item to the bags (unexplained add, inventory-only, D-081).
 
+## Live evidence 2026-11-05 (user files, build 0.5.2-passive)
+- [file] TRAINER_SHOW and TRAINER_CLOSED register without a popup and are delivered; trainer fees land inside the window (D-093 verified).
+- [file] First-window skinning: 3 of 3 skins of corpses not looted by the player opened right after the cast and were booked GATHER (D-091 verified).
+- [file] Every final check at logout read 0 with the last seen balance (D-092 verified).
+- [file] Item roll lines: `|HlootHistory:<n>|h[Loot]|h: <Name> won: [item]`, `... You won: [item]`, `Need Roll - <n> for [item]`, `Greed Roll - <n> for [item]`, `You have selected Greed for: [item]`. The won item reaches the bags about 1.4 s after the "You won" line. Basis of D-095.
+- [file] Group shares paid in pieces: one "Your share of the loot is N Copper." after two PLAYER_MONEY changes summing to N (5 cases, groups of 3 to 5). [reported, user 2026-11-06] There is no area loot in this version of the game; several corpses looted at the same moment by different players is the explanation. Basis of D-096.
+- [file] Inside Ragefire Chasm `Where()` gives zone "Ragefire Chasm" with mapID nil; on leaving, one P_ZONE shows mapID 1414 with the instance name before the city. Loot inside is stamped fresh with that zone name.
+- [file] A trade with a mage (20 Conjured Fresh Water, no money) is booked as a trade item add.
+- [reported, user] Latency up to 3000 ms in Ragefire Chasm on 2026-11-05.
+
