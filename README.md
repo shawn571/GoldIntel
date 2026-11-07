@@ -3,7 +3,7 @@
 A gold analytics addon for **WoW Forever** (client 1.60.1, Interface 16001). It records where gold comes from, with
 which repeatable activity and at which location, so a player can later see where the most gold per hour is earned.
 
-**Status:** under development (Phase 3b-3: item lots; build 0.5.3-passive for passive play). It is not a finished release.
+**Status:** under development (Phase 3b-3: item lots; build 0.5.5-passive for passive play). It is not a finished release.
 
 ## What it does today
 - **Cash ledger:** every copper change is attributed to a source (loot, vendor, quest, mail, trade, auction) with a
@@ -20,7 +20,7 @@ restart the client. `GIMin`, `GoldIntelDiag` and `GIProbeLoot` are diagnostic to
 
 ## Commands (short list)
 `/gi collect on|off`, `/gi ledger status|mark|check|last|trace`, `/gi lots status|last|sales|unknown|check|reset confirm`,
-`/gi price set|list|clear`, `/gi config`, `/gi version`, `/gi help`.
+`/gi price set|list|clear`, `/gi config`, `/gi perf`, `/gi version`, `/gi help`.
 
 ## Layout
 - `GoldIntel/` the addon (`Platform/`, `Collect/`, `Ledger/`, `Core/`, `Store/`) and its tests (`GoldIntel/Tests`, run with `texlua run.lua` from that folder).

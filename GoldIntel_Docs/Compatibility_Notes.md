@@ -214,3 +214,11 @@ See Phase1_PostValidation_Review.md section 2 (24 rows). Short list: interface n
 - [file] A trade with a mage (20 Conjured Fresh Water, no money) is booked as a trade item add.
 - [reported, user] Latency up to 3000 ms in Ragefire Chasm on 2026-11-05.
 
+## Live evidence 2026-11-06 and 2026-11-07 (user files, build 0.5.3-passive)
+- [file] Client patch: build 70862 (was 70790); game version 1.60.1 and Interface 16001 unchanged; every capability ok.
+- [file] Roll wins: "You won" items reach the bags and match the P_LOOT_WON expectation (Ivory Band, Shadowgem, Inscribed Leather Breastplate); won items that arrive through a loot window the player has open match the window slot first.
+- [file] Silver wording: "Your share of the loot is 1 Silver, 29 Copper." parses to 129 copper; split shares of silver amounts are claimed (73 + 63 = 136, 74 + 27 = 101).
+- [reported, user] Three payments of 80 silver in Thunder Bluff (2026-11-07 06:14 UTC) were 10-slot bags bought at the auction house: AH buyouts are a plain PLAYER_MONEY with no other signal while AUCTION_HOUSE_SHOW is not registered.
+- [file + reported] A disconnect in Blackfathom Deeps (session end 21:52 UTC, next login 21:57): SavedVariables were written at the disconnect; only 44 copper became a login gap.
+- [file] Flight fares (330 to 540 copper) appear as plain PLAYER_MONEY at the flight master.
+

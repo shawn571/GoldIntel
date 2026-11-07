@@ -312,7 +312,7 @@ T.describe('Store: meta, sections and access', function()
     T.eq(saved.meta.firstSeen, first)
     T.eq(saved.meta.opens, 2)
     T.truthy(saved.meta.lastOpened >= first)
-    T.eq(saved.meta.addonVersion, '0.5.3-passive')
+    T.eq(saved.meta.addonVersion, '0.5.5-passive')
     T.eq(saved.meta.lastBuild, '70338')
   end)
 

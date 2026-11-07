@@ -4,6 +4,18 @@ Append-only. Newest entry first. Format: `VERSION | DATE | AI/session | summary`
 
 ---
 
+## 0.5.5-passive (retention stopgap R-1, R-2, R-3) | 2026-11-07 | Claude (session S-060)
+- D-098: cash keeps 6,000 raw entries per character before folding (was 2,000); open lots cap 4,000 (was 1,500) and lots merge only within the same zone, subzone and activity; `trace.keep` keeps one unexplained line per item id per interval (gear swaps no longer push evidence out).
+- Contains 0.5.4 (M4 measurement build). Contract 1.13.0. Tests: 1,316 passing (6 new). All addon Lua files parse under Lua 5.1.
+- `/reload` is enough over 0.5.4; FULL restart when coming from 0.5.3 (0.5.4 added a file).
+- New document (proposal, no code): Phase4_Live_Aggregation_Proposal.md.
+
+## 0.5.4-passive (3b-3 M4 measurement build) | 2026-11-07 | Claude (session S-060)
+- D-097: M4 authorized. New read-only `Platform/Perf.lua`: GoldIntel's CPU metrics (every metric of Enum.AddOnProfilerMetric through C_AddOnProfiler.GetAddOnMetric) and memory (GetAddOnMemoryUsage), sampled at interval begin, every 10 minutes and at the end into `GoldIntelCharDB.perf.samples` (cap 500), `EVT perf` trace lines, `/gi perf`, probe capability `perf.profiler`. No ledger, lot or classification change.
+- Interim M4 report: Phase3b_3b-3_M4_Report.md (sizes measured; retention options R-1..R-4 for the user).
+- Contract 1.12.0 (additive, F21). Tests: 1,310 passing (9 new). All addon Lua files parse under Lua 5.1.
+- FULL CLIENT RESTART required (new TOC file).
+
 ## 0.5.3-passive (roll-won items, split shares) | 2026-11-06 | Claude (session S-059)
 - D-095: an item roll you win ("[Loot]: You won: [item]") is now loot (value created, activity LOOT). The live line starts with a loot-history link, which the old pattern missed. Live evidence: Birchwood Maul and Ancestral Tunic (2026-11-05) had been "unexplained".
 - D-096: a group share line of N claims the 2 or 3 pending money changes that add up to exactly N (several corpses looted at once by different players are paid separately but printed as one line). Ambiguous sets, single matches and already-written OTHER entries are left alone. Live evidence: 5 cases on 2026-11-05.

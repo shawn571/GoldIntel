@@ -39,7 +39,7 @@ assert(P, 'Platform/Platform.lua must be loaded before Ledger/Cash.lua')
 local Cash = {}
 GI.Cash = Cash
 
-Cash.CAP = 2000
+Cash.CAP = 6000              -- R-1 (D-098, user 2026-11-07, stopgap until Phase 4 aggregates): was 2000 (3b-2 Q-6)
 Cash.FOLD = 500
 Cash.stats = { added = 0, rejected = 0, folds = 0, gaps = 0 }
 

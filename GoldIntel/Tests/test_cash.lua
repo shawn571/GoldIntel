@@ -118,7 +118,7 @@ T.describe('Cash retention', function()
     local want = 0
     for i = 1, 21 do want = want + i * 10 end
     T.eq(Cash.Cumulative(), want)
-    Cash.CAP, Cash.FOLD = 2000, 500
+    Cash.CAP, Cash.FOLD = 6000, 500
   end)
 
   T.it('keeps Cumulative and Stats totals through many folds (random amounts, both signs)', function()
@@ -144,7 +144,7 @@ T.describe('Cash retention', function()
     T.near(st.otherShareEntries, other / n, 1e-12)
     T.truthy(st.folded > 0); T.truthy(st.raw <= 30)
     T.eq(st.raw + st.folded, n)
-    Cash.CAP, Cash.FOLD = 2000, 500
+    Cash.CAP, Cash.FOLD = 6000, 500
   end)
 
   T.it('keeps the largest OTHER after the entry itself is folded away', function()
@@ -154,19 +154,20 @@ T.describe('Cash retention', function()
     for i = 1, 20 do Cash.Add(entry(W, 1, { src = 'loot' })) end
     T.eq(Cash.Stats().largestOther, 9000)
     T.eq(Cash.Ledger().cash[1].c == -9000, false)
-    Cash.CAP, Cash.FOLD = 2000, 500
+    Cash.CAP, Cash.FOLD = 6000, 500
   end)
 
-  T.it('the real limits (2000 / 500) hold and the file stays loadable', function()
+  T.it('the real limits (6000 / 500, R-1 D-098) hold and the file stays loadable', function()
     local W, P, ns, Cash = boot()
-    for i = 1, 2001 do Cash.Add(entry(W, (i % 7) + 1)) end
+    T.eq(Cash.CAP, 6000); T.eq(Cash.FOLD, 500)
+    for i = 1, 6001 do Cash.Add(entry(W, (i % 7) + 1)) end
     local led = Cash.Ledger()
-    T.eq(#led.cash, 1501); T.eq(led.totals.folded, 500)
+    T.eq(#led.cash, 5501); T.eq(led.totals.folded, 500)
     local expect = 0
-    for i = 1, 2001 do expect = expect + (i % 7) + 1 end
+    for i = 1, 6001 do expect = expect + (i % 7) + 1 end
     T.eq(Cash.Cumulative(), expect)
     local saved = sim.parse(sim.dump(ns.Store.Section('ledger')))
-    T.eq(#saved[P.Player().key].cash, 1501)
+    T.eq(#saved[P.Player().key].cash, 5501)
   end)
 
   T.it('survives save, load and further adds without losing the running totals', function()
@@ -180,7 +181,7 @@ T.describe('Cash retention', function()
     T.eq(Cash.Cumulative(), before)
     T.eq(Cash.Add(entry(W, 5, { loc = { mapID = 9, zone = 'New' } })), 26)
     T.eq(Cash.Cumulative(), before + 5)
-    Cash.CAP, Cash.FOLD = 2000, 500
+    Cash.CAP, Cash.FOLD = 6000, 500
   end)
 
   T.it('rebuilds the place index after a load (no duplicated places)', function()
