@@ -101,6 +101,8 @@ Rules: work only on the current phase. Do not start the next phase without expli
 
 ## Phase 4: Sessions, activity, metrics (REQ: FR-SES-1..4, FR-MET-1..5)
 
+- Proposal answered 2026-11-07 (D-099). [x] P4-M1 pure modules built (Aggregate/Clock.lua, Aggregate/Aggregator.lua; not loaded), 2026-11-07 S-061. [ ] P4-M2 wired live: waits for the 0.5.5 hour-of-play measurements AND the user's approval (includes the map-size probe, the 60-minute /reload reminder, storage, back-fill, /gi agg). [ ] P4-M3 live validation and Phase 4 closure.
+
 - [ ] 4.1 ActivityEngine (v1 activities: grind, gather, fish, vendor, quest, AH, trade, mail/COD, other; manual override; idle)
 - [ ] 4.2 SessionEngine and segment rotation
 - [ ] 4.3 Metrics: Cash, Wealth, Net GPH, normalization (experimental); explain-breakdown data

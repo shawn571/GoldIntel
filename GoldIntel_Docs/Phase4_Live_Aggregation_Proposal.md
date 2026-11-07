@@ -1,6 +1,6 @@
 # Phase 4 proposal: live aggregation per location and activity
 
-DATE: 2026-11-07  |  SESSION: S-060  |  STATUS: PROPOSAL for the user's review. No code. Phase 4 is NOT authorized.
+DATE: 2026-11-07  |  SESSION: S-060  |  STATUS: ANSWERED by the user 2026-11-07 (D-099: Q-1..Q-7 yes; Q-2 every visited cell; Q-3 split by current activity; Q-6 60 minutes, one chat line, outside combat). P4-M1 authorized and built (pure, not loaded); P4-M2 waits for the 0.5.5 measurements and the user's approval.
 Requested by the user 2026-11-07: live aggregation of gold, time and item counts per location and activity, updated in
 memory while playing (the design's 2 s aggregation task and 0.5 s tick), saved with each `/reload` or logout, so that a
 retention cap can never erase where gold was earned. This document covers the saved-data change, size and CPU cost, how

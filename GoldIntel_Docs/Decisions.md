@@ -602,3 +602,17 @@ User: "Approve R-1, R-2 and R-3 as a stopgap" (options in Phase3b_3b-3_M4_Report
 3. R-3: `trace.keep` holds at most one "-> unexplained" line per item id per interval; every line stays in the rolling trace.
 Affected: Ledger/Cash.lua, Ledger/Lots.lua, Ledger/Trace.lua. Contract 1.13.0. Migration: none (existing data stays; the new caps apply from the next add). Build 0.5.5-passive (contains 0.5.4). `/reload` is enough over 0.5.4; a FULL restart over 0.5.3 (new file from 0.5.4).
 The user also asked for a Phase 4 proposal (live aggregation per location and activity, no code): Phase4_Live_Aggregation_Proposal.md. Proposal only; Phase 4 is NOT authorized.
+
+## D-099 Phase 4 design answers; P4-M1 authorized (user 2026-11-07) | APPROVED | 2026-11-07
+User answers to Phase4_Live_Aggregation_Proposal.md section 9:
+- Q-1 YES: cell key place x activity x 5-level bracket, with item counts per cell.
+- Q-2 YES: heat time bins for EVERY visited 32 x 32 cell (not only cells with credit).
+- Q-3 Mixed activities: time is SPLIT by the current activity; the place still shows its total once (AM-14).
+- Q-4 YES: back-fill the launch-week value and item counts from the raw records, WITHOUT time.
+- Q-5 YES: lower the raw caps again, but only after Phase 4 is validated.
+- Q-6 YES: a /reload reminder every 60 minutes, ONE chat line, only outside combat.
+- Q-7 YES: Phase 4 budget over the 0.5.5 baseline: at most +0.05 ms per frame on average, +0.2 MB per hour.
+Authorization: P4-M1 (pure modules and tests, NO change to live behavior) is authorized now. P4-M2 (wired live) waits for the 0.5.5 hour-of-play measurements AND a separate user approval. Phase 4 beyond P4-M1 is NOT authorized.
+Built in P4-M1 (session S-061): `GoldIntel/Aggregate/Clock.lua` (time classes with the D-054 priority: manual pause > taxi/loading > idle > soft travel > active, current activity per Q-3) and `GoldIntel/Aggregate/Aggregator.lua` (cells, heat bins, queue, back-fill, live check, segments). They are NOT listed in GoldIntel.toc, so the client never loads them.
+Moved to P4-M2 because they touch the live client: the map-size probe needed for soft-travel distance, the /reload reminder (Q-6), wiring and storage. Open for P4-M2 verification: the soft-travel minimum speed (8 yards per second) is an assumption, not part of D-054; back-fill is incomplete by construction where raw records were folded or lots left the closed ring (recorded in `backfilled`, never filled in).
+Affected: new files only. Migration: none. Package: unchanged (0.5.5-passive).

@@ -62,6 +62,7 @@ local FILES = {
   'test_passive053',
   'test_perf054',
   'test_retention055',
+  'test_p4m1',
   'test_chat',
   'test_bagdiff',
   'test_lots',
