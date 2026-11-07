@@ -1,12 +1,14 @@
 # GoldIntel Contracts
 
-DOC VERSION: 1.12.0  |  CONTRACT VERSION: 1.12.0  |  DATE: 2026-11-07 (code 0.5.4-passive)
+DOC VERSION: 1.13.0  |  CONTRACT VERSION: 1.13.0  |  DATE: 2026-11-07 (code 0.5.5-passive)
 
 Contracts.md wins over Architecture.md on data shapes. A breaking change to any contract requires a Decisions.md entry (Project_Bible section 4) and a CONTRACT VERSION bump. Additive optional fields are non-breaking.
 
 Notation: Lua tables. `copper` = integer. `t` = Unix seconds (`time()`); `gt` = fractional seconds (`GetTime()`). `?` = optional. Enumerations are listed in F0.
 
 ## Change log (contract versions)
+
+- **1.13.0 (2026-11-07, D-098, build 0.5.5-passive):** retention values changed: `Cash.CAP` 6000 (was 2000), `Lots.CAP_OPEN` 4000 (was 1500), lot merge key adds the origin place (zone, subzone, activity), `trace.keep` holds one unexplained line per item id per interval. No shape change.
 
 - **1.12.0 (2026-11-07, D-097, build 0.5.4-passive, additive):** `P.PerfModule` (Platform/Perf.lua), `GoldIntelCharDB.perf.samples`, `Trace.PERF_CAP`, trace lines `EVT perf` and `EVIDENCE profilerFunctions|profilerMetrics`, command `/gi perf`, probe capability `perf.profiler`. See F21.
 
@@ -607,7 +609,7 @@ rec = { id, t (unix s), c (signed copper), src, conf, act, ac (actConf), lc (loc
 ## F17 Item pipeline, M1 modules (3b-3, contract 1.9, 0.4.0)
 - `GI.BagDiff`: `Compute(prev, now) -> {added, removed, n} | nil, reason`; `Fingerprint(items)`; `New() -> tracker` with `Settle(snap) -> diff | nil, 'incomplete'|'baseline'|'empty'`, `Commit(seq)`, `Baseline()`, `Stats()`. Snapshot = `{ items = {[itemID]=qty}, complete = true }`; only `complete == true` snapshots are compared. Diff = `{ seq, from, to, added, removed, n }`. The baseline advances only on `Commit` (I-4: applied at most once).
 - `GI.Valuation`: `Value(info, manual) -> {valueEach, valueSrc, flags}`, `Complete(lot, info, manual, now)` (first valuation only, never a revaluation, D-063), `Expire(lot, now)`, `PENDING_WINDOW = 30.0`. `info` is an `Items.Get` result; `manual` is `{copper}`. The HIGHEST of vendor and manual price is used (manual only when strictly higher; optional override, D-082); item data must be `ready` first; sell price 0 is `noVendor` and known; pending/secret are `unknown` + `pendingInfo`; invalid is `unknown` + `invalid`. `bound` = bindType 1 or 4.
-- `GI.Lots`: `New(state, {capOpen=1500, capClosed=300, emit}) -> L`; `L:Add(spec) -> lot | nil, err`; `L:Convert(removed, copper, {t, via, ref?, priceOf?}) -> conversions, short, unallocated`; `L:Complete(itemID, info, manual, now)`; `L:ExpirePending(now)`; `L:Compact()`; `L:Check(carried) -> ok, diffs` (I-3); `L:OpenQty()`; `L:InventoryValue()`; `L:Stats()`; `Lots.AllocateCopper(total, weights)` (exact sum, remainder to the largest weight). `via` in `vendor|consume|trade|ah|mail|purchase`. State shape (persisted from M3 as `lots[charKey]`): `{ nextId, open, closed (ring), closedSummary, conv (ring), totals = {created, transfer, unattributed, byVia}, quality = {shortfall, merged, unallocated, vcCoerced} }`.
+- `GI.Lots`: `New(state, {capOpen=4000 (1.13.0; was 1500), capClosed=300, emit}) -> L`; `L:Add(spec) -> lot | nil, err`; `L:Convert(removed, copper, {t, via, ref?, priceOf?}) -> conversions, short, unallocated`; `L:Complete(itemID, info, manual, now)`; `L:ExpirePending(now)`; `L:Compact()`; `L:Check(carried) -> ok, diffs` (I-3); `L:OpenQty()`; `L:InventoryValue()`; `L:Stats()`; `Lots.AllocateCopper(total, weights)` (exact sum, remainder to the largest weight). `via` in `vendor|consume|trade|ah|mail|purchase`. State shape (persisted from M3 as `lots[charKey]`): `{ nextId, open, closed (ring), closedSummary, conv (ring), totals = {created, transfer, unattributed, byVia}, quality = {shortfall, merged, unallocated, vcCoerced} }`.
 - Sale allocation (Q-8): copper is divided across item ids by `sellPrice x qty` when every price is known, otherwise equal per unit; within an item across lot pieces by quantity; the sum equals the cash entry exactly; remainder to the largest share. Copper for an item no lot covers is returned as `unallocated` and counted.
 - Anomalies (user directive 2026-10-19): `Lots.New(state, {alert})` calls `alert(kind, record)` for EVERY anomaly; `state.anomalies = { counts = {[kind]=n}, recent = ring of 50 {t, kind, detail} }`; `Stats().anomalies` = counts; `Lots.Describe(kind)` returns the user text ending "please report it as a bug". Kinds: `sale-price-unknown`, `sale-no-sell-price`, `equal-split`, `shortfall`, `unallocated-copper`, `vc-coerced`. A vendor sale with copper > 0 and a `priceOf` hook checks every removed item: unknown price or price 0 is flagged.
 - Modules reference no Cash, Reconciler, Expectations or Platform code (AC-15, I-6; static test).

@@ -227,7 +227,7 @@ T.describe('Capabilities snapshot and persistence', function()
     T.eq(rt.capabilities['event.PLAYER_MONEY'].level, 'payloadUsable')
     T.eq(rt.eventStats.PLAYER_MONEY.delivered, 1)
     T.truthy(rt.generatedAt)
-    T.eq(rt.addonVersion, '0.5.4-passive')
+    T.eq(rt.addonVersion, '0.5.5-passive')
   end)
 
   T.it('changes schedule one throttled snapshot, not one per change', function()

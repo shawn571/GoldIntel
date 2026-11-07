@@ -1,6 +1,6 @@
 # Phase 3b-3 M4: measurements and closure inputs (interim)
 
-DATE: 2026-11-07  |  SESSION: S-060  |  AUTHORIZED: user 2026-11-07 ("start M4", D-097)  |  STATUS: sizes measured; CPU and memory waiting for live 0.5.4 data; retention decisions waiting for the user
+DATE: 2026-11-07  |  SESSION: S-060  |  AUTHORIZED: user 2026-11-07 ("start M4", D-097)  |  STATUS: sizes measured; retention R-1..R-3 APPROVED as a stopgap (D-098, built in 0.5.5); CPU and memory waiting for live data
 
 M4 scope (Phase3b_Increment_3b-3_Scope_and_Readiness.md): measurements of lot size, CPU and memory, then the 3b-3 closure recommendation. The evidence list for 3b-3 is complete (skinning, roll wins, silver wording, trade, groups of 3 to 5, dungeon, disconnect, client patch).
 
@@ -27,7 +27,7 @@ Growth on the main character (2026-11-06 18:32 to 2026-11-07 21:52, 17.2 hours l
 
 Why it matters: the heat map and gold-per-hour views (Phases 4, 5 and 7) do not exist yet, so the raw entries and lots are today the only record of WHERE value was made. Folding and merging at the current caps would discard the launch-week locations before any aggregate keeps them.
 
-## 3. Retention decisions for the user (recommendations, nothing built)
+## 3. Retention decisions (R-1, R-2, R-3 approved by the user 2026-11-07 as a stopgap, D-098, built in 0.5.5)
 
 - **R-1 Cash cap.** Options: (a) keep 2,000; (b) raise to 6,000 (about 1.2 MB per active character) until Phase 4/5 aggregates exist, then fold as planned. Recommendation: (b).
 - **R-2 Lot merge.** Options: (a) as built; (b) merge only lots that also share zone, subzone and activity (keeps the location at subzone level, loses exact coordinates), and raise the open cap to 4,000. Recommendation: (b).

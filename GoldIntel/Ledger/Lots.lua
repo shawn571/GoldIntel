@@ -5,7 +5,7 @@
 --  Pure: no Platform, no clock, no storage, and NO dependency on Cash / Reconciler / Expectations (AC-15, I-6):
 --  a lot bug can never touch the cash ledger. `state` is the table the caller persists (M3: lots[charKey]).
 --
---      local L = GI.Lots.New(state?, { capOpen = 1500, capClosed = 300, emit = fn(kind, record) })
+--      local L = GI.Lots.New(state?, { capOpen = 4000, capClosed = 300, emit = fn(kind, record) })
 --      L:Add{ itemID, qty, t, src, how, valueEach?, valueSrc?, vc?, flags?, origin?, locConf?, ctx?, ref?, vt?, cost? } -> lot | nil, err
 --            cost = copper paid for a purchase lot (M3); informational, never part of value created
 --      L:Convert(removed, copper, { t, via, ref?, priceOf? }) -> conversions, short, unallocated
@@ -29,7 +29,7 @@ GI = GI or {}
 local Lots = {}
 GI.Lots = Lots
 
-Lots.CAP_OPEN = 1500
+Lots.CAP_OPEN = 4000         -- R-2 (D-098, user 2026-11-07, stopgap until Phase 4 aggregates): was 1500 (3b-3 Q-11)
 Lots.CAP_CLOSED = 300
 
 local SRC = { loot = true, quest = true, vendor = true, mail = true, trade = true, disenchant = true, unknown = true }
@@ -70,6 +70,12 @@ local function copyFlags(f)
   local c = {}
   if type(f) == 'table' then for k, v in pairs(f) do if v then c[k] = true end end end
   return c
+end
+
+-- R-2 (D-098): lots merge only when they also share zone, subzone and activity, so the place survives at subzone level.
+local function placeKey(lot)
+  local o = lot.origin or {}
+  return table.concat({ tostring(o.zone or ''), tostring(o.sub or ''), tostring(o.act or '') }, '/')
 end
 
 local function flagKey(f)
@@ -339,7 +345,7 @@ function Ledger:Compact()
   local excess = #open - self.capOpen
   for i, lot in ipairs(open) do
     if excess > 0 and not lot.flags.pendingInfo then
-      local key = table.concat({ lot.itemID, lot.valueEach, lot.valueSrc, lot.how, tostring(lot.vc), flagKey(lot.flags) }, '|')
+      local key = table.concat({ lot.itemID, lot.valueEach, lot.valueSrc, lot.how, tostring(lot.vc), flagKey(lot.flags), placeKey(lot) }, '|')
       local head = first[key]
       if not head then
         first[key] = lot
@@ -353,7 +359,7 @@ function Ledger:Compact()
         excess = excess - 1
       end
     elseif not lot.flags.pendingInfo then
-      local key = table.concat({ lot.itemID, lot.valueEach, lot.valueSrc, lot.how, tostring(lot.vc), flagKey(lot.flags) }, '|')
+      local key = table.concat({ lot.itemID, lot.valueEach, lot.valueSrc, lot.how, tostring(lot.vc), flagKey(lot.flags), placeKey(lot) }, '|')
       first[key] = first[key] or lot
     end
   end

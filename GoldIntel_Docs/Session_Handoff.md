@@ -10,7 +10,8 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 OPEN ISSUES: retention decisions R-1..R-3; CPU/memory waiting for 0.5.4 data; lag case (fix held); OI-16 deferred; OI-17 open.
 BLOCKERS: none.
-NEXT RECOMMENDED TASK: user decides R-1..R-3 and installs 0.5.4 (full restart); after the next upload: CPU and memory against NFR-3, then the 3b-3 closure recommendation.
+- Update: user approved R-1..R-3 as a stopgap (D-098); built 0.5.5-passive on top of 0.5.4 (PR #6 contains PR #5). Wrote Phase4_Live_Aggregation_Proposal.md at the user's request (no code; Phase 4 not authorized).
+NEXT RECOMMENDED TASK: user installs 0.5.5 (full restart from 0.5.3) and reviews the Phase 4 proposal; after the next upload: CPU and memory against NFR-3, then the 3b-3 closure recommendation.
 
 ## S-059 | 2026-11-05 to 2026-11-06 | Claude (Claude Code cloud session)
 - Read the user's files of 2026-11-05 (two upload sets, two characters, a Ragefire Chasm group run with up to 3000 ms lag). 0.5.2 verified live: trainer events and fees, first-window skinning, logout checks. Persistence across reloads and restarts confirmed (46 loads, ledger ids continuous, lots carried over). Trade item path works (mage water). Two gaps found: roll-won items unexplained; group shares paid in two pieces become OTHER.

@@ -274,6 +274,7 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [ ] Phase 7 design note: inside an instance the map id is nil and only the zone name is known (Ragefire Chasm, 2026-11-05); D-060 places instance runs at the entrance.
 - [x] 2026-11-07 (S-060) User merged PR #4 (0.5.3) and authorized M4 (D-097). Silver wording verified live; roll wins and split shares verified live; client patch 70862 kept 1.60.1 / Interface 16001.
 - [x] 2026-11-07 (S-060) M4 sizes measured (Phase3b_3b-3_M4_Report.md). Built 0.5.4-passive measurement build (Perf samples), PR opened.
-- [ ] User: decide retention R-1 (cash cap), R-2 (lot merge), R-3 (keep-list noise). Cash cap reached in about 10 more hours of play, lot cap in about 14.
-- [ ] User: install 0.5.4 (FULL restart), play normally including one session of an hour or more, upload. Then CPU and memory against NFR-3, then the 3b-3 closure recommendation.
+- [x] 2026-11-07 (S-060) User approved R-1, R-2, R-3 as a stopgap (D-098). Built 0.5.5-passive (contains 0.5.4).
+- [ ] User: install 0.5.5 (FULL restart from 0.5.3), play normally including one session of an hour or more, upload. Then CPU and memory against NFR-3, then the 3b-3 closure recommendation.
+- [ ] User: review Phase4_Live_Aggregation_Proposal.md (proposal only; Phase 4 NOT authorized).
 - [ ] Still OTHER by design until 3b-4: taxi, respec, barber, guild bank, repairs (repairs at a vendor are already vendor purchases).

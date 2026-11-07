@@ -28,6 +28,7 @@ Trace.stats = { lines = 0, errors = 0 }
 
 local on = true
 local t0, prev
+local unexpKept = {}             -- R-3: item ids whose unexplained line is already in trace.keep this interval
 
 local function nowGT() local _, gt = P.Now(); return gt end
 
@@ -58,7 +59,14 @@ function Trace.Line(text)
   L[#L + 1] = string.format('%8.3f +%.3f %s', gt - t0, gt - (prev or gt), text)
   prev = gt
   if #L > Trace.CAP then table.remove(L, 1) end
-  if worthKeeping(text) then
+  local keepIt = worthKeeping(text)
+  if keepIt and text:find('-> unexplained', 1, true) then    -- R-3 (D-098): one unexplained line per item id per interval in keep
+    local id = text:match('item=(%d+)')
+    if id then
+      if unexpKept[id] then keepIt = false else unexpKept[id] = true end
+    end
+  end
+  if keepIt then
     if type(c.trace.keep) ~= 'table' then c.trace.keep = {} end
     local K = c.trace.keep
     K[#K + 1] = L[#L]
@@ -305,6 +313,7 @@ end))
 function Trace.Begin()
   t0, prev = nowGT(), nil
   castSeen = {}
+  unexpKept = {}
   lastGroup, groupAcc, checkAcc = nil, 0, 0
   GI.Sources.tap = safe(onSources)
   if P.LootModule then P.LootModule.tap = safe(onLoot) end

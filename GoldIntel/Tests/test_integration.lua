@@ -16,7 +16,7 @@ T.describe('Phase 1 exit test: full addon load', function()
     for _, name in ipairs({ 'Platform', 'Clock', 'Events', 'Scheduler', 'Unit', 'Map', 'Money', 'Probe' }) do
       T.truthy(P.modules[name], 'module not registered: ' .. name)
     end
-    T.eq(P.CONTRACT_VERSION, '1.12.0')
+    T.eq(P.CONTRACT_VERSION, '1.13.0')
     T.truthy(W.env.SlashCmdList.GOLDINTEL)
   end)
 
