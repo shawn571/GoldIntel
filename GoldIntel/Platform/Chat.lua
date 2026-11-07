@@ -134,7 +134,8 @@ end
 Chat.OnMoney = onMoney
 
 ---------------------------------------------------------------------------
--- CHAT_MSG_LOOT: EVIDENCE RECORDER ONLY (D-080 Q-10, user 2026-10-19). Nothing is emitted and no rule uses it.
+-- CHAT_MSG_LOOT: an EVIDENCE RECORDER (D-080 Q-10, user 2026-10-19), with ONE rule since 0.5.3 (D-095, user 2026-11-06):
+-- a 'won' line (an item roll the player won) emits P_LOOT_WON { itemID, qty }. Every other kind emits nothing.
 -- It answers: does the event reach the addon with readable text, what do the lines look like for items you loot,
 -- items pushed to you (quest rewards, mail), group rolls and items other players receive, and how long after the
 -- bag settle they arrive. Ledger/Trace.lua prints the facts (CHAT_LOOT lines). A rule needs a separate approval.
@@ -153,7 +154,7 @@ function Chat.ClassifyLoot(text)
   if text:find('^You receive loot:') then kind = text:find('x%d+%.?$') and 'lootMulti' or 'loot'
   elseif text:find('^You receive item:') then kind = 'pushed'
   elseif text:find('^You create:') then kind = 'created'
-  elseif text:find('^You won:') then kind = 'won'
+  elseif text:find('^You won:') or text:find(': You won: ', 1, true) then kind = 'won'   -- live 2026-11-05: the line starts with a loot-history link, '[Loot]: You won: [item]'
   elseif text:find(' receives loot:') or text:find(' receives item:') then kind = 'otherLoot'
   elseif text:find(' won: ') or text:find('Roll') or text:find(' rolled ') or text:find(' passed') then kind = 'roll' end
   return kind, id, qty
@@ -182,6 +183,9 @@ local function onLoot(_, text)
   lootRecent[#lootRecent + 1] = rec
   if #lootRecent > Chat.LOOT_RING then table.remove(lootRecent, 1) end
   if Chat.lootTap then pcall(Chat.lootTap, rec) end
+  if rec.kind == 'won' and type(rec.itemID) == 'number' then        -- D-095
+    pcall(P.Events.Emit, 'P_LOOT_WON', { itemID = rec.itemID, qty = rec.qty or 1 })
+  end
 end
 
 function Chat.LootRecent() return lootRecent end

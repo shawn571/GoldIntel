@@ -4,6 +4,12 @@ Append-only. Newest entry first. Format: `VERSION | DATE | AI/session | summary`
 
 ---
 
+## 0.5.3-passive (roll-won items, split shares) | 2026-11-06 | Claude (session S-059)
+- D-095: an item roll you win ("[Loot]: You won: [item]") is now loot (value created, activity LOOT). The live line starts with a loot-history link, which the old pattern missed. Live evidence: Birchwood Maul and Ancestral Tunic (2026-11-05) had been "unexplained".
+- D-096: a group share line of N claims the 2 or 3 pending money changes that add up to exactly N (several corpses looted at once by different players are paid separately but printed as one line). Ambiguous sets, single matches and already-written OTHER entries are left alone. Live evidence: 5 cases on 2026-11-05.
+- Contract 1.11.0 (additive, F20). Tests: 1,300 passing (22 new incl. 6 mutation checks). All addon Lua files parse under Lua 5.1.
+- `/reload` is enough (no new file, no new event: CHAT_MSG_LOOT and CHAT_MSG_MONEY were already registered).
+
 ## 0.5.2-passive (skinning, trainer fees, logout check, quest line) | 2026-11-05 | Claude (session S-058)
 - D-091: a creature loot window opening at most 1.0 s after the player's own skin cast is skinning (GATHER) even when it is the corpse's first window (corpses left by other players). Live evidence 2026-11-04: 7 of 7 such windows had been booked GRIND.
 - D-093: new trainer source. Platform/Trainer.lua (new file in the TOC), collector group G9 (TRAINER_SHOW, TRAINER_CLOSED), context `trainer`, money out inside the window = src `trainer`, activity TRAINER. Probe capability `trainer.events`. The two events are not yet verified in the Forever client; the first trainer visit is the check.

@@ -52,6 +52,7 @@ local SPEC = {
   P_AH_OPEN       = {},
   P_TRAINER_OPEN  = {},                                  -- 0.5.2 (D-093): TRAINER_SHOW
   P_TRAINER_CLOSE = {},                                  -- 0.5.2 (D-093): TRAINER_CLOSED
+  P_LOOT_WON      = { itemID = 'number', qty = 'number' },   -- 0.5.3 (D-095): CHAT_MSG_LOOT 'You won: [item]'
   P_AH_CLOSE      = {},
   P_AH_LISTED     = { itemID = 'number', qty = 'number', price = 'number',
                       deposit = 'number?', duration = 'number?' },

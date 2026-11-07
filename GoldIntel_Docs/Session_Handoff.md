@@ -4,6 +4,14 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-059 | 2026-11-05 to 2026-11-06 | Claude (Claude Code cloud session)
+- Read the user's files of 2026-11-05 (two upload sets, two characters, a Ragefire Chasm group run with up to 3000 ms lag). 0.5.2 verified live: trainer events and fees, first-window skinning, logout checks. Persistence across reloads and restarts confirmed (46 loads, ledger ids continuous, lots carried over). Trade item path works (mage water). Two gaps found: roll-won items unexplained; group shares paid in two pieces become OTHER.
+- User: lag is not a reason to change code; no area loot in this version; several corpses looted at once is the likely cause of split shares. Approved D-095 and D-096. Built 0.5.3-passive (1,300 tests), PR opened. Not installed; `/reload` is enough.
+
+OPEN ISSUES: silver/gold coin wording unseen; lag case (fix held); one unknown -99 copper sink; OI-16 deferred; OI-17 open.
+BLOCKERS: none.
+NEXT RECOMMENDED TASK: user approves and installs 0.5.3; next check verifies roll wins and share sums; then the user decides on M4 (needs a measurement command for CPU and memory).
+
 ## S-058 | 2026-11-04 to 2026-11-05 | Claude (Claude Code cloud session)
 - Read the first live data (fallback route D-087, files attached): 0.5.1 auto start works; launch client 1.60.1 build 70790, Interface 16001 unchanged; every `EVT check` 0 copper except one false MISMATCH at logout; lots and anomalies clean.
 - Findings: lag put 1 copper in OTHER (chat line before a 2.4 s late money change; fix held at the user's choice); skinning of corpses never looted here booked GRIND (7 of 7); trainer fees are most of OTHER (410 of 447 copper); one quest reward without quest context; one login gap +36 (probably a crash or disconnect, user not yet asked back); empty loot windows are brief false starts (2 of 2).
