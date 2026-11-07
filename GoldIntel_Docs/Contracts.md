@@ -1,12 +1,14 @@
 # GoldIntel Contracts
 
-DOC VERSION: 1.11.0  |  CONTRACT VERSION: 1.11.0  |  DATE: 2026-11-06 (code 0.5.3-passive)
+DOC VERSION: 1.12.0  |  CONTRACT VERSION: 1.12.0  |  DATE: 2026-11-07 (code 0.5.4-passive)
 
 Contracts.md wins over Architecture.md on data shapes. A breaking change to any contract requires a Decisions.md entry (Project_Bible section 4) and a CONTRACT VERSION bump. Additive optional fields are non-breaking.
 
 Notation: Lua tables. `copper` = integer. `t` = Unix seconds (`time()`); `gt` = fractional seconds (`GetTime()`). `?` = optional. Enumerations are listed in F0.
 
 ## Change log (contract versions)
+
+- **1.12.0 (2026-11-07, D-097, build 0.5.4-passive, additive):** `P.PerfModule` (Platform/Perf.lua), `GoldIntelCharDB.perf.samples`, `Trace.PERF_CAP`, trace lines `EVT perf` and `EVIDENCE profilerFunctions|profilerMetrics`, command `/gi perf`, probe capability `perf.profiler`. See F21.
 
 - **1.11.0 (2026-11-06, D-095, D-096, build 0.5.3-passive, additive):** event `P_LOOT_WON { itemID, qty }`, `Chat.ClassifyLoot` recognises the live won line, ItemSources roll expectation (`rollWon` counter, reason `roll won`), `Reconciler:ClaimPendingSum(n, spec)`, Sources counter `chatSum`, trace lines `ITEM_WON` and `CHATSIG sum`. See F20.
 
@@ -637,4 +639,10 @@ rec = { id, t (unix s), c (signed copper), src, conf, act, ac (actConf), lc (loc
 - **`P_LOOT_WON { itemID:number, qty:number }`** (Platform/Chat.lua): emitted for a CHAT_MSG_LOOT line of kind `won`. `Chat.ClassifyLoot` returns `won` for text containing `: You won: ` (live shape `|HlootHistory:..|h[Loot]|h: You won: |c..|Hitem:<id>..`) or starting `You won:`; `X won: ` (another player) stays `roll`.
 - **ItemSources roll expectation:** on P_LOOT_WON a loot expectation `{ itemID, left = qty, sourceType = 'roll', act = 'LOOT', actConf = 'med', loc, locConf, closeGT = now }` joins the loot-window expectations; it is pruned after LOOT_KEEP + WAIT seconds and consumed once. A matching add is decision `how = 'loot'`, `reason = 'roll won'`. Counter `Stats().rollWon`. Trace `ITEM_WON item=<id> qty=<n>` (kept).
 - **`Reconciler:ClaimPendingSum(n, spec) -> true, setSize | false, 'inactive'|'single'|'nosum'|'ambiguous'`**: among pending deltas with n's sign, finds every set of 2 or 3 whose sum is exactly n; books the set when it is the only one and no single pending delta equals n; each delta becomes `{ t, copper, src = spec.src, conf = 'high', ctx = spec.ctx, ref = spec.ref, comp = spec.comp }`. Sources calls it for share lines only (`kind == 'share'`), with `{ src = 'loot', ctx = 'loot', ref = { chat = true, sourceType? }, comp = 'split' }`; counter `Stats().sources.chatSum`; trace `CHATSIG sum share <n>c`.
+
+## F21 0.5.4 additions (contract 1.12.0, additive, D-097; 3b-3 M4 measurement)
+- **`P.PerfModule`** (Platform/Perf.lua, read-only): `Functions() -> sorted names | nil` (functions of C_AddOnProfiler), `Metrics() -> sorted names | nil` (keys of Enum.AddOnProfilerMetric), `Sample() -> { t, metrics = { [name] = number }, memKB?, luaKB?, profilerEnabled?, why? }` (every enum metric read with `GetAddOnMetric('GoldIntel', value)`, each call protected; `memKB` from `UpdateAddOnMemoryUsage` + `GetAddOnMemoryUsage('GoldIntel')` when both exist; `luaKB` = collectgarbage('count'), the whole UI heap, context only; `why` names what is missing), `Text(sample) -> string`.
+- **Storage:** `GoldIntelCharDB.perf = { samples = { { t (unix), why = 'begin'|'periodic'|'final', m = metrics, memKB?, luaKB?, en?, why2?, collect? } } }`, newest last, at most `Trace.PERF_CAP` = 500. Written at interval begin, every `Trace.CHECK_EVERY` seconds and at interval end.
+- **Trace:** `EVT perf <why> <metric=value ...> memKB=<n|n/a> uiLuaKB=<n>[ profiler=<bool>][ (<why>)]`; at interval begin `EVIDENCE profilerFunctions=<list|none>` and `EVIDENCE profilerMetrics=<list|none>` (both kept).
+- **Command:** `/gi perf` prints the functions, the metrics, a sample now and the number of stored samples. **Probe:** `perf.profiler` = C_AddOnProfiler.GetAddOnMetric exists.
 

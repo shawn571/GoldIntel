@@ -41,7 +41,7 @@ end
 local function worthKeeping(text)
   return text:find('^ANOMALY') or text:find('UNMATCHED', 1, true) or text:find('-> unexplained', 1, true)
     or text:find('^CAST spell=%S+ kind=[hmsf]') or text:find('^CAST spell=%S+ kind=other') or text:find('^NOTE') or text:find('^EVT group', 1) or text:find('^EVT check', 1) or text:find('^EVT trainer', 1)
-    or text:find('^ITEM_WON', 1) or text:find('reason="roll won"', 1, true)
+    or text:find('^ITEM_WON', 1) or text:find('^EVIDENCE profiler', 1) or text:find('reason="roll won"', 1, true)
     or text:find('^BAGS settle skipped', 1) or text:find('^BAGS settle: no snapshot', 1)
 end
 
@@ -234,6 +234,25 @@ end)
 ---------------------------------------------------------------------------
 Trace.GROUP_POLL = 2.0
 Trace.CHECK_EVERY = 600
+Trace.PERF_CAP = 500             -- 0.5.4 (M4, D-097): CPU and memory samples kept in GoldIntelCharDB.perf.samples
+
+-- M4 measurement: one sample at interval begin, every CHECK_EVERY seconds and at the end. Stored apart from the trace,
+-- so long sessions cannot roll the samples out; also one EVT perf line in the trace. Read-only (Platform/Perf.lua).
+local function perfSample(why)
+  local Perf = P.PerfModule
+  if not Perf then return end
+  local s = Perf.Sample()
+  local c = char()
+  if c then
+    if type(c.perf) ~= 'table' or type(c.perf.samples) ~= 'table' then c.perf = { samples = {} } end
+    local S = c.perf.samples
+    local ut = P.Now()
+    S[#S + 1] = { t = ut, why = why, m = s.metrics, memKB = s.memKB, luaKB = s.luaKB, en = s.profilerEnabled, why2 = s.why,
+                  collect = GI.Collector and GI.Collector.IsEnabled and GI.Collector.IsEnabled() or nil }
+    while #S > Trace.PERF_CAP do table.remove(S, 1) end
+  end
+  Trace.Line('EVT perf ' .. why .. ' ' .. Perf.Text(s))
+end
 local lastGroup, groupAcc, checkAcc = nil, 0, 0
 
 local function checkLine(why)
@@ -264,7 +283,7 @@ P.On('P_TICK', evt(function(p)
     if lastGroup ~= nil and g ~= lastGroup then Trace.Line('EVT group ' .. lastGroup .. ' -> ' .. g) end
     lastGroup = g
   end
-  if checkAcc >= Trace.CHECK_EVERY then checkAcc = 0; checkLine('periodic') end
+  if checkAcc >= Trace.CHECK_EVERY then checkAcc = 0; checkLine('periodic'); pcall(perfSample, 'periodic') end
 end))
 P.On('P_ZONE', evt(function(p)
   local l = p and p.loc or {}
@@ -299,11 +318,18 @@ function Trace.Begin()
   Trace.Line(string.format('EVIDENCE chatLootRegistered=%s', tostring(okL and stl and stl.registered)))
   local okT, stt = pcall(function() return P.Events.Stats('TRAINER_SHOW') end)
   Trace.Line(string.format('EVIDENCE trainerRegistered=%s', tostring(okT and stt and stt.registered)))
+  if P.PerfModule then
+    local fns, mets = P.PerfModule.Functions(), P.PerfModule.Metrics()
+    Trace.Line('EVIDENCE profilerFunctions=' .. (fns and table.concat(fns, ',') or 'none'))
+    Trace.Line('EVIDENCE profilerMetrics=' .. (mets and table.concat(mets, ',') or 'none'))
+  end
+  pcall(perfSample, 'begin')
 end
 
 function Trace.End()
   if not t0 then return end
   pcall(checkLine, 'final')
+  pcall(perfSample, 'final')
   Trace.Line('INTERVAL end')
   t0, prev = nil, nil
   GI.Sources.tap = nil

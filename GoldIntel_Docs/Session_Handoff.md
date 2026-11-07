@@ -4,6 +4,14 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-060 | 2026-11-07 | Claude (Claude Code cloud session)
+- Read the user's files of 2026-11-07 (0.5.3, client build 70862). Verified live: roll wins booked loot, split shares claimed (also with silver amounts), silver wording parsed, every check 0. Main character: OTHER income 0.6% of inflow by value; OTHER spending 33,793 copper = AH bag purchases (3 x 80 silver, user), flight fares, small sinks. BFD disconnect found in the data (21:52 UTC, +44 copper gap, nothing else lost).
+- User merged PR #4 and authorized M4 (D-097). Sizes measured; caps will be reached soon (cash ~10 h, lots ~14 h); trace keep list full of gear-swap lines. Built 0.5.4-passive (Perf samples), PR opened, not installed.
+
+OPEN ISSUES: retention decisions R-1..R-3; CPU/memory waiting for 0.5.4 data; lag case (fix held); OI-16 deferred; OI-17 open.
+BLOCKERS: none.
+NEXT RECOMMENDED TASK: user decides R-1..R-3 and installs 0.5.4 (full restart); after the next upload: CPU and memory against NFR-3, then the 3b-3 closure recommendation.
+
 ## S-059 | 2026-11-05 to 2026-11-06 | Claude (Claude Code cloud session)
 - Read the user's files of 2026-11-05 (two upload sets, two characters, a Ragefire Chasm group run with up to 3000 ms lag). 0.5.2 verified live: trainer events and fees, first-window skinning, logout checks. Persistence across reloads and restarts confirmed (46 loads, ledger ids continuous, lots carried over). Trade item path works (mage water). Two gaps found: roll-won items unexplained; group shares paid in two pieces become OTHER.
 - User: lag is not a reason to change code; no area loot in this version; several corpses looted at once is the likely cause of split shares. Approved D-095 and D-096. Built 0.5.3-passive (1,300 tests), PR opened. Not installed; `/reload` is enough.
