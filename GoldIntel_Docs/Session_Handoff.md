@@ -4,6 +4,49 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-064 | 2026-11-08 | Claude (Claude Code cloud session) | FULL CURRENT STATE (read this first)
+Standing orders: GoldIntel_Docs/CODE_STANDING_ORDERS.md (D-103). New-session prompt: GoldIntel_Docs/NEXT_SESSION_PROMPT.md.
+
+PHASE AND INCREMENT
+- Phase 3b: 3b-0, 3b-1, 3b-2, 3b-3 CLOSED (3b-3 by D-101, 2026-11-08). 3b-4 (auction house, COD, outgoing mail, postage, other sinks) NOT started; priorities left for a later decision.
+- Phase 4: P4-M1 (pure Clock and Aggregator) built; P4-M2 (live aggregation) built as 0.6.0-passive. Neither is merged. P4-M3 (live validation) not started.
+
+APPROVED (user's words in Decisions.md)
+- D-087 evidence route (attach files after play; "logged out, check"); D-088 items ON; D-089 keep beta data; D-090 package block; D-091..D-096 live fixes; D-097 M4; D-098 retention stopgap; D-099 Phase 4 answers Q-1..Q-7; D-100 0.5.6; D-101 3b-3 closed; D-102 P4-M2 build rules (build only, no install, no merge); D-103 standing orders.
+- D-099..D-102 are on the PR branches (#7, #8, #9), not on main yet.
+
+PENDING (needs Shawn)
+1. Install 0.5.6 and play at least 3 hours in at least 3 sessions (one of 60 minutes or more, at least 18 CPU samples; a group or dungeon if possible): the Q-7 baseline. Then say whether 0.5.6 works live.
+2. After that: merge PR #8 (0.5.6), then PR #7 (P4-M1) (D-102; read as covering both merges).
+3. Then: review and approve the 0.6.0 build (PR #9) before installing it.
+4. Confirm the P4-M2 plan section 0 quotes (the reply arrived as an unfilled template).
+5. Confirm the chat-only items listed below.
+
+BRANCHES AND PULL REQUESTS (main = e155228, 0.5.5-passive, contract 1.13.0)
+| PR | Branch | Head | Content | Matches main |
+|---|---|---|---|---|
+| #7 | p4/m1-pure | 9f90308 | P4-M1 pure modules (not loaded) + D-099 | no, ahead of main |
+| #8 | fix/0.5.6-perf | 6620666 | 0.5.6-passive (CPU-only perf samples), closure recommendation, P4-M2 plan, D-100 | no, ahead of main |
+| #9 | p4/m2-live | e6946b0 | 0.6.0-passive (P4-M2), D-101, D-102; contains #7 and #8 | no, ahead of main |
+| (this) | docs/session-state | see git log | CODE_STANDING_ORDERS.md, NEXT_SESSION_PROMPT.md, this section, D-103 (docs only) | no, ahead of main |
+Merged earlier: #1 to #6. Merging #8, #7, #9 and this branch will conflict only in the newest sections of Session_Handoff.md, Changelog.md and Decisions.md (keep both sides, newest first; Decisions in number order).
+
+INSTALLED (as Shawn has told me / as his files show)
+- Main character and alt: 0.5.5-passive (files of 2026-11-08). 0.5.6 delivered, not yet reported installed. 0.6.0 built, NOT to be installed yet. Client 1.60.1, build 70862, Interface 16001.
+
+OPEN QUESTIONS
+- Section 0 quotes (above). Chat-only items to confirm (below).
+- C_Map.GetMapWorldSize in Forever (soft travel) unverified; soft-travel minimum speed 8 yd/s is an assumption (tune from EVT clock speed buckets).
+- Lag case: no code change (user, see below); OI-16 privacy scrub deferred (repo private); OI-17 status of D-029..D-031.
+
+CHAT-ONLY ITEMS NOT YET RECORDED WITH EXACT WORDS (for Shawn to confirm)
+- Lag (2026-11-05 and 2026-11-06): "Lag has been very bad on launch, this may explain it" and "I had very bad lag in RFC up to 3000 ms in some cases. This is not normal and we don't need to adjust code for it". Effect: the late-money fix stays unbuilt.
+- Merge approvals: "Merge PR #1 after you update it with these" (2026-11-03), "Approve merging PR #3 (includes #2). I will install 0.5.2 myself tonight.", "Approve merging PR #4 and start M4", "Merge PR #6": the merges are in the git history, but only some are written as decisions.
+- 2026-11-05: "1. yes because some people leave unskinned corpses and that is good profit since it's gold without having to spend time killing" is in D-091; the other three answers of that message ("2. agree with recommendation", "3. yes add trainer source", "4. yes for that option") are recorded as D-092..D-094 without these exact words.
+
+SHAWN'S NEXT STEP
+Install 0.5.6 (`/reload` over 0.5.5), play at least 3 hours in 3 sessions, upload, and say whether 0.5.6 works. Start a new Code session with NEXT_SESSION_PROMPT.md when told.
+
 ## S-060 | 2026-11-07 | Claude (Claude Code cloud session)
 - Read the user's files of 2026-11-07 (0.5.3, client build 70862). Verified live: roll wins booked loot, split shares claimed (also with silver amounts), silver wording parsed, every check 0. Main character: OTHER income 0.6% of inflow by value; OTHER spending 33,793 copper = AH bag purchases (3 x 80 silver, user), flight fares, small sinks. BFD disconnect found in the data (21:52 UTC, +44 copper gap, nothing else lost).
 - User merged PR #4 and authorized M4 (D-097). Sizes measured; caps will be reached soon (cash ~10 h, lots ~14 h); trace keep list full of gear-swap lines. Built 0.5.4-passive (Perf samples), PR opened, not installed.
