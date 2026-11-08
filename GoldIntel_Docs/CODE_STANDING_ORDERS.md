@@ -27,6 +27,9 @@ decides the rest. A conflict that cannot be settled: stop and ask Shawn.
   ask in the same report.
 - Every decision Shawn makes in chat is recorded in the docs (Decisions.md, with the date) **with his exact words**.
   If something he decided exists only in chat, list it in the report so he can confirm it.
+- Standing merge approval (D-105): "you may merge docs-only pull requests that change only Session_Handoff.md,
+  NEXT_SESSION_PROMPT.md, CODE_STANDING_ORDERS.md or the recording of my decisions; tell me each time. Code, versions
+  and other merges still need my explicit approval." A pull request that touches any other file is not covered.
 
 ## 3. Packages: the reload-or-restart statement
 
@@ -68,6 +71,8 @@ Format:
 1. "Update Session_Handoff first: current phase and increment, what I have approved and what is pending, the state of
    every branch and PR and whether each matches main, installed versions as far as I have told you, open questions, and
    my next step. Commit and push it, and say so."
+   Exception (D-105): "a new session's first report is read-only." The first report verifies and reports; it changes,
+   commits and pushes nothing, the handoff included. 6.1 applies from the second report on.
 2. "Tell me when to start a new Code session: if your context has been summarized, or a session has run long, and only
    at a clean stopping point with nothing half-built and nothing unpushed. Then say 'start a new session now', confirm
    the handoff and NEXT_SESSION_PROMPT.md are pushed, and print the exact prompt for me to copy."
@@ -81,3 +86,11 @@ Format:
   Session_Handoff.md, never in the prompt.
 - The documents a new session needs may be ahead of `main` on an open pull request branch until Shawn approves a
   merge; Session_Handoff.md names the branches.
+- `CODE_SESSION_OPENING_PROMPT.md` is replaced by `NEXT_SESSION_PROMPT.md` (D-105) and kept only as a record.
+
+## 8. One session at a time; evidence per session (D-105)
+
+- "only one Code session works on the repo at a time; the old session stops once the new one has verified the
+  handoff." The old session makes no commit or push after the new session's first report.
+- "Evidence files must be re-attached in the session that analyzes them." A session never relies on files attached
+  to an earlier session; if they are needed and not attached, it asks for them.

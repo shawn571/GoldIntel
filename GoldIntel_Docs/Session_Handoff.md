@@ -4,6 +4,51 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-065 | 2026-11-08 | Claude (Claude Code cloud session) | FULL CURRENT STATE (read this first)
+Standing orders: CODE_STANDING_ORDERS.md (D-103, D-105). New-session prompt: NEXT_SESSION_PROMPT.md. S-064 below is superseded by this section.
+
+THIS SESSION
+- First report (read-only): verified S-064 against the repo. Branch heads, versions and contracts, and tests all match (main 1,316; #7 1,340; #8 1,319; #9 1,365; all 0 failed, Lua 5.4.6). Merge order #8 then #7 conflicts only in Changelog, Decisions, Session_Handoff (as S-064 said); #10 onto #9 conflicts in Decisions, Session_Handoff.
+- User answers (D-104, D-105): chat-only items confirmed and recorded with his words; 6.1 applies to every report except a new session's first; one Code session at a time; evidence re-attached per session; CODE_SESSION_OPENING_PROMPT replaced; stale documents fixed; PR #10 merge approved; standing approval for docs-only merges of the named files.
+- Done on docs/session-state (docs only): standing orders 2, 6, 8; NEXT_SESSION_PROMPT; TODO block; Bible 1.0.2; README; D-104, D-105; this section. Then PR #10 merged into main (D-105 answer 6).
+
+PHASE AND INCREMENT
+- Phase 3b: 3b-0..3b-3 CLOSED (3b-3 by D-101). 3b-4 NOT started; priorities a later decision.
+- Phase 4: P4-M1 built (PR #7), P4-M2 built as 0.6.0-passive (PR #9). Neither merged nor installed. P4-M3 not started.
+
+APPROVED (user's words in Decisions.md)
+- D-087..D-098 on main; D-099..D-102 on the PR branches (#7, #8, #9); D-103..D-105 on main with PR #10.
+
+PENDING (needs Shawn)
+1. Play 0.5.6 at least 3 hours in at least 3 sessions (one of 60 minutes or more, at least 18 CPU samples; group or dungeon if possible), attach the files in the session that analyzes them, and say whether 0.5.6 works live.
+2. Then merge PR #8 (0.5.6), then PR #7 (P4-M1) (D-102).
+3. Then review and approve the 0.6.0 build (PR #9) before installing it.
+4. Confirm or correct the P4-M2 plan section 0 quotes (two replies arrived as placeholders).
+5. Tell which version is installed on the main character and the alt, and the 0.5.6 hours so far (arrived as a placeholder).
+6. Decide the TOC `## Notes:` change (held: it is an addon file; proposed for the next approved build).
+
+BRANCHES AND PULL REQUESTS (main = 0.5.5-passive, contract 1.13.0, plus the PR #10 docs)
+| PR | Branch | Head | Content | Matches main |
+|---|---|---|---|---|
+| #7 | p4/m1-pure | 9f90308 | P4-M1 pure modules (not loaded) + D-099 | no, ahead (base e155228) |
+| #8 | fix/0.5.6-perf | 6620666 | 0.5.6-passive, 3b-3 closure recommendation, P4-M2 plan, D-100 | no, ahead (base e155228) |
+| #9 | p4/m2-live | e6946b0 | 0.6.0-passive (P4-M2), D-101, D-102; contains #7 and #8 | no, ahead (base e155228) |
+| #10 | docs/session-state | merged | standing orders, prompt, handoff, D-103..D-105, document fixes | merged into main |
+Merged earlier: #1 to #6. After #10, merging #8, #7, #9 will conflict in the newest sections of Session_Handoff.md, Changelog.md, Decisions.md and in the TODO.md CURRENT PHASE block (keep the newest state; Decisions in number order).
+
+INSTALLED (as Shawn has told me)
+- Last reported: main character and alt 0.5.5-passive (files of 2026-11-08). 0.5.6 not yet reported installed. 0.6.0 NOT to be installed yet. Client 1.60.1, build 70862, Interface 16001.
+
+OPEN QUESTIONS
+- Section 0 quotes; installed versions and 0.5.6 hours; TOC note.
+- C_Map.GetMapWorldSize in Forever unverified; soft-travel minimum speed 8 yd/s is an assumption (tune from EVT clock speed buckets).
+- Standing orders "win on how to work" vs Bible "wins on governance": settled by D-103 (a dated user instruction); recorded here for the record.
+- OI-16 privacy scrub deferred (repo private); OI-17 status of D-029..D-031.
+
+BLOCKERS: none.
+SHAWN'S NEXT STEP
+Install 0.5.6 (`/reload` over 0.5.5) if not yet done, play at least 3 hours in 3 sessions, and say "logged out, check" in a Code session with the files attached.
+
 ## S-064 | 2026-11-08 | Claude (Claude Code cloud session) | FULL CURRENT STATE (read this first)
 Standing orders: GoldIntel_Docs/CODE_STANDING_ORDERS.md (D-103). New-session prompt: GoldIntel_Docs/NEXT_SESSION_PROMPT.md.
 
