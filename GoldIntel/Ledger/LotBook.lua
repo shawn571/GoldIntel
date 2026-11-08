@@ -139,7 +139,8 @@ local function alert(kind, rec)
   end
 end
 
-local function emit(kind, rec)
+local function emit(kind, rec, phase)
+  if kind == 'lot' and GI.AggLive and GI.AggLive.OnLot then pcall(GI.AggLive.OnLot, rec, phase) end   -- 0.6.0 (P4-M2)
   if GI.Trace and GI.Trace.IsRunning and GI.Trace.IsRunning() and kind == 'conversion' then
     GI.Trace.Line(string.format('LOT conversion lot=%s item=%s qty=%s copper=%s via=%s', tostring(rec.lotID), tostring(rec.itemID), tostring(rec.qty), tostring(rec.copper), tostring(rec.via)))
   elseif GI.Trace and GI.Trace.IsRunning and GI.Trace.IsRunning() and kind == 'lot' then

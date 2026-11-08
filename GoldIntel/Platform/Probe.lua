@@ -156,6 +156,7 @@ local PROBES = {
   { cap = 'loot.slotinfo',        fn = fnProbe({ 'GetLootSlotInfo' }) },
   { cap = 'merchant.events',      fn = eventProbe({ 'MERCHANT_SHOW', 'MERCHANT_CLOSED' }) },
   { cap = 'quest.event',          fn = eventProbe({ 'QUEST_TURNED_IN' }) },
+  { cap = 'map.worldsize',        fn = memberProbe('C_Map', { 'GetMapWorldSize' }) },   -- 0.6.0 (P4-M2): soft-travel distance
   { cap = 'perf.profiler',        fn = memberProbe('C_AddOnProfiler', { 'GetAddOnMetric' }) },   -- 0.5.4 (M4, D-097)
   { cap = 'trainer.events',       fn = eventProbe({ 'TRAINER_SHOW', 'TRAINER_CLOSED' }) },   -- 0.5.2 (D-093)
   -- Mail and trade

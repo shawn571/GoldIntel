@@ -79,7 +79,7 @@ function AG.New(state, heat, opts)
   state.totals = state.totals or zeroTotals()
   state.segments = state.segments or {}
   return setmetatable({ s = state, h = heat, locale = opts.locale, queue = {}, cur = nil,
-    stats = { time = 0, cash = 0, lots = 0, noPlace = 0, drained = 0 } }, Obj)
+    stats = { slices = 0, cash = 0, lots = 0, noPlace = 0, drained = 0 } }, Obj)
 end
 
 function Obj:cell(loc, act, level)
@@ -142,7 +142,7 @@ function Obj:AddTime(sl)
   local b = self:bin(sl.loc)
   if b then b.s = b.s + sl.dt end
   self:segment(key, sl.act, sl.level, sl.t, sl.dt, 0, 0)
-  self.stats.time = self.stats.time + 1
+  self.stats.slices = self.stats.slices + 1
   return true
 end
 
@@ -204,6 +204,7 @@ function Obj:Drain()
     local kind, rec = item[1], item[2]
     if kind == 'cash' then self:AddCash(rec)
     elseif kind == 'lot' then self:AddLot(rec)
+    elseif kind == 'lotValue' then self:AddLotValue(rec)
     elseif kind == 'time' then self:AddTime(rec) end
   end
   self.stats.drained = self.stats.drained + #q
@@ -245,6 +246,23 @@ end
 function Obj:Check(ledgerNet, createdValue)
   local T = self.s.totals
   return { cash = (T.cin - T.cout) - (ledgerNet or 0), vc = T.vc - (createdValue or 0), seconds = T.s }
+end
+
+--- 0.6.0: the value of a lot whose item data arrived later (Lots:Complete). Value only: the item count was added at creation.
+function Obj:AddLotValue(lot)
+  if type(lot) ~= 'table' or not lot.vc then return false end
+  local value = (tonumber(lot.qty) or 0) * (tonumber(lot.valueEach) or 0)
+  if value <= 0 then return false end
+  local o = lot.origin or {}
+  self.s.totals.vc = self.s.totals.vc + value
+  local c = self:cell(o, o.act, lot.level)
+  if not c then return false end
+  c.vc = c.vc + value
+  if AG.CREDIT[o.act] and lot.locConf ~= 'stale' and lot.locConf ~= 'none' then
+    local b = self:bin(o)
+    if b then b.c = b.c + value; b.a[o.act] = (b.a[o.act] or 0) + value end
+  end
+  return true
 end
 
 function Obj:Totals() return self.s.totals end

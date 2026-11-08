@@ -316,8 +316,12 @@ T.describe('P4-M1 Aggregator (D-099 Q-1, Q-2, Q-4)', function()
     T.eq(extra, {})
   end)
 
-  T.it('P4-M1 changes no live behaviour: the TOC lists no Aggregate file', function()
-    for _, f in ipairs(Loader.tocFiles()) do T.falsy(f:find('^Aggregate/'), f) end
+  T.it('P4-M2 (0.6.0): the TOC loads the Aggregate files after the ledger, Clock and Aggregator before Live', function()
+    local pos = {}
+    for i, f in ipairs(Loader.tocFiles()) do pos[f] = i end
+    T.truthy(pos['Aggregate/Clock.lua'] and pos['Aggregate/Aggregator.lua'] and pos['Aggregate/Live.lua'])
+    T.truthy(pos['Ledger/Ledger.lua'] < pos['Aggregate/Clock.lua'])
+    T.truthy(pos['Aggregate/Clock.lua'] < pos['Aggregate/Live.lua'] and pos['Aggregate/Aggregator.lua'] < pos['Aggregate/Live.lua'])
   end)
 end)
 

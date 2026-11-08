@@ -4,6 +4,14 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-063 | 2026-11-08 | Claude (Claude Code cloud session)
+- User closed 3b-3 (D-101) and gave the P4-M2 answers (D-102): Q-7 baseline = 0.5.6 CPU samples; manual controls and the reminder approved; P4-M2 approved to build, not to install or merge. The line on checking the section 0 quotes arrived as an unfilled template: still OPEN. Merges of PR #8 and #7 wait until the user says 0.5.6 works live (read as covering both; flagged).
+- Built 0.6.0-passive on branch p4/m2-live (contains the P4-M1 and 0.5.6 branches), 1,365 tests, PR opened. Found and fixed during the build: the Clock's waiting buffer held up to 240 slices (about 70 KB) and is now kept as exact runs; late item values follow via a 'complete' phase.
+
+OPEN ISSUES: quotes confirmation (section 0); 0.5.6 live confirmation and baseline hours; map size API in Forever unverified; soft-travel minimum speed (8 yd/s) to tune from EVT clock speed buckets; lag case (fix held); OI-16 deferred; OI-17 open.
+BLOCKERS: none.
+NEXT RECOMMENDED TASK: user installs 0.5.6, plays at least 3 hours in 3 sessions, uploads; confirms 0.5.6 works (merge #8, then #7); reviews and approves the 0.6.0 build.
+
 ## S-062 | 2026-11-08 | Claude (Claude Code cloud session)
 - Read the 0.5.5 hour-of-play files: CPU 0.04-0.06 ms per frame (target 0.5), lasting memory growth about 0.06 MB per hour (target 2); every automatic sample cost one 100-400 ms frame because of UpdateAddOnMemoryUsage (the user noticed no stutter). Ledger checks 0, roll wins and split shares working, no anomalies, no unknown lots.
 - User approved 0.5.6 (D-100). Built on branch fix/0.5.6-perf from main (P4-M1 PR #7 not included, not merged), 1,319 tests, PR opened. Wrote the 3b-3 closure recommendation and the P4-M2 plan (plan only; section 0 lists every approval relied on, with quotes, for the user to confirm).

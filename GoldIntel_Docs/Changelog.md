@@ -4,6 +4,16 @@ Append-only. Newest entry first. Format: `VERSION | DATE | AI/session | summary`
 
 ---
 
+## 0.6.0-passive (Phase 4 P4-M2: live aggregation) | 2026-11-08 | Claude (session S-063)
+- D-102: the P4-M1 Clock and Aggregator now run live (new Aggregate/Live.lua): every stored cash entry and every value-created lot is added to totals per place x activity x 5-level bracket with item counts, and every active half second to the cell and its 32 x 32 heat bin. Saved in GoldIntelDB.agg / heat per character with every /reload, logout and disconnect.
+- First start per character back-fills the saved value and items (no time) and records check offsets; `/gi agg check` must read 0 copper for cash and value.
+- Time classes: idle, taxi (UnitOnTaxi), loading screen, soft travel (needs the client's map size; probe `map.worldsize`; otherwise counted as unknown), paused; `/gi pause`, `/gi resume`, `/gi afk`, `/gi activity`.
+- Q-6 reminder: one chat line every 60 minutes after a load, only outside combat (`reminder.reloadMinutes`, 0 = off).
+- Clock waiting slices kept as exact runs (the waiting buffer would otherwise hold up to 240 slices); late item values follow through a 'complete' phase on the lot signal.
+- Measured in the test world: the aggregation adds about 9 KB of retained memory per simulated hour (budget 200 KB per hour).
+- Contract 1.15.0 (F23). Tests: 1,365 passing (19 new incl. 4 mutation checks; existing tests updated for the new commands, version strings and the Lots phase). All addon Lua files parse under Lua 5.1.
+- FULL CLIENT RESTART required (three new TOC files). Not installed, not merged (D-102).
+
 ## 0.5.6-passive (perf samples without the memory freeze) | 2026-11-08 | Claude (session S-062)
 - D-100: the automatic perf samples (begin, every 10 minutes, final) read CPU only. The memory reading (UpdateAddOnMemoryUsage, which recounts every addon and cost one frame of 100 to 400 ms per sample in the 2026-11-08 data) runs only on `/gi perf`.
 - M4 results added to Phase3b_3b-3_M4_Report.md; new Phase3b_3b-3_Closure_Recommendation.md and Phase4_P4-M2_Plan.md (plan only).

@@ -1,12 +1,14 @@
 # GoldIntel Contracts
 
-DOC VERSION: 1.14.0  |  CONTRACT VERSION: 1.14.0  |  DATE: 2026-11-08 (code 0.5.6-passive)
+DOC VERSION: 1.15.0  |  CONTRACT VERSION: 1.15.0  |  DATE: 2026-11-08 (code 0.6.0-passive, branch p4/m2-live)
 
 Contracts.md wins over Architecture.md on data shapes. A breaking change to any contract requires a Decisions.md entry (Project_Bible section 4) and a CONTRACT VERSION bump. Additive optional fields are non-breaking.
 
 Notation: Lua tables. `copper` = integer. `t` = Unix seconds (`time()`); `gt` = fractional seconds (`GetTime()`). `?` = optional. Enumerations are listed in F0.
 
 ## Change log (contract versions)
+
+- **1.15.0 (2026-11-08, D-102, build 0.6.0-passive, additive):** the F22 modules are now loaded and in effect; new `GI.AggLive` (Aggregate/Live.lua); `GoldIntelDB.agg[charKey]` and `GoldIntelDB.heat[charKey]` written; `Platform.OnTaxi`, `Platform.Distance` / `Map.WorldSize`, probe capability `map.worldsize`; setting `reminder.reloadMinutes`; commands `/gi agg`, `/gi pause`, `/gi resume`, `/gi afk`, `/gi activity`; the Lots emit carries a phase for kind 'lot'; trace lines `EVT agg`, `EVT clock`, `EVIDENCE mapWorldSize`. See F23.
 
 - **1.14.0 (2026-11-08, D-100, build 0.5.6-passive):** `Perf.Sample(opts)`: memory (`memKB`) only with `opts.memory = true`, otherwise `memSkipped = true`; stored automatic samples carry no `memKB`; `/gi perf` reads memory. Text shows `memKB=skipped`.
 
@@ -650,7 +652,16 @@ rec = { id, t (unix s), c (signed copper), src, conf, act, ac (actConf), lc (loc
 - **Trace:** `EVT perf <why> <metric=value ...> memKB=<n|n/a> uiLuaKB=<n>[ profiler=<bool>][ (<why>)]`; at interval begin `EVIDENCE profilerFunctions=<list|none>` and `EVIDENCE profilerMetrics=<list|none>` (both kept).
 - **Command:** `/gi perf` prints the functions, the metrics, a sample now and the number of stored samples. **Probe:** `perf.profiler` = C_AddOnProfiler.GetAddOnMetric exists.
 
-## F22 Phase 4 P4-M1 pure modules (D-099; NOT loaded by the TOC, not in effect; P.CONTRACT_VERSION unchanged until P4-M2)
+## F22 Phase 4 P4-M1 pure modules (D-099; loaded and in effect from 1.15.0 / 0.6.0, see F23)
 - **`GI.Clock`** (Aggregate/Clock.lua): `New{ idleSec=120, drySec=60, nearYards=150, minSpeed=8, actWindow=120, distance=fn(a,b)->yards|nil }`; `:Life(gt)`, `:Productive(gt, act, loc)`, `:Manual('pause'|'afk'|nil)`, `:Override(act|nil)`, `:Tick(gt, dt, loc, { taxi, inWorld, level }) -> { ACTIVE slice }`, `:Flush(gt) -> { ACTIVE slice }`, `:Current(gt)`, `:Pending()`, `:Stats() -> { active, idle, travelHard, travelSoft, paused, travelUnknown, slices, pending }`. Slice = `{ gt, dt, loc, act, level }`. Classes follow D-054 priority; a slice takes the state at its end; slices wait until certain (at most idleSec).
 - **`GI.Aggregator`** (Aggregate/Aggregator.lua): `New(aggState, heatState, { locale })`; `:AddTime(slice)`, `:AddCash(e)`, `:AddLot(lot)`, `:Enqueue(kind, rec)` with kind `cash|lot|time`, `:Drain() -> n`, `:Backfill(ledger, lotState) -> true, n | false, 'already'`, `:Check(ledgerNet, createdValue) -> { cash, vc, seconds }`, `:Totals()`, `:Stats()`; helpers `PlaceKey(loc, locale)`, `Bracket(level)`, `BinIndex(x, y)`, `FromStored(rec, locs)`. Shapes as Phase4_Live_Aggregation_Proposal.md section 3: `agg[charKey] = { v = 1, places = { [placeKey] = { mapID?, zone, sub?, inst?, cells = { [act|bracket] = { s, coin, cin, cout, vc, q = { [itemID] = qty }, n, t0?, t1?, bf? } } } }, totals = { s, coin, cin, cout, vc, n }, segments = { ... }, backfilled? }`, `heat[charKey] = { [mapID] = { [idx] = { s, c, a = { [act] = copper } } } }`.
+
+## F23 0.6.0 live aggregation (contract 1.15.0, additive, D-102)
+- **`GI.AggLive`** (Aggregate/Live.lua): `Ensure() -> true | false, reason` (creates the aggregator over `agg[charKey]`, `heat[charKey]`; once per character: `Backfill`, then `state.check = { cash, vc, since }` offsets), `Begin()` / `End()` (called by Ledger.Begin after LotBook.Begin, Ledger.End before Trace.End), `Check() -> { cash, vc, seconds } | nil, reason` (cash = (cin - cout) - Cash.Cumulative() - check.cash; vc = totals.vc - lots created value - check.vc; both must be 0), `OnLot(lot, 'add'|'complete')`, `Top(n)`, `SetManual('pause'|'afk'|nil)`, `SetOverride(act|nil)`, `Stats()`. Feeds: Bus `LEDGER_CASH` (every stored entry, also login gaps; queued before the aggregator exists), Lots emit, P_TICK (Clock slices; drain every 2 s; report every 600 s), signals of life P_MONEY, P_LOOT_OPEN, P_ZONE, P_LEVEL, P_QUEST_DONE, P_COMBAT, CONTEXT_CHANGED, P_CAST (gathering casts are productive).
+- **Clock (amended):** pending slices are runs `{ gt, last, dt, loc, act, level, candidate, cell }`; a signal of life or a productive event starts a new run; `:Speeds() -> { [bucket] = seconds }` with buckets 0-4, 4-7, 7-9, 9-12, 12-16, 16+ yards per second. **Aggregator:** `:AddLotValue(lot)`, queue kind `lotValue`.
+- **Platform:** `Platform.OnTaxi() -> boolean | nil` (UnitOnTaxi), `Map.WorldSize(mapID) -> w, h | nil` (C_Map.GetMapWorldSize, cached), `Platform.Distance(a, b) -> yards | nil` (same map only). Probe `map.worldsize`.
+- **Lots emit:** `emit(kind, rec, phase)`; for kind 'lot' the phase is 'add' (Lots:Add) or 'complete' (Lots:Complete).
+- **Setting** `reminder.reloadMinutes` (number, default 60, 0..600; 0 = off). Reminder line: `GoldIntel: <n> minutes since your data was last saved; /reload saves it`, once per n minutes after the load, never in combat (checked every 60 s).
+- **Commands:** `/gi agg [status|check|top [n]]`, `/gi pause`, `/gi afk`, `/gi resume`, `/gi activity <KEY>|clear` (keys: Contracts F0 ActivityKey, reserved keys included).
+- **Trace (kept):** `EVT agg <periodic|final> cash=<c> vc=<c> seconds=<s>[ MISMATCH]`, `EVT clock active=.. idle=.. travelHard=.. travelSoft=.. paused=.. travelUnknown=.. pending=.. speed=<bucket:seconds,...>`, at interval begin `EVIDENCE mapWorldSize=<true|false>`.
 

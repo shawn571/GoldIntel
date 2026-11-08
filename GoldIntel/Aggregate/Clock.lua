@@ -26,6 +26,9 @@
 --  * active  : everything else; activity = override, else the activity of the last productive event within actWindow
 --              (120 s), else OTHER.
 --  Slices wait in order until their class is certain (at most idleSec), so the aggregates lag live play by up to 2 min.
+--  0.6.0: consecutive slices with no signal between them, on the same place, 32 x 32 cell, activity, level and travel
+--  candidacy, are kept as ONE run (dt summed). They share the same signals before and after, so they always get the
+--  same class: the result is exact, and the waiting buffer holds a few runs instead of up to 240 slices.
 --  At Flush, an undecided slice is ACTIVE unless idle or travel is already proven (logging out right after a kill).
 
 local ADDON, GI = ...
@@ -41,6 +44,8 @@ CK.MIN_SPEED = 8       -- yards per second [assumed]: faster than running (7), s
 CK.ACT_WINDOW = 120
 CK.MOVE_EPS = 0.0005   -- map-coordinate change that counts as movement when no distance is known
 CK.KEEP = 400          -- signal times kept (bounded memory)
+-- 0.6.0 (P4-M2): seconds of movement per speed bucket (yards per second), evidence to tune MIN_SPEED from real play
+CK.SPEED_BUCKETS = { 4, 7, 9, 12, 16 }   -- upper bounds; the last bucket is '16+'
 
 local Obj = {}
 Obj.__index = Obj
@@ -52,6 +57,7 @@ function CK.New(opts)
     minSpeed = opts.minSpeed or CK.MIN_SPEED, actWindow = opts.actWindow or CK.ACT_WINDOW, distance = opts.distance,
     lives = {}, prods = {}, lastProd = nil, lastLoc = nil, manual = nil, override = nil, pending = {},
     stats = { active = 0, idle = 0, travelHard = 0, travelSoft = 0, paused = 0, travelUnknown = 0, slices = 0 },
+    speed = {},
   }, Obj)
 end
 
@@ -70,10 +76,11 @@ local function around(list, t)
   return prev, nextv
 end
 
-function Obj:Life(gt) push(self.lives, gt) end
+function Obj:Life(gt) push(self.lives, gt); self.breakRun = true end
 
 function Obj:Productive(gt, act, loc)
   push(self.lives, gt)
+  self.breakRun = true
   push(self.prods, gt)
   self.lastProd = { gt = gt, act = act, loc = loc }
 end
@@ -167,13 +174,36 @@ function Obj:Tick(gt, dt, loc, flags)
     local step = prevLoc and dist(self, prevLoc, loc)
     if far and step then
       candidate = far >= self.nearYards and (step / dt) >= self.minSpeed
+      if step > 0.5 then self:_speed(step / dt, dt) end
     elseif moved(self, prevLoc, loc) then
       self.stats.travelUnknown = self.stats.travelUnknown + dt
     end
   end
-  self.pending[#self.pending + 1] = { gt = gt, dt = dt, loc = loc, act = self:Current(gt), level = flags.level, candidate = candidate }
+  local act = self:Current(gt)
+  local cell = loc and (tostring(loc.mapID) .. '|' .. tostring(loc.zone) .. '|' .. tostring(loc.sub) .. '|' ..
+    (type(loc.x) == 'number' and math.floor(loc.x * 32) or '-') .. ':' .. (type(loc.y) == 'number' and math.floor(loc.y * 32) or '-')) or '-'
+  local last = self.pending[#self.pending]
+  if last and not self.breakRun and last.cell == cell and last.act == act and last.level == flags.level and last.candidate == candidate then
+    last.dt = last.dt + dt
+    last.last = gt
+  else
+    self.pending[#self.pending + 1] = { gt = gt, last = gt, dt = dt, loc = loc, act = act, level = flags.level, candidate = candidate, cell = cell }
+    self.breakRun = false
+  end
   return self:_settle(gt)
 end
+
+function Obj:_speed(v, dt)
+  local label
+  for i, top in ipairs(CK.SPEED_BUCKETS) do
+    if v < top then label = (i == 1 and '0' or tostring(CK.SPEED_BUCKETS[i - 1])) .. '-' .. top; break end
+  end
+  label = label or (CK.SPEED_BUCKETS[#CK.SPEED_BUCKETS] .. '+')
+  self.speed[label] = (self.speed[label] or 0) + dt
+end
+
+--- Seconds of movement per speed bucket (only while moving with a known distance).
+function Obj:Speeds() local s = {} for k, v in pairs(self.speed) do s[k] = v end return s end
 
 function Obj:Flush(gt) return self:_settle(gt, true) end
 

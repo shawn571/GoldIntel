@@ -3,7 +3,7 @@
 DOC VERSION: 1.2.0  |  UPDATED: 2026-11-03 (session S-057)
 
 ```
-CURRENT PHASE:            Phase 3b increment 3b-3: M3 APPROVED (2026-10-31); passive-play build 0.5.1-passive for live servers (launch 2026-11-04). M4 NOT authorized. 3b-0, 3b-1, 3b-2 CLOSED.
+CURRENT PHASE:            Phase 3b increments 3b-0..3b-3 CLOSED (3b-3: D-101, 2026-11-08). Phase 4: P4-M1 built, P4-M2 built as 0.6.0-passive (D-102), not installed. 3b-4 NOT started.
 IMPLEMENTATION APPROVED:  Phases 1 and 2, Phase 3a (closed), Phase 3b scope D-067 (ledgers only, increments 3b-0..3b-4, each reviewed before the next; 3b-0..3b-2 closed, 3b-3 at M3 approved, 3b-4 NOT started). Everything else is NOT approved.
 PHASE 0:                  COMPLETE
 OPEN BLOCKERS:            None. M4 needs the user's go-ahead. OI-14 and OI-15 decided (D-088, D-089). OI-16 deferred (repo stays private); OI-8 closing wording, OI-5, OI-13, OI-17 unchanged.
@@ -101,7 +101,7 @@ Rules: work only on the current phase. Do not start the next phase without expli
 
 ## Phase 4: Sessions, activity, metrics (REQ: FR-SES-1..4, FR-MET-1..5)
 
-- Proposal answered 2026-11-07 (D-099). [x] P4-M1 pure modules built (Aggregate/Clock.lua, Aggregate/Aggregator.lua; not loaded), 2026-11-07 S-061. [ ] P4-M2 wired live: waits for the 0.5.5 hour-of-play measurements AND the user's approval (includes the map-size probe, the 60-minute /reload reminder, storage, back-fill, /gi agg). [ ] P4-M3 live validation and Phase 4 closure.
+- Proposal answered 2026-11-07 (D-099). [x] P4-M1 pure modules built (Aggregate/Clock.lua, Aggregate/Aggregator.lua; not loaded), 2026-11-07 S-061. [x] P4-M2 approved to build (D-102) and built as 0.6.0-passive, 2026-11-08 S-063 (not installed, not merged). [ ] User: at least 3 hours on 0.5.6 in at least 3 sessions (one of 60 minutes or more, at least 18 CPU samples; a group or dungeon session if possible) as the Q-7 baseline; then says whether 0.5.6 works live (merge PR #8, then #7); then approves the 0.6.0 build. [ ] P4-M3 live validation and Phase 4 closure.
 
 - [ ] 4.1 ActivityEngine (v1 activities: grind, gather, fish, vendor, quest, AH, trade, mail/COD, other; manual override; idle)
 - [ ] 4.2 SessionEngine and segment rotation
@@ -263,7 +263,7 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [ ] Open: OI-16 privacy scrub (deferred, repo stays private); OI-17 status of D-029..D-031.
 - [ ] Phase 7 design item: beta characters and Account Best (D-089).
 - [ ] After each play session ("logged out, check"): read SavedVariables per D-087 and report.
-- [ ] M4 (lot size, CPU, memory, 3b-3 closure recommendation): NOT authorized.
+- [x] M4 (lot size, CPU, memory, 3b-3 closure recommendation): authorized 2026-11-07 (D-097), done 2026-11-08; 3b-3 closed (D-101).
 
 ### 0.5.2 (2026-11-05, S-058)
 - [x] User approved fixes after the first live sessions: D-091 skinning first window, D-092 logout check, D-093 trainer source, D-094 quest evidence line. Built as 0.5.2-passive on a branch with tests and a PR.
@@ -278,7 +278,7 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [x] 2026-11-07 (S-060) M4 sizes measured (Phase3b_3b-3_M4_Report.md). Built 0.5.4-passive measurement build (Perf samples), PR opened.
 - [x] 2026-11-07 (S-060) User approved R-1, R-2, R-3 as a stopgap (D-098). Built 0.5.5-passive (contains 0.5.4).
 - [x] 2026-11-08 (S-062) 0.5.5 hour-of-play data received: CPU 0.04-0.06 ms per frame, lasting memory growth about 0.06 MB per hour (PASS); the memory reading caused one 100-400 ms frame per sample, removed in 0.5.6 (D-100, approved).
-- [x] 2026-11-08 (S-062) Phase3b_3b-3_Closure_Recommendation.md written. [ ] User decides the 3b-3 closure.
+- [x] 2026-11-08 (S-062) Phase3b_3b-3_Closure_Recommendation.md written. [x] 2026-11-08 User closed 3b-3 (D-101).
 - [x] 2026-11-08 (S-062) Phase4_P4-M2_Plan.md written (plan only). [ ] User confirms section 0 and decides P4-M2. Nothing beyond 0.5.6 is merged or built before that.
 - [ ] User: install 0.5.6 after approving the build (`/reload` over 0.5.5).
 - [ ] User: review Phase4_Live_Aggregation_Proposal.md (proposal only; Phase 4 NOT authorized).

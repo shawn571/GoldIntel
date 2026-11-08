@@ -42,7 +42,8 @@ end
 local function worthKeeping(text)
   return text:find('^ANOMALY') or text:find('UNMATCHED', 1, true) or text:find('-> unexplained', 1, true)
     or text:find('^CAST spell=%S+ kind=[hmsf]') or text:find('^CAST spell=%S+ kind=other') or text:find('^NOTE') or text:find('^EVT group', 1) or text:find('^EVT check', 1) or text:find('^EVT trainer', 1)
-    or text:find('^ITEM_WON', 1) or text:find('^EVIDENCE profiler', 1) or text:find('reason="roll won"', 1, true)
+    or text:find('^ITEM_WON', 1) or text:find('^EVIDENCE profiler', 1)
+    or text:find('^EVT agg', 1) or text:find('^EVT clock', 1) or text:find('reason="roll won"', 1, true)
     or text:find('^BAGS settle skipped', 1) or text:find('^BAGS settle: no snapshot', 1)
 end
 

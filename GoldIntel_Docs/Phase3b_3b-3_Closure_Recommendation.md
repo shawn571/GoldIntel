@@ -1,6 +1,6 @@
 # 3b-3 closure recommendation
 
-**STATUS: FOR THE USER'S DECISION.** Written 2026-11-08 (S-062). The user decides after reading it; nothing is closed until then.
+**STATUS: APPROVED by the user 2026-11-08. 3b-3 CLOSED with the accepted risks of section 4 (D-101).** Written 2026-11-08 (S-062).
 
 Date 2026-11-08. Builds in live use: 0.5.0-passive to 0.5.5-passive (live servers since 2026-11-04); 0.5.6-passive delivered with this document. Tests: 1,319 passed, 0 failed. Scope: Phase3b_Increment_3b-3_Scope_and_Readiness.md as amended by D-081 (acquisition and conversion accounting, not an inventory mirror), D-082, D-083, D-084, D-085.
 

@@ -1,0 +1,302 @@
+--[[
+Tests / test_p4m2.lua                    (Phase 4 P4-M2, 0.6.0-passive: Aggregate/Live.lua; D-099, D-102)
+
+The live aggregation in the fake client: the check against the ledger and the lot book is 0, time is classified
+(idle, taxi, pause, override), back-fill runs once and survives save and load, login gaps are counted, late item values
+follow, the reminder speaks once per hour outside combat only, cash isolation holds, a build without Live runs on the
+same data, and deliberate bugs are caught.
+]]
+
+local T = require('testlib')
+local Fake = require('fake_wow')
+local World = require('collectworld')
+local Loader = require('loader')
+local sim = require('svsim')
+
+local function session(saved, opts)
+  opts = opts or {}
+  local W = Fake.new()
+  World.extend(W)
+  W.env.GoldIntelDB = saved and saved.account or nil
+  W.env.GoldIntelCharDB = saved and saved.char or nil
+  W.state.money = opts.money or (saved and saved.money) or 5000
+  if opts.setup then opts.setup(W) end
+  Loader.override = opts.override
+  local P, ns = Loader.load(W.env)
+  Loader.override = nil
+  W:login()
+  local function run(text) W.printed = {}; W.env.SlashCmdList.GOLDINTEL(text); return W:printedText() end
+  if opts.collect ~= false then run('collect on'); W:advance(1) end
+  return W, P, ns, run
+end
+local function save(W)
+  W:fire('PLAYER_LOGOUT')
+  return { account = sim.parse(sim.dump(W.env.GoldIntelDB)), char = sim.parse(sim.dump(W.env.GoldIntelCharDB)), money = W.state.money }
+end
+local function pay(W, d) W.state.money = W.state.money + d; W:fire('PLAYER_MONEY') end
+local function item(W, id, sell, ready)
+  W.state.items[id] = { 'Item' .. id, 'link', 1, 1, 1, '', '', 1, '', 0, sell, 7, 1, 0, 0, 0, 0 }
+  W.state.cached[id] = ready ~= false
+end
+local function coinLoot(W, copper, guid)
+  W.state.loot = { guid = guid or 'Creature-0-4621-0-1-95-AAAA', slots = { { type = 2, amount = copper } } }
+  W:fire('LOOT_OPENED')
+  W:advance(0.3); pay(W, copper); W:advance(0.1)
+  W.state.lootShown = false; W:advance(2.5)
+end
+local function itemLoot(W, id, slot, guid)
+  W.state.bags[0] = W.state.bags[0] or { size = 16 }
+  W.state.loot = { guid = guid or 'Creature-0-4621-0-1-95-BBBB', slots = { { type = 1, link = '|Hitem:' .. id .. '::|h[x]|h', qty = 1 } } }
+  W:fire('LOOT_OPENED', false, false, false)
+  W:advance(0.4); W.state.bags[0][slot] = { id, 1 }; W:fire('BAG_UPDATE_DELAYED')
+  W.state.loot.slots = {}; W:fire('LOOT_CLOSED'); W:advance(4)
+end
+local function aggState(W)
+  local key = W.state.guid
+  return W.env.GoldIntelDB.agg[key], W.env.GoldIntelDB.heat[key]
+end
+
+---------------------------------------------------------------------------
+T.describe('P4-M2 live check (D-102)', function()
+  T.it('coin, a vendor sale and a looted item: the aggregates equal the ledger and the lot book (0 / 0)', function()
+    local W, _, ns, run = session(nil, { money = 5000 })
+    item(W, 2589, 13)
+    coinLoot(W, 12)
+    itemLoot(W, 2589, 1)
+    W:fire('MERCHANT_SHOW'); W:advance(0.5); pay(W, 40); W:advance(0.5); W:fire('MERCHANT_CLOSED'); W:advance(3)
+    pay(W, -100); W:advance(3)                                   -- unexplained spending
+    local r = ns.AggLive.Check()
+    T.eq(r.cash, 0); T.eq(r.vc, 0)
+    local out = run('agg check')
+    T.truthy(out:find('cash difference 0 copper, value difference 0 copper (OK)', 1, true), out)
+    local st = aggState(W)
+    T.eq(st.totals.coin, 12); T.eq(st.totals.vc, 13)
+  end)
+
+  T.it('a login gap booked before the interval starts is counted (crash recovery)', function()
+    local W = session(nil, { money = 1000 })
+    pay(W, 30); W:advance(3)
+    local saved = save(W)
+    saved.money = 1500                                            -- +470 while nothing was saved
+    local W2, _, ns2 = session(saved)
+    T.eq(ns2.Cash.Stats().gapCount, 1)
+    local r = ns2.AggLive.Check()
+    T.eq(r.cash, 0)
+  end)
+
+  T.it('an item whose value arrives later is counted once in quantity and gets its value on completion', function()
+    local W, _, ns = session()
+    item(W, 777, 25, false)                                       -- not in the item cache yet
+    itemLoot(W, 777, 1)
+    local st = aggState(W)
+    local chk = ns.AggLive.Check(); T.eq(chk.vc, 0)
+    W.state.cached[777] = true
+    W:fire('GET_ITEM_INFO_RECEIVED', 777, true); W:advance(3)
+    chk = ns.AggLive.Check(); T.eq(chk.vc, 0)
+    T.eq(st.totals.vc, 25)
+    local qty = 0
+    for _, pl in pairs(st.places) do for _, c in pairs(pl.cells) do qty = qty + (c.q[777] or 0) end end
+    T.eq(qty, 1)
+  end)
+end)
+
+---------------------------------------------------------------------------
+T.describe('P4-M2 time (Clock wired; D-054, D-055, Q-3)', function()
+  T.it('play with a kill every 30 s is active time; a 5-minute stand-still is idle; heat seconds are recorded', function()
+    local W, _, ns = session()
+    for _ = 1, 10 do coinLoot(W, 3); W:advance(27) end           -- about 5 minutes of play
+    W:advance(300)                                               -- standing still, no signal
+    coinLoot(W, 3); W:advance(5)
+    W.env.SlashCmdList.GOLDINTEL('collect off')
+    local st, heat = aggState(W)
+    -- the 27 s walk after the last kill lies inside the 327 s gap without a signal, so it is idle too (D-054 idle rule)
+    T.truthy(st.totals.s >= 260 and st.totals.s <= 300, 'active seconds ' .. st.totals.s)
+    T.truthy(ns.AggLive.Stats().slices > 0)
+    local binSeconds = 0
+    for _, bins in pairs(heat) do for _, b in pairs(bins) do binSeconds = binSeconds + b.s end end
+    T.eq(binSeconds, st.totals.s)
+  end)
+
+  T.it('time on a taxi and while paused is not counted; /gi activity puts the time under the chosen key', function()
+    local W, _, ns, run = session()
+    coinLoot(W, 3)
+    W.env.UnitOnTaxi = function() return true end
+    W:advance(60)
+    W.env.UnitOnTaxi = function() return false end
+    run('pause'); W:advance(60); run('resume')
+    run('activity DUNGEON')
+    for _ = 1, 4 do coinLoot(W, 2); W:advance(10) end
+    run('collect off')
+    local st = aggState(W)
+    local dungeon = 0
+    for _, pl in pairs(st.places) do for k, c in pairs(pl.cells) do if k:find('^DUNGEON|') then dungeon = dungeon + c.s end end end
+    T.truthy(dungeon > 40, 'dungeon seconds ' .. dungeon)
+    T.truthy(st.totals.s < 100, 'taxi and pause excluded: ' .. st.totals.s)
+    T.truthy(run('activity clear'):find('detected automatically', 1, true))
+  end)
+
+  T.it('soft travel uses the map size when the client offers it; without it the run is counted as unknown', function()
+    local W, P = session(nil, { setup = function(W) W.env.C_Map.GetMapWorldSize = function() return 1000, 1000 end end })
+    T.truthy(P.Distance({ mapID = 1, x = 0.1, y = 0.1 }, { mapID = 1, x = 0.2, y = 0.1 }) - 100 < 1e-6)
+    T.isnil(P.Distance({ mapID = 1, x = 0.1, y = 0.1 }, { mapID = 2, x = 0.2, y = 0.1 }))
+    local W2, P2 = session(nil, { setup = function(W) W.env.C_Map.GetMapWorldSize = nil end })
+    T.isnil(P2.Distance({ mapID = 1, x = 0.1, y = 0.1 }, { mapID = 1, x = 0.2, y = 0.1 }))
+  end)
+end)
+
+---------------------------------------------------------------------------
+T.describe('P4-M2 back-fill and persistence (Q-4)', function()
+  T.it('the first start back-fills the saved records once (no time), the check stays 0, and a reload does not repeat it', function()
+    -- a session on a build without Live writes ledger and lots
+    local empty = { ['Aggregate/Live.lua'] = 'local ADDON, GI = ...\nGI.AggLive = nil\n' }
+    local W = session(nil, { money = 2000, override = empty })
+    item(W, 2589, 13)
+    coinLoot(W, 20); itemLoot(W, 2589, 1)
+    local saved = save(W)
+    T.isnil(saved.account.agg[W.state.guid])
+    -- first start with Live: back-fill
+    local W2, _, ns2 = session(saved)
+    local st = aggState(W2)
+    T.truthy(st.backfilled, 'back-filled')
+    T.eq(st.totals.coin, 20); T.eq(st.totals.vc, 13)
+    T.eq(st.totals.s >= 0 and st.totals.s < 5, true)
+    T.eq(ns2.AggLive.Check().cash, 0); T.eq(ns2.AggLive.Check().vc, 0)
+    coinLoot(W2, 7)
+    local saved2 = save(W2)
+    -- next load: no second back-fill, totals carried over
+    local W3, _, ns3 = session(saved2)
+    local st3 = aggState(W3)
+    T.eq(st3.totals.coin, 27)
+    T.eq(ns3.AggLive.Check().cash, 0)
+  end)
+
+  T.it('rollback: a build without Live runs on a file that holds agg and heat, and leaves them untouched', function()
+    local W = session(nil, { money = 3000 })
+    coinLoot(W, 9)
+    local saved = save(W)
+    local beforeAgg, beforeHeat = saved.account.agg, saved.account.heat
+    local empty = { ['Aggregate/Live.lua'] = 'local ADDON, GI = ...\nGI.AggLive = nil\n' }
+    local W2, _, ns2 = session(saved, { override = empty })
+    coinLoot(W2, 4)
+    T.eq(ns2.Ledger.Check().difference, 0)
+    local saved2 = save(W2)
+    T.eq(saved2.account.agg, beforeAgg); T.eq(saved2.account.heat, beforeHeat)
+  end)
+
+  T.it('cash isolation: the ledger entries are identical with the aggregation on and off', function()
+    local function play(override)
+      local W, _, ns = session(nil, { money = 4000, override = override })
+      coinLoot(W, 11); pay(W, -50); W:advance(3)
+      W:fire('MERCHANT_SHOW'); pay(W, 22); W:advance(0.5); W:fire('MERCHANT_CLOSED'); W:advance(3)
+      local out = {}
+      for _, e in ipairs(ns.Sources.Entries()) do out[#out + 1] = e.src .. ' ' .. e.copper .. ' ' .. tostring(e.act) end
+      return out
+    end
+    T.eq(play(nil), play({ ['Aggregate/Live.lua'] = 'local ADDON, GI = ...\nGI.AggLive = nil\n' }))
+  end)
+end)
+
+---------------------------------------------------------------------------
+T.describe('P4-M2 reminder (Q-6)', function()
+  local function lines(W, text) local n = 0 for _, l in ipairs(W.printed) do if l:find(text, 1, true) then n = n + 1 end end return n end
+  local TEXT = 'minutes since your data was last saved; /reload saves it'
+
+  T.it('one line after 60 minutes, then once per 60 minutes', function()
+    local W = session()
+    W.printed = {}
+    W:advance(59 * 60); T.eq(lines(W, TEXT), 0)
+    W:advance(2 * 60); T.eq(lines(W, TEXT), 1)
+    T.truthy(W:printedText():find('GoldIntel: 60 minutes since your data was last saved; /reload saves it', 1, true))
+    W:advance(50 * 60); T.eq(lines(W, TEXT), 1)
+    W:advance(11 * 60); T.eq(lines(W, TEXT), 2)
+  end)
+
+  T.it('never in combat: it waits until combat ends', function()
+    local W = session()
+    W.printed = {}
+    W:advance(55 * 60)
+    W:fire('PLAYER_REGEN_DISABLED')
+    W:advance(10 * 60); T.eq(lines(W, TEXT), 0)
+    W:fire('PLAYER_REGEN_ENABLED')
+    W:advance(2 * 60); T.eq(lines(W, TEXT), 1)
+  end)
+
+  T.it('reminder.reloadMinutes 0 turns it off', function()
+    local W, _, ns = session()
+    ns.Config.Set('reminder.reloadMinutes', 0)
+    W.printed = {}
+    W:advance(130 * 60); T.eq(lines(W, TEXT), 0)
+  end)
+end)
+
+---------------------------------------------------------------------------
+T.describe('P4-M2 commands and trace', function()
+  T.it('agg status and top answer; EVT agg and EVT clock lines are written and kept', function()
+    local W, _, ns, run = session()
+    for _ = 1, 6 do coinLoot(W, 5); W:advance(20) end
+    T.truthy(run('agg status'):find('places', 1, true))
+    local top = run('agg top 3')
+    T.truthy(top:find('1. Durotar', 1, true), top)
+    ns.AggLive.REPORT_EVERY = 5; W:advance(6); ns.AggLive.REPORT_EVERY = 600
+    local keep = table.concat(W.env.GoldIntelCharDB.trace.keep, '\n')
+    T.truthy(keep:find('EVT agg periodic cash=0 vc=0', 1, true), keep:sub(1, 300))
+    T.truthy(keep:find('EVT clock active=', 1, true))
+  end)
+
+  T.it('pause, afk, resume and activity answer, and an unknown activity key is refused', function()
+    local _, _, _, run = session()
+    T.truthy(run('pause'):find('time paused', 1, true))
+    T.truthy(run('afk'):find('away', 1, true))
+    T.truthy(run('resume'):find('counted again', 1, true))
+    T.truthy(run('activity NONSENSE'):find('unknown key', 1, true))
+  end)
+end)
+
+---------------------------------------------------------------------------
+-- deliberate bugs
+---------------------------------------------------------------------------
+local LIVE = Loader.readFile(Loader.root .. '/Aggregate/Live.lua')
+local function mutantLive(a, b)
+  local i, j = LIVE:find(a, 1, true)
+  assert(i, 'anchor missing: ' .. a)
+  return { ['Aggregate/Live.lua'] = LIVE:sub(1, i - 1) .. b .. LIVE:sub(j + 1) }
+end
+local function checkScenario(override)
+  local W, _, ns = session(nil, { money = 5000, override = override })
+  item(W, 777, 25, false)
+  coinLoot(W, 12); itemLoot(W, 777, 1)
+  W.state.cached[777] = true; W:fire('GET_ITEM_INFO_RECEIVED', 777, true); W:advance(3)
+  local r = ns.AggLive.Check()
+  assert(r.cash == 0 and r.vc == 0, 'check ' .. r.cash .. ' / ' .. r.vc)
+end
+local function reminderScenario(override)
+  local W = session(nil, { override = override })
+  W.printed = {}
+  W:advance(55 * 60); W:fire('PLAYER_REGEN_DISABLED'); W:advance(10 * 60)
+  assert(not W:printedText():find('/reload saves it', 1, true), 'reminder in combat')
+end
+local function pauseScenario(override)
+  local W, _, _, run = session(nil, { override = override })
+  coinLoot(W, 3)
+  run('pause')
+  for _ = 1, 8 do coinLoot(W, 2); W:advance(20) end           -- signals of life: without the pause this time is active
+  run('resume'); run('collect off')
+  local st = aggState(W)
+  assert(st.totals.s < 20, 'paused time counted: ' .. st.totals.s)
+  assert(st.totals.coin == 19, 'coin is still recorded while paused')
+end
+
+T.describe('P4-M2 mutation checks', function()
+  T.it('the real sources pass the scenarios', function() checkScenario(); reminderScenario(); pauseScenario() end)
+  local MUT = {
+    { 'cash not fed', "    GI.Bus.On('LEDGER_CASH', guard(onCash))", "", checkScenario },
+    { 'late value ignored', "    A:Enqueue('lotValue', rec); c.lotValues = c.lotValues + 1", "", checkScenario },
+    { 'reminder in combat', "  if type(minutes) ~= 'number' or minutes <= 0 or inCombat or not loadGT then return end", "  if type(minutes) ~= 'number' or minutes <= 0 or not loadGT then return end", reminderScenario },
+    { 'pause not applied', "  if C then C:Manual(mode) end", "", pauseScenario },
+  }
+  for _, m in ipairs(MUT) do
+    T.it('mutation is caught: ' .. m[1], function()
+      T.falsy((pcall(m[4], mutantLive(m[2], m[3]))), 'the mutant passed: ' .. m[1])
+    end)
+  end
+end)

@@ -623,3 +623,16 @@ User: "0.5.6 is approved: remove the automatic memory reading, keep the automati
 Rule: `Perf.Sample(opts)` reads memory only with `opts.memory = true`; the begin, periodic and final samples read CPU only (`memSkipped`); `/gi perf` reads memory on request and says a short freeze is possible.
 Also recorded the same day: the user will decide the 3b-3 closure after reading Phase3b_3b-3_Closure_Recommendation.md; the P4-M2 plan is delivered as a plan only (Phase4_P4-M2_Plan.md); nothing beyond 0.5.6 is merged or built before the user approves.
 Affected: Platform/Perf.lua, Ledger/Trace.lua (comment), Core/Slash.lua. Contract 1.14.0. Migration: none. Build 0.5.6-passive; `/reload` is enough over 0.5.5.
+
+## D-101 Increment 3b-3 CLOSED with the accepted risks (user 2026-11-08) | APPROVED | 2026-11-08
+User: "3b-3: approved to close with the accepted risks in section 4. Record it as D-101. This does not start 3b-4 or P4-M2." (Phase3b_3b-3_Closure_Recommendation.md.) Policy as D-079: anything found wrong later in 3b-3 functionality is a bug fix and does not reopen the increment. 3b-4 is NOT started; its priorities are left for a later decision (user, same message).
+
+## D-102 P4-M2 approvals and build rules (user 2026-11-08) | APPROVED | 2026-11-08
+User answers on Phase4_P4-M2_Plan.md:
+- Section 0: Q-5 and Q-6 are read as stated in the plan (Q-5 principle only, no cap numbers approved; Q-6 "outside combat" is the only condition). Q-7: the baseline is the 0.5.6 automatic CPU samples (replaces "the 0.5.5 baseline" of D-099 Q-7). The user's line on checking the quotes arrived as an unfilled template ("[... they are correct / these need correcting: ...]"); confirmation of the quotes is still OPEN.
+- Before P4-M2 goes live the user plays several hours on 0.5.6 to give the baseline. Needed (S-063): at least 3 hours of recording in at least 3 sessions, one of them 60 minutes or longer, at least 18 periodic CPU samples in total; one group or dungeon session if possible, because the 2026-11-08 samples were all from one kind of play.
+- Merging: PR #8 (0.5.6) and then PR #7 (P4-M1) only after the user says 0.5.6 works live; nothing else is merged. Read conservatively as covering BOTH merges (flagged to the user).
+- The manual controls /gi pause, /gi resume, /gi afk, /gi activity are part of P4-M2. The reminder text and setting are approved as written.
+- P4-M2 is approved to BUILD: 0.6.0-passive on a branch, tests, a pull request. NOT to be installed or merged before the user approves that build.
+- 3b-4 priorities: later decision.
+Built (S-063): branch p4/m2-live (contains the P4-M1 branch and the 0.5.6 branch; main untouched), 0.6.0-passive, contract 1.15.0. Notable: Clock waiting slices are kept as exact runs (measured: the waiting buffer had held up to 240 slices, about 70 KB); late item values reach the aggregates through a 'complete' phase on the lot signal; the first start back-fills and records check offsets so the live check is 0 from that moment.

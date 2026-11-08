@@ -136,8 +136,10 @@ T.describe('scope: nothing from Phase 3 leaked in', function()
     for i = 1, 20 do W.state.money = W.state.money + i; W:fire('PLAYER_MONEY') end
     W:advance(60)
     local db = ns.Store.Get()
-    T.eq(db.sessions, {}); T.eq(db.segments, {}); T.eq(db.lots.open, {}); T.eq(db.auctions, {}); T.eq(db.heat, {})
+    T.eq(db.sessions, {}); T.eq(db.segments, {}); T.eq(db.lots.open, {}); T.eq(db.auctions, {})
     T.eq(db.agg.zone, {})
+    -- 0.6.0 (P4-M2, D-102): the live aggregation keeps time per character in heat[charKey]; money with no loot credits nothing
+    for _, maps in pairs(db.heat) do for _, bins in pairs(maps) do for _, b in pairs(bins) do T.eq(b.c, 0) end end end
   end)
 end)
 

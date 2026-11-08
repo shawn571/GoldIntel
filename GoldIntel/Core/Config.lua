@@ -283,6 +283,8 @@ local BUILTIN = {
                     help = 'Raw session data older than this is eligible for roll-up (Phase 5)' } },
   { 'prune.maxBytes', { type = 'number', default = 2000000, minValue = 100000, maxValue = 20000000, integer = true,
                         help = 'Approximate size budget of the saved database' } },
+  { 'reminder.reloadMinutes', { type = 'number', default = 60, minValue = 0, maxValue = 600, integer = true,
+                      help = 'Minutes between the /reload reminder (one chat line, only outside combat); 0 turns it off (D-099 Q-6)' } },
   { 'collect.auto', { type = 'boolean', default = true,
                       help = 'Start collecting (cash and item ledger) automatically a few seconds after login; /gi collect off still stops it' } },
   { 'normalization.minHours', { type = 'number', default = 5, minValue = 0, maxValue = 1000,
