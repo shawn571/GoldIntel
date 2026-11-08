@@ -4,6 +4,14 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-062 | 2026-11-08 | Claude (Claude Code cloud session)
+- Read the 0.5.5 hour-of-play files: CPU 0.04-0.06 ms per frame (target 0.5), lasting memory growth about 0.06 MB per hour (target 2); every automatic sample cost one 100-400 ms frame because of UpdateAddOnMemoryUsage (the user noticed no stutter). Ledger checks 0, roll wins and split shares working, no anomalies, no unknown lots.
+- User approved 0.5.6 (D-100). Built on branch fix/0.5.6-perf from main (P4-M1 PR #7 not included, not merged), 1,319 tests, PR opened. Wrote the 3b-3 closure recommendation and the P4-M2 plan (plan only; section 0 lists every approval relied on, with quotes, for the user to confirm).
+
+OPEN ISSUES: 3b-3 closure decision; P4-M2 section 0 confirmation (Q-5 numbers not approved, Q-6 reading, Q-7 baseline 0.5.6 vs 0.5.5); PR #7 merge; lag case (fix held); OI-16 deferred; OI-17 open.
+BLOCKERS: none.
+NEXT RECOMMENDED TASK: user reads the closure recommendation and the P4-M2 plan and decides; installs 0.5.6 after approving the build. No merge or build beyond 0.5.6 before that.
+
 ## S-061 | 2026-11-07 | Claude (Claude Code cloud session)
 - User merged PR #6 (0.5.5, which included #5), answered the Phase 4 proposal (D-099: Q-1..Q-7) and authorized P4-M1 only.
 - Built P4-M1 on branch p4/m1-pure: Aggregate/Clock.lua and Aggregate/Aggregator.lua (pure, not in the TOC), 24 tests incl. mutation and purity checks; 1,340 tests pass. PR opened. Package unchanged: 0.5.5-passive is current.

@@ -123,10 +123,10 @@ Commands.Register('perf', { help = 'CPU and memory of GoldIntel (M4 measurement,
   local fns, mets = Perf.Functions(), Perf.Metrics()
   say('perf: profiler functions ' .. (fns and table.concat(fns, ', ') or 'none'))
   say('perf: metrics ' .. (mets and table.concat(mets, ', ') or 'none'))
-  say('perf: now ' .. Perf.Text(Perf.Sample()))
+  say('perf: now ' .. Perf.Text(Perf.Sample({ memory = true })) .. '  (memory read on request only: a short freeze is possible)')
   local ok, c = pcall(GI.Store.Char)
   local n = ok and type(c) == 'table' and type(c.perf) == 'table' and type(c.perf.samples) == 'table' and #c.perf.samples or 0
-  say('perf: ' .. n .. ' samples stored (every 10 minutes while recording; read after logout)')
+  say('perf: ' .. n .. ' samples stored (CPU every 10 minutes while recording; read after logout)')
 end })
 
 Commands.Register('probe', { help = 'run the capability probe and print the report', fn = function()

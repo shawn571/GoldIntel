@@ -1,12 +1,14 @@
 # GoldIntel Contracts
 
-DOC VERSION: 1.13.0  |  CONTRACT VERSION: 1.13.0  |  DATE: 2026-11-07 (code 0.5.5-passive)
+DOC VERSION: 1.14.0  |  CONTRACT VERSION: 1.14.0  |  DATE: 2026-11-08 (code 0.5.6-passive)
 
 Contracts.md wins over Architecture.md on data shapes. A breaking change to any contract requires a Decisions.md entry (Project_Bible section 4) and a CONTRACT VERSION bump. Additive optional fields are non-breaking.
 
 Notation: Lua tables. `copper` = integer. `t` = Unix seconds (`time()`); `gt` = fractional seconds (`GetTime()`). `?` = optional. Enumerations are listed in F0.
 
 ## Change log (contract versions)
+
+- **1.14.0 (2026-11-08, D-100, build 0.5.6-passive):** `Perf.Sample(opts)`: memory (`memKB`) only with `opts.memory = true`, otherwise `memSkipped = true`; stored automatic samples carry no `memKB`; `/gi perf` reads memory. Text shows `memKB=skipped`.
 
 - **1.13.0 (2026-11-07, D-098, build 0.5.5-passive):** retention values changed: `Cash.CAP` 6000 (was 2000), `Lots.CAP_OPEN` 4000 (was 1500), lot merge key adds the origin place (zone, subzone, activity), `trace.keep` holds one unexplained line per item id per interval. No shape change.
 

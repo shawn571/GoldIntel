@@ -5,12 +5,14 @@
 --  0.5 ms per frame, memory growth under 2 MB per hour). Read-only; never changes a setting.
 --      Perf.Functions()  -> sorted names of the functions in C_AddOnProfiler (evidence; nil when the namespace is absent)
 --      Perf.Metrics()    -> sorted names of Enum.AddOnProfilerMetric (nil when absent)
---      Perf.Sample()     -> { t, metrics = { [metricName] = number }, memKB = number|nil, luaKB = number,
+--      Perf.Sample(opts) -> { t, metrics = { [metricName] = number }, memKB = number|nil, luaKB = number,
 --                             profilerEnabled = boolean|nil, why = string|nil }
 -- Compatibility_Notes lists C_AddOnProfiler as present but its function names were never recorded (F1), so nothing
 -- is assumed: every metric the enum offers is read for this addon with GetAddOnMetric, each call protected.
--- Memory: UpdateAddOnMemoryUsage + GetAddOnMemoryUsage(addon) in KB when both exist; luaKB is collectgarbage('count'),
--- the whole UI Lua heap (all addons), recorded only as context.
+-- Memory: UpdateAddOnMemoryUsage + GetAddOnMemoryUsage(addon) in KB when both exist, ONLY with opts.memory = true
+-- (0.5.6, D-100): the live samples of 2026-11-08 showed that UpdateAddOnMemoryUsage, which recounts every addon, costs
+-- one frame of 100 to 400 ms; the automatic samples therefore read CPU only, and /gi perf reads memory on request.
+-- luaKB is collectgarbage('count'), the whole UI Lua heap (all addons), recorded only as context.
 
 local ADDON, GI = ...
 GI = GI or {}
@@ -50,7 +52,8 @@ function Perf.Metrics()
   return sortedKeys(m, false)
 end
 
-function Perf.Sample()
+function Perf.Sample(opts)
+  opts = opts or {}
   local _, gt = P.Now()
   local out = { t = gt, metrics = {} }
   local ns = P.env.C_AddOnProfiler
@@ -76,11 +79,12 @@ function Perf.Sample()
     end
   end
   local env = P.env
-  if type(env.UpdateAddOnMemoryUsage) == 'function' and type(env.GetAddOnMemoryUsage) == 'function' then
+  if opts.memory and type(env.UpdateAddOnMemoryUsage) == 'function' and type(env.GetAddOnMemoryUsage) == 'function' then
     pcall(env.UpdateAddOnMemoryUsage)
     local ok, kb = pcall(env.GetAddOnMemoryUsage, Perf.ADDON)
     if ok and type(kb) == 'number' then out.memKB = kb end
   end
+  if not opts.memory then out.memSkipped = true end
   local okL, lua = pcall(collectgarbage, 'count')
   if okL and type(lua) == 'number' then out.luaKB = lua end
   return out
@@ -91,7 +95,7 @@ function Perf.Text(s)
   local parts = {}
   local names = sortedKeys(s.metrics or {}, false)
   for _, k in ipairs(names) do parts[#parts + 1] = string.format('%s=%.4f', k, s.metrics[k]) end
-  local mem = s.memKB and string.format('memKB=%.0f', s.memKB) or 'memKB=n/a'
+  local mem = s.memKB and string.format('memKB=%.0f', s.memKB) or (s.memSkipped and 'memKB=skipped' or 'memKB=n/a')
   local lua = s.luaKB and string.format('uiLuaKB=%.0f', s.luaKB) or ''
   local en = s.profilerEnabled == nil and '' or (' profiler=' .. tostring(s.profilerEnabled))
   local why = s.why and (' (' .. s.why .. ')') or ''

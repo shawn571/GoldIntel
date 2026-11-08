@@ -1,6 +1,6 @@
 # Phase 3b-3 M4: measurements and closure inputs (interim)
 
-DATE: 2026-11-07  |  SESSION: S-060  |  AUTHORIZED: user 2026-11-07 ("start M4", D-097)  |  STATUS: sizes measured; retention R-1..R-3 APPROVED as a stopgap (D-098, built in 0.5.5); CPU and memory waiting for live data
+DATE: 2026-11-07  |  SESSION: S-060  |  AUTHORIZED: user 2026-11-07 ("start M4", D-097)  |  STATUS: COMPLETE 2026-11-08: sizes, CPU and memory measured; retention R-1..R-3 approved (D-098); measurement freeze removed (D-100, 0.5.6)
 
 M4 scope (Phase3b_Increment_3b-3_Scope_and_Readiness.md): measurements of lot size, CPU and memory, then the 3b-3 closure recommendation. The evidence list for 3b-3 is complete (skinning, roll wins, silver wording, trade, groups of 3 to 5, dungeon, disconnect, client patch).
 
@@ -34,14 +34,24 @@ Why it matters: the heat map and gold-per-hour views (Phases 4, 5 and 7) do not 
 - **R-3 Keep list noise.** Copy at most ONE "-> unexplained" line per item id per interval to `trace.keep` (every line stays in the rolling trace). Recommendation: yes.
 - **R-4 File size.** With R-1 and R-2 an active character costs about 2.5 MB at the caps; the client loads it at login and writes it at logout or `/reload`. The 0.5.4 memory samples show the in-game cost; if they show a problem, the caps come back to you.
 
-## 4. CPU and memory (0.5.4 measurement build)
+## 4. CPU and memory (measured 2026-11-08, build 0.5.5, main character)
 
-Built: `Platform/Perf.lua` reads every metric that `Enum.AddOnProfilerMetric` offers for GoldIntel through `C_AddOnProfiler.GetAddOnMetric`, plus `GetAddOnMemoryUsage` when present (the function names in Forever were never recorded, so nothing is assumed). A sample is stored at interval begin, every 10 minutes and at interval end in `GoldIntelCharDB.perf.samples` (cap 500, apart from the trace) and printed as `EVT perf` lines; `/gi perf` shows the figures now.
+42 samples over 10 sessions (about 4.5 hours, the longest 111 minutes), profiler enabled, about 60 addons loaded.
 
-Targets (NFR-3): average CPU under 0.5 ms per frame; memory growth under 2 MB per hour of play.
+| Measure | Result | Target (NFR-3) | Verdict |
+|---|---|---|---|
+| CPU, session average per frame | 0.040 to 0.059 ms | under 0.5 ms | PASS, about 10 times under |
+| CPU, recent average during play | 0.008 to 0.10 ms | under 0.5 ms | PASS |
+| Frames over 5 ms caused by GoldIntel's own work | about 1 per 10 minutes, none over 100 ms | none set | acceptable |
+| Frames over 100 ms | exactly one per sample (100 to 400 ms) | none set | caused by the MEASUREMENT (UpdateAddOnMemoryUsage recounts all addons); removed in 0.5.6 (D-100); the user noticed no stutter |
+| Memory right after load | 6.66 MB at the first load, 6.91 MB 4.5 hours later | | |
+| Lasting memory growth | about 0.06 MB per hour (the new data itself) | under 2 MB per hour | PASS |
+| Memory within a session | saw-tooth from about 7 to 14 MB, back to about 7 MB after collection | | normal Lua garbage churn, collected |
 
-Needed from the user: play normally on 0.5.4, including at least one session of an hour or more, then upload as usual. No test script. The collectors-off comparison of the D-072 profiling plan is optional: the absolute figures against NFR-3 are enough unless they come close to a target.
+Profiler surface in Forever (first record): `C_AddOnProfiler` functions AddMeasuredCallEvent, AddPerformanceMessageShown, CheckForPerformanceMessage, GetAddOnMetric, GetApplicationMetric, GetOverallMetric, GetTicksPerSecond, GetTopKAddOnsForMetric, IsEnabled, MeasureCall; metrics CountTimeOver1Ms/5/10/50/100/500/1000Ms, EncounterAverageTime, LastTime, PeakTime, RecentAverageTime, SessionAverageTime.
+
+Sizes (section 1) stand; with the D-098 caps the main character has room for about 115 more hours of cash entries and about 120 hours of open lots at the measured rates.
 
 ## 5. Closure recommendation
 
-Waiting for section 4 data and the R-1..R-3 decisions. Planned content: exit criteria of the 3b-3 scope document, the evidence summary (Compatibility_Notes live evidence 2026-11-04 to 2026-11-07), open bug-fix items under the D-079 policy (lag case, unknown small sinks), and what moves to 3b-4 (auction house, COD, outgoing mail and postage, flight fares if approved).
+Written: Phase3b_3b-3_Closure_Recommendation.md (2026-11-08). Was waiting for section 4 data and the R-1..R-3 decisions. Planned content: exit criteria of the 3b-3 scope document, the evidence summary (Compatibility_Notes live evidence 2026-11-04 to 2026-11-07), open bug-fix items under the D-079 policy (lag case, unknown small sinks), and what moves to 3b-4 (auction house, COD, outgoing mail and postage, flight fares if approved).
