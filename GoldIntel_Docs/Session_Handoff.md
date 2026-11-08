@@ -4,6 +4,12 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-068 | 2026-11-08 | Claude (Claude Code cloud session "GoldIntel Code") | STATE UPDATE (S-065..S-067 hold except as below)
+- D-108: the docs-only standing approval now also covers TODO.md and Changelog.md (user's words in Decisions.md and CODE_STANDING_ORDERS.md section 2).
+- TODO.md brought in line with D-107 (the S-067 note about TODO.md is resolved). Merged with the REST command under that approval; main after the merge in the report.
+- Installed: 0.5.6-passive on all characters. PRs #7, #8, #9 unchanged and open. Merged and kept: #1 to #6, #10 to #13 and this one.
+PENDING (needs Shawn): 0.5.6 hours (at least 3 hours in 3 sessions), files attached, and whether 0.5.6 works live; then approve merging PR #8, then PR #7; then review the 0.6.0 build (PR #9).
+
 ## S-067 | 2026-11-08 | Claude (Claude Code cloud session "GoldIntel Code") | STATE UPDATE (S-065 and S-066 hold except as below)
 - PR #11 (.claude/settings.json, REST merge rule) merged by the user: main = 61e83f5. PR #12 merged by Claude with the REST command (0c86e19).
 - D-107: section 0 quotes CONFIRMED correct; 0.5.6-passive (6620666) INSTALLED on all characters; TOC note goes into the next approved build; package blocks name the installed build (0.5.6), not main.

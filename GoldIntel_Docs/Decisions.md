@@ -644,3 +644,9 @@ User: "Merged #11. Section 0 quotes: correct. Installed: 0.5.6-passive on all ch
 Still OPEN: the 0.5.6 hours so far (arrived as the placeholder "[n]"), and whether 0.5.6 works live (D-102: needed before PR #8 and PR #7 are merged).
 Affected: documents only. Migration: none. Package: unchanged (0.5.6-passive installed; main 0.5.5-passive).
 
+## D-108 Docs-only standing merge approval extended to TODO.md and Changelog.md (user 2026-11-08) | APPROVED | 2026-11-08
+User: "Extend the docs-only standing approval to also cover TODO.md and Changelog.md. Record it with my words, then update TODO.md now and merge it under that approval."
+Rule: the D-105 standing approval now covers pull requests that change only Session_Handoff.md, NEXT_SESSION_PROMPT.md, CODE_STANDING_ORDERS.md, the recording of the user's decisions (Decisions.md), TODO.md and Changelog.md; Claude tells the user each time. Code, versions and every other merge still need his explicit approval. Merged with the REST command while `gh pr merge` is refused (D-106 addendum).
+Done in S-068: TODO.md CURRENT PHASE block and open tasks brought in line with D-107 (section 0 quotes confirmed, 0.5.6 installed, TOC note in the next approved build).
+Affected: documents only (CODE_STANDING_ORDERS.md section 2, TODO.md). Migration: none. Package: unchanged.
+
