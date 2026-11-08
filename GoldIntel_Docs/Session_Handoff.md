@@ -4,6 +4,27 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-067 | 2026-11-08 | Claude (Claude Code cloud session "GoldIntel Code") | STATE UPDATE (S-065 and S-066 hold except as below)
+- PR #11 (.claude/settings.json, REST merge rule) merged by the user: main = 61e83f5. PR #12 merged by Claude with the REST command (0c86e19).
+- D-107: section 0 quotes CONFIRMED correct; 0.5.6-passive (6620666) INSTALLED on all characters; TOC note goes into the next approved build; package blocks name the installed build (0.5.6), not main.
+- TODO.md OPEN BLOCKERS still lists the section 0 quotes, installed versions and the TOC note as open: superseded by D-107 (TODO.md is outside the docs-only standing approval, so it is corrected with the next approved merge).
+
+INSTALLED: 0.5.6-passive on all characters (user, 2026-11-08). Client 1.60.1, build 70862, Interface 16001.
+
+BRANCHES AND PULL REQUESTS (main = 61e83f5 plus this docs PR: 0.5.5-passive, contract 1.13.0)
+| PR | Branch | Content | Matches main |
+|---|---|---|---|
+| #7 | p4/m1-pure (9f90308) | P4-M1 | no, ahead |
+| #8 | fix/0.5.6-perf (6620666) | 0.5.6-passive, INSTALLED | no, ahead |
+| #9 | p4/m2-live (e6946b0) | 0.6.0-passive, not to be installed yet | no, ahead |
+| this | docs/record-2026-11-08c | D-107, S-067 (docs only, D-105) | merged with the REST command |
+Merged and kept: #1 to #6, #10, #11, #12.
+
+PENDING (needs Shawn)
+1. 0.5.6 hours so far (placeholder "[n]"). Play at least 3 hours in at least 3 sessions (one of 60 minutes or more, at least 18 CPU samples; group or dungeon if possible), attach the files in the session that analyzes them, say whether 0.5.6 works live.
+2. Then approve: merge PR #8, then PR #7 (D-102); then review and approve the 0.6.0 build (PR #9).
+SHAWN'S NEXT STEP: play on 0.5.6; then "logged out, check" with the files attached.
+
 ## S-066 | 2026-11-08 | Claude (Claude Code cloud session "GoldIntel Code") | STATE UPDATE (S-065 still holds except as below)
 - New standing order D-106 (user's words in Decisions.md, CODE_STANDING_ORDERS.md section 2, NEXT_SESSION_PROMPT.md): Claude merges approved PRs itself with `gh pr merge <n> --merge` only, then checks main and reports the merge commit and the test result; work-branch commits and pushes need no approval; never force-push or delete branches.
 - `.claude/settings.json` (allow `Bash(gh pr merge *)`) is on branch docs/claude-settings-2026-11-08, PR #11, for the user to merge.

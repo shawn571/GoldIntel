@@ -635,3 +635,12 @@ Note (S-066): PR #10 was merged earlier the same day through the GitHub REST mer
 Affected: documents only (CODE_STANDING_ORDERS.md section 2, NEXT_SESSION_PROMPT.md); .claude/settings.json on its own pull request for the user to merge. Migration: none. Package: unchanged.
 Addendum (user, 2026-11-08, after `gh pr merge 12 --merge` was refused with the GraphQL 403): "While gh pr merge is refused: use the REST merge endpoint (gh api -X PUT repos/shawn571/GoldIntel/pulls/<n>/merge -f merge_method=merge), a merge commit through the PR, never a push to main." "Record it with my words in D-106, CODE_STANDING_ORDERS.md and NEXT_SESSION_PROMPT.md. Change #11's rule to Bash(gh api -X PUT repos/shawn571/GoldIntel/pulls/*/merge *); I'll merge #11 myself. Then merge #12 with the REST command and check main." This supersedes the sentence above "From D-106 on, merges use `gh pr merge` only". EmpireIntel: "I'll give it to the EmpireIntel session (already done)." The question is closed; nothing was changed in shawn571/EmpireIntel from the GoldIntel session.
 
+## D-107 P4-M2 section 0 quotes confirmed; 0.5.6 installed everywhere; TOC note in the next build (user 2026-11-08) | APPROVED | 2026-11-08
+User: "Merged #11. Section 0 quotes: correct. Installed: 0.5.6-passive on all characters (6620666; your package block says 0.5.5, which is main, not what's installed). 0.5.6 hours so far: [n]. TOC note: next approved build."
+1. The quotes in Phase4_P4-M2_Plan.md section 0 are correct. This closes the confirmation left OPEN in D-102 and D-104.
+2. Installed: 0.5.6-passive (commit 6620666, PR #8) on all characters. Main is 0.5.5-passive, so the installed build is ahead of main until PR #8 is merged.
+3. The TOC `## Notes:` change held in D-105 goes into the next approved build; it is not done on its own.
+4. Package block correction (the user's note): the block names the latest delivered build and what is installed, and says separately whether that build matches main; from S-067 it reads 0.5.6-passive, not main's 0.5.5.
+Still OPEN: the 0.5.6 hours so far (arrived as the placeholder "[n]"), and whether 0.5.6 works live (D-102: needed before PR #8 and PR #7 are merged).
+Affected: documents only. Migration: none. Package: unchanged (0.5.6-passive installed; main 0.5.5-passive).
+
