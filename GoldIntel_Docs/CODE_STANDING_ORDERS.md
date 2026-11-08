@@ -32,8 +32,11 @@ decides the rest. A conflict that cannot be settled: stop and ask Shawn.
   and other merges still need my explicit approval." A pull request that touches any other file is not covered.
 - How merges are done (D-106, 2026-11-08): "Once I approve a merge in chat, you merge it yourself through its pull request (gh pr merge <n> --merge; no squash, no rebase, no direct push to main), then check main and report the merge commit and the test result. Approval is still required for every merge except the docs-only standing approval. Commits and pushes to work branches need no approval. Never force-push or delete branches."
   In practice: a merge commit through the pull request only; after it, fetch main, name the merge commit and run the
-  test suite on it (`lua5.4 run.lua` from GoldIntel/Tests) in the report. If `gh pr merge` is refused, report the exact
-  message and do not merge by another route.
+  test suite on it (`lua5.4 run.lua` from GoldIntel/Tests) in the report.
+- While `gh pr merge` is refused (D-106 addendum, 2026-11-08): "While gh pr merge is refused: use the REST merge endpoint (gh api -X PUT repos/shawn571/GoldIntel/pulls/<n>/merge -f merge_method=merge), a merge commit through the PR, never a push to main."
+  In this cloud environment every `gh pr` command is refused ("HTTP 403: GitHub GraphQL is not available from Claude
+  Code sessions"), so approved merges use exactly that command. Any other refusal: report the exact message and do not
+  merge by another route.
 
 ## 3. Packages: the reload-or-restart statement
 

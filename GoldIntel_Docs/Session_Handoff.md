@@ -8,7 +8,8 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 - New standing order D-106 (user's words in Decisions.md, CODE_STANDING_ORDERS.md section 2, NEXT_SESSION_PROMPT.md): Claude merges approved PRs itself with `gh pr merge <n> --merge` only, then checks main and reports the merge commit and the test result; work-branch commits and pushes need no approval; never force-push or delete branches.
 - `.claude/settings.json` (allow `Bash(gh pr merge *)`) is on branch docs/claude-settings-2026-11-08, PR #11, for the user to merge.
 - KNOWN BLOCK: in this cloud environment every `gh pr` command is refused: "HTTP 403: GitHub GraphQL is not available from Claude Code sessions; use the REST API (gh api repos/{owner}/{repo}/...)". PR #10 had been merged through the REST merge endpoint before D-106; that route is not used any more.
-- EmpireIntel line of the same message (docs-only standing approval for shawn571/EmpireIntel): not acted on here; question to the user.
+- EmpireIntel line of the same message: the user gave it to the EmpireIntel session himself ("already done"); nothing changed in that repo from here.
+- D-106 addendum: while `gh pr merge` is refused, approved merges use `gh api -X PUT repos/shawn571/GoldIntel/pulls/<n>/merge -f merge_method=merge` (merge commit through the PR, never a push to main). PR #11's rule changed to `Bash(gh api -X PUT repos/shawn571/GoldIntel/pulls/*/merge *)`; the user merges #11. This PR (#12) is merged with that command.
 
 BRANCHES AND PULL REQUESTS (main = 10adc91: 0.5.5-passive, contract 1.13.0)
 | PR | Branch | Content | Matches main |
@@ -17,10 +18,10 @@ BRANCHES AND PULL REQUESTS (main = 10adc91: 0.5.5-passive, contract 1.13.0)
 | #8 | fix/0.5.6-perf (6620666) | 0.5.6-passive | no, ahead |
 | #9 | p4/m2-live (e6946b0) | 0.6.0-passive | no, ahead |
 | #11 | docs/claude-settings-2026-11-08 | .claude/settings.json; user merges | no, ahead |
-| (this) | docs/merge-rule-2026-11-08 | D-106 docs, this section; docs-only standing approval (D-105) | no, ahead until merged |
+| #12 | docs/merge-rule-2026-11-08 | D-106 docs, this section; docs-only standing approval (D-105) | merged with the REST command (merge commit in the report) |
 Merged and kept (branches are never deleted, D-106): #1 to #6, #10 (docs/session-state).
 
-PENDING (needs Shawn): as S-065 items 1 to 6, plus: merge PR #11; say where the EmpireIntel approval goes; decide how merges are done while `gh pr merge` is refused.
+PENDING (needs Shawn): as S-065 items 1 to 6, plus: merge PR #11.
 
 ## S-065 | 2026-11-08 | Claude (Claude Code cloud session) | FULL CURRENT STATE (read this first)
 Standing orders: CODE_STANDING_ORDERS.md (D-103, D-105). New-session prompt: NEXT_SESSION_PROMPT.md. S-064 below is superseded by this section.
