@@ -246,6 +246,7 @@ Trace.PERF_CAP = 500             -- 0.5.4 (M4, D-097): CPU and memory samples ke
 
 -- M4 measurement: one sample at interval begin, every CHECK_EVERY seconds and at the end. Stored apart from the trace,
 -- so long sessions cannot roll the samples out; also one EVT perf line in the trace. Read-only (Platform/Perf.lua).
+-- CPU only (0.5.6, D-100): the memory reading costs a 100-400 ms frame, so it runs only on /gi perf.
 local function perfSample(why)
   local Perf = P.PerfModule
   if not Perf then return end

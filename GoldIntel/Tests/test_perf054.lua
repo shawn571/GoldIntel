@@ -55,7 +55,7 @@ end
 T.describe('Perf.Sample (0.5.4, M4)', function()
   T.it('reads every metric of the enum for GoldIntel and the addon memory', function()
     local _, P = session(function(W) return profiler(W) end)
-    local s = P.PerfModule.Sample()
+    local s = P.PerfModule.Sample({ memory = true })
     T.eq(s.metrics.RecentAverageTime, 0.0456); T.eq(s.metrics.SessionAverageTime, 0.0123)
     T.eq(s.metrics.PeakTime, 1.75); T.eq(s.metrics.CountTimeOver1Ms, 2)
     T.eq(s.memKB, 2048.5); T.truthy(s.profilerEnabled); T.isnil(s.why)
@@ -77,7 +77,7 @@ T.describe('Perf.Sample (0.5.4, M4)', function()
 
   T.it('one failing metric does not stop the others; no memory API means memKB n/a', function()
     local _, P = session(function(W) return profiler(W, { failMetric = 3, memory = false }) end)
-    local s = P.PerfModule.Sample()
+    local s = P.PerfModule.Sample({ memory = true })
     T.isnil(s.metrics.PeakTime); T.eq(s.metrics.RecentAverageTime, 0.0456)
     T.isnil(s.memKB)
     T.truthy(P.PerfModule.Text(s):find('memKB=n/a', 1, true))
@@ -102,7 +102,7 @@ T.describe('perf samples while recording (0.5.4, M4)', function()
     T.eq(#samples(W), 3); T.eq(samples(W)[3].why, 'periodic')
     run('collect off')
     local S = samples(W)
-    T.eq(S[#S].why, 'final'); T.eq(S[#S].m.RecentAverageTime, 0.0456); T.eq(S[#S].memKB, 2048.5)
+    T.eq(S[#S].why, 'final'); T.eq(S[#S].m.RecentAverageTime, 0.0456); T.isnil(S[#S].memKB)   -- 0.5.6: CPU only
     local pl = traceHas(W, 'EVT perf periodic')
     T.truthy(pl and pl:find('RecentAverageTime=0.0456', 1, true), tostring(pl))
     T.truthy(traceHas(W, 'EVIDENCE profilerFunctions=GetAddOnMetric,IsEnabled'))
@@ -151,3 +151,42 @@ T.describe('perf samples while recording (0.5.4, M4)', function()
     T.eq(play(true), play(false))
   end)
 end)
+
+T.describe('0.5.6: memory only on request (D-100)', function()
+  local function count(calls, name) local n = 0 for _, c in ipairs(calls) do if c == name then n = n + 1 end end return n end
+
+  T.it('an automatic sample reads CPU but never calls UpdateAddOnMemoryUsage', function()
+    local _, P, _, _, calls = session(function(W) return profiler(W) end)
+    local s = P.PerfModule.Sample()
+    T.eq(s.metrics.RecentAverageTime, 0.0456); T.isnil(s.memKB); T.truthy(s.memSkipped)
+    T.eq(count(calls, 'UpdateAddOnMemoryUsage'), 0)
+    T.truthy(P.PerfModule.Text(s):find('memKB=skipped', 1, true))
+  end)
+
+  T.it('a whole recording (begin, periodic, final) never calls the memory functions; /gi perf calls them once', function()
+    local W, _, ns, run, calls = session(function(W) return profiler(W) end)
+    ns.Trace.CHECK_EVERY = 5
+    run('collect on'); W:advance(21); run('collect off')
+    ns.Trace.CHECK_EVERY = 600
+    T.truthy(#samples(W) >= 5)
+    T.eq(count(calls, 'UpdateAddOnMemoryUsage'), 0); T.eq(count(calls, 'GetAddOnMemoryUsage'), 0)
+    local out = run('perf')
+    T.eq(count(calls, 'UpdateAddOnMemoryUsage'), 1)
+    T.truthy(out:find('memKB=2048', 1, true) or out:find('memKB=2049', 1, true), out)
+  end)
+
+  T.it('mutation is caught: reading memory in automatic samples again', function()
+    local src = Loader.readFile(Loader.root .. '/Platform/Perf.lua')
+    local a = "  if opts.memory and type(env.UpdateAddOnMemoryUsage) == 'function'"
+    T.truthy(src:find(a, 1, true), 'anchor')
+    Loader.override = { ['Platform/Perf.lua'] = (src:gsub(a:gsub('%p', '%%%0'), "  if type(env.UpdateAddOnMemoryUsage) == 'function'")) }
+    local ok = pcall(function()
+      local _, P, _, _, calls = session(function(W) return profiler(W) end)
+      P.PerfModule.Sample()
+      assert(count(calls, 'UpdateAddOnMemoryUsage') == 0, 'memory read in an automatic sample')
+    end)
+    Loader.override = nil
+    T.falsy(ok, 'the mutant passed')
+  end)
+end)
+
