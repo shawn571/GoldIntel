@@ -4,6 +4,24 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-066 | 2026-11-08 | Claude (Claude Code cloud session "GoldIntel Code") | STATE UPDATE (S-065 still holds except as below)
+- New standing order D-106 (user's words in Decisions.md, CODE_STANDING_ORDERS.md section 2, NEXT_SESSION_PROMPT.md): Claude merges approved PRs itself with `gh pr merge <n> --merge` only, then checks main and reports the merge commit and the test result; work-branch commits and pushes need no approval; never force-push or delete branches.
+- `.claude/settings.json` (allow `Bash(gh pr merge *)`) is on branch docs/claude-settings-2026-11-08, PR #11, for the user to merge.
+- KNOWN BLOCK: in this cloud environment every `gh pr` command is refused: "HTTP 403: GitHub GraphQL is not available from Claude Code sessions; use the REST API (gh api repos/{owner}/{repo}/...)". PR #10 had been merged through the REST merge endpoint before D-106; that route is not used any more.
+- EmpireIntel line of the same message (docs-only standing approval for shawn571/EmpireIntel): not acted on here; question to the user.
+
+BRANCHES AND PULL REQUESTS (main = 10adc91: 0.5.5-passive, contract 1.13.0)
+| PR | Branch | Content | Matches main |
+|---|---|---|---|
+| #7 | p4/m1-pure (9f90308) | P4-M1 | no, ahead |
+| #8 | fix/0.5.6-perf (6620666) | 0.5.6-passive | no, ahead |
+| #9 | p4/m2-live (e6946b0) | 0.6.0-passive | no, ahead |
+| #11 | docs/claude-settings-2026-11-08 | .claude/settings.json; user merges | no, ahead |
+| (this) | docs/merge-rule-2026-11-08 | D-106 docs, this section; docs-only standing approval (D-105) | no, ahead until merged |
+Merged and kept (branches are never deleted, D-106): #1 to #6, #10 (docs/session-state).
+
+PENDING (needs Shawn): as S-065 items 1 to 6, plus: merge PR #11; say where the EmpireIntel approval goes; decide how merges are done while `gh pr merge` is refused.
+
 ## S-065 | 2026-11-08 | Claude (Claude Code cloud session) | FULL CURRENT STATE (read this first)
 Standing orders: CODE_STANDING_ORDERS.md (D-103, D-105). New-session prompt: NEXT_SESSION_PROMPT.md. S-064 below is superseded by this section.
 
