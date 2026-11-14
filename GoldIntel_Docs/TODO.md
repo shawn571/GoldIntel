@@ -1,12 +1,12 @@
 # GoldIntel TODO
 
-DOC VERSION: 1.3.1  |  UPDATED: 2026-11-08 (session S-068)
+DOC VERSION: 1.4.0  |  UPDATED: 2026-11-14 (session S-069)
 
 ```
-CURRENT PHASE:            Phase 3b: 3b-0..3b-3 CLOSED (3b-3 by D-101, 2026-11-08); 3b-4 NOT started (priorities: later decision). Phase 4: P4-M1 built (PR #7), P4-M2 built as 0.6.0-passive (PR #9); neither merged nor installed; P4-M3 (live validation) NOT started. Build on main: 0.5.5-passive; 0.5.6-passive on PR #8, INSTALLED on all characters (D-107).
-IMPLEMENTATION APPROVED:  Phases 1 and 2, Phase 3a (closed), Phase 3b scope D-067 (3b-0..3b-3 closed incl. M4 by D-097; 3b-4 NOT started); 0.5.6 build (D-100); Phase 4 P4-M1 (D-099) and P4-M2 BUILD ONLY (D-102: not installed or merged before the user approves that build). Merges of PR #8 then PR #7 only after the user says 0.5.6 works live (D-102). Docs-only merges as in D-105 and D-108 (also TODO.md and Changelog.md); approved merges with the REST command (D-106). Everything else is NOT approved.
+CURRENT PHASE:            Phase 3b: 3b-0..3b-3 CLOSED (3b-3 by D-101, 2026-11-08); 3b-4 NOT started (priorities: later decision). Phase 4: P4-M1 MERGED (PR #7, modules not loaded); P4-M2 built as 0.6.0-passive (PR #9), NOT approved, not merged, not installed; P4-M3 NOT started. Build on main: 0.5.6-passive (installed on all characters).
+IMPLEMENTATION APPROVED:  Phases 1 and 2, Phase 3a (closed), Phase 3b scope D-067 (3b-0..3b-3 closed incl. M4 by D-097; 3b-4 NOT started); 0.5.6 (D-100, merged by D-109); Phase 4 P4-M1 (D-099, merged by D-109) and P4-M2 BUILD ONLY (D-102; PR #9 not approved). Docs-only merges as in D-105 and D-108; approved merges with the REST command (D-106). Everything else is NOT approved.
 PHASE 0:                  COMPLETE
-OPEN BLOCKERS:            None. Waiting on the user: 0.5.6 baseline (at least 3 hours in at least 3 sessions, D-102), hours so far not yet reported, and his word that 0.5.6 works live (then PR #8, then PR #7). Section 0 quotes confirmed and TOC note settled (D-107). OI-14, OI-15 decided (D-088, D-089); OI-16 deferred (repo private); OI-8 closing wording, OI-5, OI-13, OI-17 unchanged.
+OPEN BLOCKERS:            None. Waiting on the user: review and approval of the 0.6.0 build (PR #9); Accountant Classic file for the cross-check (D-110); decision on the price plan (D-110, plan only). OI-14, OI-15 decided (D-088, D-089); OI-16 deferred (repo private); OI-8 closing wording, OI-5, OI-13, OI-17 unchanged.
 ```
 Note (2026-11-08, S-065): D-099..D-102 are recorded on the PR branches (#7, #8, #9) and reach main with those merges.
 
@@ -291,3 +291,10 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [x] User: decide the TOC `## Notes:` change. (Next approved build, D-107.)
 - [ ] Next approved build: update the TOC `## Notes:` line (it still says "Phase 2: core and store") (D-107).
 - [x] 2026-11-08 (S-066..S-068) D-106 (merges through the PR, REST command while `gh pr merge` is refused), D-107 (answers recorded), D-108 (standing approval covers TODO.md and Changelog.md). PRs #11, #12, #13 merged.
+- [x] 2026-11-14 (S-069) 0.5.6 baseline PASSED (D-109): 39.9 h, 224 periodic samples, 0.017 ms per frame, every 0.5.6 check 0. PR #8 and PR #7 merged.
+- [ ] User: attach Accountant Classic's SavedVariables file (same WTF folder) for the income and spending cross-check with GoldIntel, especially the OTHER share (D-110).
+- [ ] User: decide the price plan (Baseline_0.5.6_Report.md section 6): optional Auctionator / TSM source with GoldIntel's own fallback. Plan only; Phase 6 territory, NOT authorized.
+- [ ] Before using any other add-on as a source or reference: verify its licence (D-110); THIRD_PARTY.md with the first copied item.
+- [ ] PR #9 (0.6.0) is behind main since PR #7 and #8 merged: bring main into it (documents will conflict) when the user reviews it.
+- [ ] Note for Phase 4/7: /reload load frames cost 100-178 ms charged to GoldIntel (cause not measured; the 1.9 MB account SavedVariables file is a candidate, unverified). Track with the 0.6.0 measurements.
+

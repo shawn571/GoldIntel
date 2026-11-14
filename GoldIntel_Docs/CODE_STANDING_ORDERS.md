@@ -104,3 +104,14 @@ Format:
   handoff." The old session makes no commit or push after the new session's first report.
 - "Evidence files must be re-attached in the session that analyzes them." A session never relies on files attached
   to an earlier session; if they are needed and not attached, it asks for them.
+
+## 9. Other add-ons: copying, clean room, cross-checks, optional plugins (D-110, 2026-11-14)
+
+- "We can copy and credit where it's allowed. Where copying isn't allowed and it's a core function of what we're trying to build, do the clean room thing. We can use addons to check our work too. Where it makes sense we will have some things be optional plugins and note that some features will be better if these addons are installed but our addon will still work without them."
+- "In practice: copy only from MIT or CC BY sources, credited in THIRD_PARTY.md. For GPL or All Rights Reserved sources, use only the reviewer's hint notes, never their code or data tables, and record 'approach informed by <add-on>, no code copied'. GoldIntel must work without any other add-on. As a cross-check, compare GoldIntel's session income and spending with Accountant Classic's (installed) for the same sessions, especially the OTHER share; read its file only for comparison. Plan question, no code: for prices, report what GoldIntel does now and whether Auctionator's or TSM's public interface should be an optional source with our own fallback."
+- So: code or data is copied only from an MIT or CC BY source and credited in `THIRD_PARTY.md` (created with the first
+  copy). A GPL or All Rights Reserved source is never copied, code or data tables: only the reviewer's hint notes are
+  used, and the record says "approach informed by <add-on>, no code copied". Calling another add-on's public interface
+  at runtime is not copying; it is allowed only as an optional source with GoldIntel's own fallback. GoldIntel must
+  work with no other add-on installed. Another add-on's SavedVariables are read only for comparison, read-only, and
+  only from files attached in the session (section 8).
