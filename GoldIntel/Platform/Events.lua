@@ -64,6 +64,7 @@ local SPEC = {
   P_LEVEL         = { level = 'number' },
   P_PROFS         = { profs = 'table' },
   P_COMBAT        = { inCombat = 'boolean' },
+  P_ENCOUNTER     = { active = 'boolean' },
   P_TICK          = { loc = 'table?', dt = 'number', out = 'boolean?' },
   P_LOGOUT        = {},
   -- Phase 3b-1 additive entries (Contracts 1.7, D-074 A-2 and consequences)

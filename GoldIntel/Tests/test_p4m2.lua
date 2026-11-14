@@ -410,7 +410,7 @@ T.describe('P4-M2 mutation checks', function()
   local MUT = {
     { 'cash not fed', "    GI.Bus.On('LEDGER_CASH', guard(onCash))", "", checkScenario },
     { 'late value ignored', "    A:Enqueue('lotValue', rec); c.lotValues = c.lotValues + 1", "", checkScenario },
-    { 'reminder in combat', "  if type(minutes) ~= 'number' or minutes <= 0 or inCombat or not loadGT then return end", "  if type(minutes) ~= 'number' or minutes <= 0 or not loadGT then return end", reminderScenario },
+    { 'reminder in combat', "  if P.UI and P.UI.Blocked and P.UI.Blocked() then return end", "", reminderScenario },
     { 'pause not applied', "  if C then C:Manual(mode) end", "", pauseScenario },
     { 'final clock line unmarked', "  trace(clockText(why))", "  trace(clockText())", keepScenario },
     { 'loading screens and frozen frames not booked (D-115)', "  if extra > 1e-6 then C:Unobserved(extra, (p and p.out) and 'loading' or 'stall') end", "", timeScenario },

@@ -10,7 +10,8 @@
 --   * back-fill once per character (value and items of the saved raw records, no time, D-099 Q-4);
 --   * the live check: the aggregates' net cash and value created against the ledger and the lot book, 0 copper;
 --   * manual controls /gi pause, /gi resume, /gi afk, /gi activity (FR-SES-4, D-055) and /gi agg status|check|top;
---   * the /reload reminder (D-099 Q-6): one chat line, only outside combat, every reminder.reloadMinutes (60) minutes.
+--   * the /reload reminder (D-099 Q-6, D-115): a popup (Reload Now / Ignore / Configure; chat line as fallback), never in
+--     combat or an encounter, every reminder.reloadMinutes (60) minutes; bands in Core/Reminder.lua.
 -- It decides no source and no value and writes neither cash nor lots (AC-15).
 
 local ADDON, GI = ...
@@ -91,7 +92,7 @@ function Live.Ensure()
   return true
 end
 
-Live.BACKFILL_STEP = 500          -- records per 0.5 s tick: 4,708 records took 7.2 ms in all on desktop (2026-11-14)
+Live.BACKFILL_STEP = 500          -- records per 0.5 s tick: the Paladin's 4,708 records in 5 s; largest step 3.2 ms on desktop incl. the tick's other work (2026-11-14)
 
 --- Runs one back-fill step of n records (all with math.huge). When the last step is done, the check offsets are set
 -- so the live check reads 0 from that moment. True when no back-fill is running any more.
@@ -237,12 +238,33 @@ local function life() if C and active then C:Life(nowGT()) end end
 
 local function remind(gt)
   local minutes = GI.Config and GI.Config.Get and GI.Config.Get('reminder.reloadMinutes') or 60
-  if type(minutes) ~= 'number' or minutes <= 0 or inCombat or not loadGT then return end
+  if type(minutes) ~= 'number' or minutes <= 0 or not loadGT then return end
   if gt - loadGT < minutes * 60 then return end
   if lastRemind and gt - lastRemind < minutes * 60 then return end
+  if P.UI and P.UI.Blocked and P.UI.Blocked() then return end      -- D-115: never in combat or an encounter; try again in 60 s
   lastRemind = gt
   c.reminders = c.reminders + 1
+  local R = GI.Reminder
+  -- D-115: a popup (Reload Now / Ignore / Configure); the chat line stays as the fallback when no popup can be shown
+  if R and P.UI and P.UI.ShowReloadPrompt then
+    local ok, why = P.UI.ShowReloadPrompt{
+      text = R.PopupText(minutes),
+      onReload = function()
+        trace('EVT reminder click=reload')
+        local ok2, err = P.UI.Reload()
+        if not ok2 then
+          trace('EVT reminder reloadFailed err=' .. tostring(err))
+          P.Print('GoldIntel: the client refused the reload (' .. tostring(err) .. '); type /reload to save')
+        end
+      end,
+      onIgnore = function() trace('EVT reminder click=ignore') end,
+      onConfigure = function() trace('EVT reminder click=configure'); R.OpenSettings() end,
+    }
+    if ok then trace(string.format('EVT reminder shown minutes=%d band=%s', minutes, R.Band(minutes))); return end
+    trace('EVT reminder popupFailed why=' .. tostring(why))
+  end
   P.Print(string.format(Live.REMINDER_TEXT, minutes))
+  trace(string.format('EVT reminder chat minutes=%d', minutes))
 end
 
 local function onTick(p)
@@ -284,7 +306,12 @@ local function wire()
   end
   P.On('P_TICK', guard(onTick))
   P.On('P_CAST', guard(onCast))
-  P.On('P_COMBAT', guard(function(p) inCombat = p and p.inCombat == true; life() end))
+  P.On('P_COMBAT', guard(function(p)
+    inCombat = p and p.inCombat == true
+    if inCombat and P.UI and P.UI.HideReloadPrompt then P.UI.HideReloadPrompt() end   -- D-115: never shown in combat
+    life()
+  end))
+  P.On('P_ENCOUNTER', guard(function(p) if p and p.active and P.UI and P.UI.HideReloadPrompt then P.UI.HideReloadPrompt() end end))
   for _, e in ipairs({ 'P_MONEY', 'P_LOOT_OPEN', 'P_ZONE', 'P_LEVEL', 'P_QUEST_DONE' }) do P.On(e, guard(life)) end
 end
 wire()

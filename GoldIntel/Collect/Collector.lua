@@ -35,6 +35,7 @@ Collector.GROUPS = {
   { name = 'G7', label = 'coin chat (loot signal)', events = { 'CHAT_MSG_MONEY' } },
   { name = 'G8', label = 'item chat (evidence only)', events = { 'CHAT_MSG_LOOT' } },
   { name = 'G9', label = 'trainer (0.5.2, D-093)', events = { 'TRAINER_SHOW', 'TRAINER_CLOSED' } },
+  { name = 'G10', label = 'boss encounters: no reload popup (0.6.1, D-115)', events = { 'ENCOUNTER_START', 'ENCOUNTER_END' } },
 }
 
 local enabled = false

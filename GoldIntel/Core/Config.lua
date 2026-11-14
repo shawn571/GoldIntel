@@ -284,7 +284,7 @@ local BUILTIN = {
   { 'prune.maxBytes', { type = 'number', default = 2000000, minValue = 100000, maxValue = 20000000, integer = true,
                         help = 'Approximate size budget of the saved database' } },
   { 'reminder.reloadMinutes', { type = 'number', default = 60, minValue = 0, maxValue = 600, integer = true,
-                      help = 'Minutes between the /reload reminder (one chat line, only outside combat); 0 turns it off (D-099 Q-6)' } },
+                      help = 'Minutes between the /reload reminder popup (never in combat or an encounter); 0 turns it off; /gi settings shows the bands (D-099 Q-6, D-115)' } },
   { 'collect.auto', { type = 'boolean', default = true,
                       help = 'Start collecting (cash and item ledger) automatically a few seconds after login; /gi collect off still stops it' } },
   { 'normalization.minHours', { type = 'number', default = 5, minValue = 0, maxValue = 1000,

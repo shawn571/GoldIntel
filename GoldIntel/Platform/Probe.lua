@@ -157,6 +157,14 @@ local PROBES = {
   { cap = 'merchant.events',      fn = eventProbe({ 'MERCHANT_SHOW', 'MERCHANT_CLOSED' }) },
   { cap = 'quest.event',          fn = eventProbe({ 'QUEST_TURNED_IN' }) },
   { cap = 'map.worldsize',        fn = memberProbe('C_Map', { 'GetMapWorldSize' }) },   -- 0.6.0 (P4-M2): soft-travel distance
+  -- 0.6.1 (D-115): the /reload popup and the settings window
+  { cap = 'ui.popup',             fn = function()
+      local ok = type(P.env.StaticPopupDialogs) == 'table' and P.fn('StaticPopup_Show') ~= nil and P.fn('StaticPopup_Hide') ~= nil
+      return ok, ok and nil or 'StaticPopupDialogs / StaticPopup_Show / StaticPopup_Hide missing' end },
+  { cap = 'ui.reload',            fn = function()
+      local ok = P.HasIn('C_UI', 'Reload') or P.fn('ReloadUI') ~= nil
+      return ok, ok and nil or 'neither C_UI.Reload nor ReloadUI exists' end },
+  { cap = 'encounter.events',     fn = eventProbe({ 'ENCOUNTER_START', 'ENCOUNTER_END' }) },
   { cap = 'perf.profiler',        fn = memberProbe('C_AddOnProfiler', { 'GetAddOnMetric' }) },   -- 0.5.4 (M4, D-097)
   { cap = 'trainer.events',       fn = eventProbe({ 'TRAINER_SHOW', 'TRAINER_CLOSED' }) },   -- 0.5.2 (D-093)
   -- Mail and trade

@@ -22,7 +22,7 @@ restart the client. `GIMin`, `GoldIntelDiag` and `GIProbeLoot` are diagnostic to
 
 ## Commands (short list)
 `/gi collect on|off`, `/gi ledger status|mark|check|last|trace`, `/gi lots status|last|sales|unknown|check|reset confirm`,
-`/gi price set|list|clear`, `/gi config`, `/gi perf`, `/gi agg status|check|top`, `/gi pause|resume|afk`, `/gi activity`, `/gi version`, `/gi help`.
+`/gi price set|list|clear`, `/gi config`, `/gi perf`, `/gi agg status|check|top`, `/gi pause|resume|afk`, `/gi activity`, `/gi settings`, `/gi version`, `/gi help`.
 
 ## Layout
 - `GoldIntel/` the addon (`Platform/`, `Collect/`, `Ledger/`, `Aggregate/`, `Core/`, `Store/`) and its tests (`GoldIntel/Tests`, run with `lua5.4 run.lua` from that folder).
