@@ -254,7 +254,7 @@ T.describe('P4-M2 commands and trace', function()
     for _ = 1, 6 do coinLoot(W, 5); W:advance(20) end
     T.truthy(run('agg status'):find('places', 1, true))
     local top = run('agg top 3')
-    T.truthy(top:find('1. Durotar', 1, true), top)
+    T.truthy(top:find('1 more with gold but under 10 minutes (not ranked)', 1, true), top)   -- 2 minutes: not ranked (D-115)
     ns.AggLive.REPORT_EVERY = 5; W:advance(6); ns.AggLive.REPORT_EVERY = 600
     local lines = table.concat(W.env.GoldIntelCharDB.trace.lines, '\n')
     T.truthy(lines:find('EVT agg periodic cash=0 vc=0', 1, true), lines:sub(-300))
@@ -272,6 +272,102 @@ T.describe('P4-M2 commands and trace', function()
     T.truthy(run('afk'):find('away', 1, true))
     T.truthy(run('resume'):find('counted again', 1, true))
     T.truthy(run('activity NONSENSE'):find('unknown key', 1, true))
+  end)
+end)
+
+---------------------------------------------------------------------------
+-- 0.6.1 (D-115)
+---------------------------------------------------------------------------
+-- Every second of an interval gets exactly one class: active, idle, travelHard (taxi, loading screen), travelSoft,
+-- paused. Their total equals the session time (the live check of 2026-11-14 had 6,841 s over 5,664 s).
+local function timeScenario(override)
+  local W, _, ns, run = session(nil, { override = override })
+  local begin = W.state.gt - 1                                    -- session() switches collect on, then advances 1 s
+  coinLoot(W, 5)                                                  -- active
+  W:advance(200)                                                  -- no signal: idle
+  W.env.UnitOnTaxi = function() return true end; W:advance(60)   -- flight path
+  W.env.UnitOnTaxi = function() return false end
+  W:fire('PLAYER_LEAVING_WORLD'); W:advance(12); W:fire('PLAYER_ENTERING_WORLD')   -- a loading screen
+  coinLoot(W, 3)
+  run('pause'); W:advance(30); run('resume')
+  W:stall(8)                                                      -- one frozen frame longer than the 5 s tick clamp
+  coinLoot(W, 2); W:advance(0.3)
+  run('collect off')
+  local s = ns.AggLive.ClockStats()
+  local session = W.state.gt - begin
+  local classes = s.active + s.idle + s.travelHard + s.travelSoft + s.paused
+  assert(math.abs(s.session - session) < 0.01, 'session ' .. s.session .. ' vs ' .. session)
+  assert(math.abs(classes - session) < 0.01, string.format('classes %.3f vs session %.3f', classes, session))
+  assert(s.pending == 0 and math.abs(s.total - classes) < 1e-9, 'total')
+  assert(s.travelHard >= 71.9, 'taxi and loading screen are hard travel: ' .. s.travelHard)
+  assert(s.paused >= 29.9 and s.paused <= 30.6, 'paused ' .. s.paused)
+  local keep = table.concat(W.env.GoldIntelCharDB.trace.keep, '\n')
+  local tot, ses = keep:match('EVT clock final .- total=(%d+) session=(%d+)')
+  assert(tot and tot == ses, 'final line total= and session= : ' .. tostring(tot) .. ' / ' .. tostring(ses))
+  assert(keep:find('EVT clock final .- noDistance=%d+'), 'noDistance after the classes')
+end
+
+-- /gi agg top ranks by gold per hour among cells with at least 10 minutes; back-filled cells are listed apart.
+local function topScenario(override)
+  local W, _, ns, run = session(nil, { override = override })
+  for _ = 1, 16 do coinLoot(W, 50); W:advance(60) end            -- about 17 minutes of looting in Durotar: ranked
+  local st = aggState(W)
+  st.places['bf|Barrens'] = { zone = 'The Barrens', cells = { ['LOOT|?'] = { coin = 90000, vc = 0, s = 0, q = {} } } }
+  st.places['short|Mulgore'] = { zone = 'Mulgore', cells = { ['GRIND|1-5'] = { coin = 500, vc = 0, s = 120, q = {} } } }
+  local res = ns.AggLive.Top(5)
+  assert(#res.ranked == 1 and res.ranked[1].name:find('Durotar') and res.ranked[1].rate > 0, 'ranked: ' .. #res.ranked)
+  assert(#res.backfilled == 1 and res.backfilled[1].name == 'The Barrens', 'back-filled apart')
+  assert(res.short == 1, 'short ' .. res.short)
+  local out = run('agg top')
+  assert(out:find('1. Durotar', 1, true) and out:find('per hour', 1, true), out)
+  assert(out:find('back-filled before 0.6.0', 1, true) and out:find('The Barrens', 1, true), out)
+  assert(out:find('1 more with gold but under 10 minutes', 1, true), out)
+  assert(out:find('1. Durotar') < out:find('The Barrens'), 'the 90 g back-filled cell does not outrank the timed one')
+end
+
+-- The back-fill runs in steps; an entry stored while it runs is counted once; the check reads 0 when it is done.
+local function backfillScenario(override)
+  local empty = { ['Aggregate/Live.lua'] = 'local ADDON, GI = ...\nGI.AggLive = nil\n' }
+  local W = session(nil, { money = 2000, override = empty })
+  coinLoot(W, 20)
+  local saved = save(W)
+  local cash = saved.account.ledger[W.state.guid].cash
+  local first = cash[1]
+  for i = 2, 6000 do local r = {} for k, v in pairs(first) do r[k] = v end; r.id = 10000 + i; cash[#cash + 1] = r end
+  local W2, _, ns2, run = session(saved, { override = override })
+  local done, total = ns2.AggLive.Backfilling()
+  assert(done and total >= 6000 and done < total, 'back-fill spread over ticks: ' .. tostring(done) .. '/' .. tostring(total))
+  assert(run('agg check'):find('back-fill in progress', 1, true), 'check waits')
+  pay(W2, 33); W2:advance(3)                                      -- stored while the back-fill runs (12 ticks in all)
+  assert(ns2.AggLive.Backfilling(), 'the entry was stored during the back-fill')
+  W2:advance(5)
+  assert(ns2.AggLive.Backfilling() == nil, 'finished')
+  local r = ns2.AggLive.Check()
+  assert(r and r.cash == 0 and r.vc == 0, 'check ' .. tostring(r and r.cash) .. ' / ' .. tostring(r and r.vc))
+  assert(aggState(W2).backfilled.n >= 6000, "all records")
+  -- nothing is folded here, so the aggregates' net must equal the ledger's net exactly: offset 0 (a double count shows here)
+  assert(aggState(W2).check.cash == 0, 'check offset ' .. tostring(aggState(W2).check.cash))
+end
+
+T.describe('0.6.1 fixes (D-115)', function()
+  T.it('time classes never overlap and add up to the session time (taxi, loading screen, pause, idle, a frozen frame)', function() timeScenario() end)
+  T.it('agg top: gold per hour with a 10-minute minimum; back-filled places listed separately', function() topScenario() end)
+  T.it('the back-fill runs in steps of BACKFILL_STEP records, counts live entries once, and the check is 0 after it', function() backfillScenario() end)
+  T.it('a back-fill still running at logout is finished before the save', function()
+    local empty = { ['Aggregate/Live.lua'] = 'local ADDON, GI = ...\nGI.AggLive = nil\n' }
+    local W = session(nil, { money = 2000, override = empty })
+    coinLoot(W, 20)
+    local saved = save(W)
+    local cash = saved.account.ledger[W.state.guid].cash
+    for i = 2, 3000 do local r = {} for k, v in pairs(cash[1]) do r[k] = v end; r.id = 20000 + i; cash[#cash + 1] = r end
+    local W2, _, ns2 = session(saved)
+    T.truthy(ns2.AggLive.Backfilling())
+    local saved2 = save(W2)
+    local st = saved2.account.agg[W2.state.guid]
+    T.truthy(st.backfilled and st.backfilled.n >= 3000, 'complete in the saved file')
+    local W3, _, ns3 = session(saved2)
+    T.isnil(ns3.AggLive.Backfilling())
+    T.eq(ns3.AggLive.Check().cash, 0)
   end)
 end)
 
@@ -317,6 +413,9 @@ T.describe('P4-M2 mutation checks', function()
     { 'reminder in combat', "  if type(minutes) ~= 'number' or minutes <= 0 or inCombat or not loadGT then return end", "  if type(minutes) ~= 'number' or minutes <= 0 or not loadGT then return end", reminderScenario },
     { 'pause not applied', "  if C then C:Manual(mode) end", "", pauseScenario },
     { 'final clock line unmarked', "  trace(clockText(why))", "  trace(clockText())", keepScenario },
+    { 'loading screens and frozen frames not booked (D-115)', "  if extra > 1e-6 then C:Unobserved(extra, (p and p.out) and 'loading' or 'stall') end", "", timeScenario },
+    { 'back-filled cells ranked with the rest (D-115)', "        if ck:find('|%?$') then", "        if false then", topScenario },
+    { 'no minimum time for the ranking (D-115)', "        elseif s >= Live.TOP_MIN_SECONDS then", "        elseif s >= 0 then", topScenario },
   }
   for _, m in ipairs(MUT) do
     T.it('mutation is caught: ' .. m[1], function()
@@ -331,6 +430,13 @@ T.describe('P4-M2 mutation checks', function()
   end
   T.it('mutation is caught: periodic lines kept again (the 0.6.0 rule before D-113)', function()
     T.falsy((pcall(keepScenario, mutantTrace("text:find('^EVT agg final', 1)", "text:find('^EVT agg', 1)"))), 'the mutant passed')
+  end)
+  local AGGR = Loader.readFile(Loader.root .. '/Aggregate/Aggregator.lua')
+  T.it('mutation is caught: back-fill reads the live list instead of a snapshot (D-115)', function()
+    local a = "    for i, rec in ipairs(ledger.cash) do cash[i] = rec end"
+    local i, j = AGGR:find(a, 1, true); assert(i, 'anchor missing')
+    local m = { ['Aggregate/Aggregator.lua'] = AGGR:sub(1, i - 1) .. "    cash = ledger.cash" .. AGGR:sub(j + 1) }
+    T.falsy((pcall(backfillScenario, m)), 'the mutant passed')
   end)
   T.it('mutation is caught: MISMATCH lines no longer kept', function()
     T.falsy((pcall(keepScenario, mutantTrace("(text:find('^EVT agg', 1) and text:find(' MISMATCH', 1, true))", "false"))), 'the mutant passed')

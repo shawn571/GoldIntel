@@ -141,7 +141,7 @@ T.describe('P4-M1 Clock (D-054, D-055, AM-3, Q-3)', function()
     drive(C, 0, 100, pos, { [1] = function(c, gt) c:Productive(gt, 'GRIND', pos(gt)) end })
     C:Flush(100)
     local st = C:Stats()
-    T.eq(st.travelSoft, 0); T.truthy(st.travelUnknown > 0); T.eq(st.active, 100)
+    T.eq(st.travelSoft, 0); T.truthy(st.noDistance > 0); T.eq(st.active, 100)
   end)
 
   T.it('Q-3: time is split by the current activity, and a manual override wins', function()

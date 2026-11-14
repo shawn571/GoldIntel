@@ -139,9 +139,11 @@ function Map.Check()
 end
 
 --- One 0.5 s step: detect zone changes and emit P_TICK. Exposed for tests.
+local wasOut = false
 function Map.OnTick()
   if not P.InWorld() then
     lastTickGT = nil               -- do not credit time spent in loading screens
+    wasOut = true                  -- 0.6.1 (D-115): the next tick says so; AggLive books that time as hard travel
     return
   end
   local _, gt = P.Now()
@@ -153,7 +155,9 @@ function Map.OnTick()
   end
   lastTickGT = gt
   local loc = Map.Check()
-  P.Events.Emit('P_TICK', { loc = loc, dt = dt })
+  local out = wasOut
+  wasOut = false
+  P.Events.Emit('P_TICK', { loc = loc, dt = dt, out = out or nil })
 end
 
 local function onZoneEvent()

@@ -56,7 +56,9 @@ function CK.New(opts)
     idleSec = opts.idleSec or CK.IDLE, drySec = opts.drySec or CK.DRY, nearYards = opts.nearYards or CK.NEAR,
     minSpeed = opts.minSpeed or CK.MIN_SPEED, actWindow = opts.actWindow or CK.ACT_WINDOW, distance = opts.distance,
     lives = {}, prods = {}, lastProd = nil, lastLoc = nil, manual = nil, override = nil, pending = {},
-    stats = { active = 0, idle = 0, travelHard = 0, travelSoft = 0, paused = 0, travelUnknown = 0, slices = 0 },
+    -- the five classes never overlap (D-115); noDistance is NOT a class: seconds of movement whose distance could not be
+    -- measured, already counted in one of the classes (it was named travelUnknown in 0.6.0)
+    stats = { active = 0, idle = 0, travelHard = 0, travelSoft = 0, paused = 0, noDistance = 0, slices = 0 },
     speed = {},
   }, Obj)
 end
@@ -176,7 +178,7 @@ function Obj:Tick(gt, dt, loc, flags)
       candidate = far >= self.nearYards and (step / dt) >= self.minSpeed
       if step > 0.5 then self:_speed(step / dt, dt) end
     elseif moved(self, prevLoc, loc) then
-      self.stats.travelUnknown = self.stats.travelUnknown + dt
+      self.stats.noDistance = self.stats.noDistance + dt
     end
   end
   local act = self:Current(gt)
@@ -204,6 +206,22 @@ end
 
 --- Seconds of movement per speed bucket (only while moving with a known distance).
 function Obj:Speeds() local s = {} for k, v in pairs(self.speed) do s[k] = v end return s end
+
+--- 0.6.1 (D-115): time no tick observed. kind 'loading' (a loading screen: hard travel, as D-054 says) or 'stall'
+-- (the client froze longer than the tick clamp: idle, so no cell is credited). A manual pause wins over both.
+function Obj:Unobserved(dt, kind)
+  if type(dt) ~= 'number' or dt <= 0 then return end
+  local class = self.manual and 'paused' or (kind == 'loading' and 'travelHard' or 'idle')
+  self.stats[class] = self.stats[class] + dt
+end
+
+--- Seconds in the five classes plus the slices still waiting: equals the observed session time.
+function Obj:Total()
+  local s = self.stats
+  local t = s.active + s.idle + s.travelHard + s.travelSoft + s.paused
+  for _, p in ipairs(self.pending) do t = t + p.dt end
+  return t
+end
 
 function Obj:Flush(gt) return self:_settle(gt, true) end
 

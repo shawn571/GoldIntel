@@ -43,6 +43,15 @@ local function nowGT() local _, gt = P.Now(); return gt end
 local function nowUnix() local ut = P.Now(); return ut end
 local function level() local p = P.Player and P.Player(); return p and p.level end
 local function trace(text) if GI.Trace and GI.Trace.IsRunning and GI.Trace.IsRunning() then GI.Trace.Line(text) end end
+local function tickFlags() return { taxi = P.OnTaxi and P.OnTaxi() or false, inWorld = P.InWorld and P.InWorld(), level = level() } end
+
+local beginGT, lastTickGT, endGT = nil, nil, nil   -- D-115: the interval's start, the last tick, the end
+
+--- Seconds since the interval began (to its end once it has ended); 0 before any interval.
+function Live.SessionSeconds()
+  if not beginGT then return 0 end
+  return (active and nowGT() or endGT or nowGT()) - beginGT
+end
 
 local function guard(fn)
   return function(...)
@@ -69,24 +78,57 @@ function Live.Ensure()
   local ledgerSec, lotsSec = GI.Store.Section('ledger'), GI.Store.Section('lots')
   local ledger, lots = ledgerSec and ledgerSec[p.key], lotsSec and lotsSec[p.key]
   if not state.backfilled then
-    -- the saved records already contain any entry that arrived before this moment: the pre-queue is dropped
-    A:Backfill(ledger, lots)
+    -- the saved records already contain any entry that arrived before this moment: the pre-queue is dropped.
+    -- 0.6.1 (D-115): the back-fill runs in steps of BACKFILL_STEP records per tick (Live.Backfilling); entries stored
+    -- meanwhile are queued as usual, because they are not in the snapshot.
+    A:BackfillStart(ledger, lots)
     preQueue = {}
-    local T = A:Totals()
-    local cum = GI.Cash and GI.Cash.Cumulative and GI.Cash.Cumulative() or 0
-    state.check = { cash = (T.cin - T.cout) - cum, vc = T.vc - createdValue(lots), since = nowUnix() }
-    state.since = state.check.since
-    state.build = P.VERSION
+    Live.StepBackfill(0)
+    return true
   end
   for _, e in ipairs(preQueue) do A:Enqueue('cash', e) end
   preQueue = {}
   return true
 end
 
+Live.BACKFILL_STEP = 500          -- records per 0.5 s tick: 4,708 records took 7.2 ms in all on desktop (2026-11-14)
+
+--- Runs one back-fill step of n records (all with math.huge). When the last step is done, the check offsets are set
+-- so the live check reads 0 from that moment. True when no back-fill is running any more.
+function Live.StepBackfill(n)
+  if not (A and A.bf) then return true end
+  if not A:BackfillStep(n) then return false end
+  A:Drain()
+  local p = P.Player and P.Player()
+  local lotsSec = GI.Store.Section('lots')
+  local T = A:Totals()
+  local cum = GI.Cash and GI.Cash.Cumulative and GI.Cash.Cumulative() or 0
+  state.check = { cash = (T.cin - T.cout) - cum, vc = T.vc - createdValue(lotsSec and p and lotsSec[p.key]), since = nowUnix() }
+  state.since = state.check.since
+  state.build = P.VERSION
+  trace(string.format('EVT agg backfill done records=%d', state.backfilled and state.backfilled.n or 0))
+  return true
+end
+
+--- The clock's seconds per class with total (classes + pending) and session (D-115); nil before the first interval.
+function Live.ClockStats()
+  if not C then return nil end
+  local s = C:Stats()
+  s.total, s.session = C:Total(), Live.SessionSeconds()
+  return s
+end
+
+--- Done, total of a running back-fill, or nil.
+function Live.Backfilling() if A and A.bf then return A:BackfillProgress() end end
+
 --- The live check (D-099, plan section 4): both differences must be 0.
 function Live.Check()
   local ok, why = Live.Ensure()
   if not ok then return nil, why end
+  if A.bf then
+    local d, n = A:BackfillProgress()
+    return nil, string.format('back-fill in progress (%d of %d records)', d, n)
+  end
   A:Drain()
   local p = P.Player and P.Player()
   local lotsSec = GI.Store.Section('lots')
@@ -104,9 +146,12 @@ local function clockText(why)
   table.sort(keys, function(a, b) return (tonumber(a:match('^(%d+)')) or 0) < (tonumber(b:match('^(%d+)')) or 0) end)
   local parts = {}
   for _, k in ipairs(keys) do parts[#parts + 1] = k .. ':' .. math.floor(sp[k]) end
-  return string.format('EVT clock %sactive=%d idle=%d travelHard=%d travelSoft=%d paused=%d travelUnknown=%d pending=%d speed=%s',
-    why and (why .. ' ') or '', math.floor(s.active), math.floor(s.idle), math.floor(s.travelHard), math.floor(s.travelSoft), math.floor(s.paused),
-    math.floor(s.travelUnknown), s.pending, #parts > 0 and table.concat(parts, ',') or 'none')
+  -- D-115: the five classes never overlap; total = classes + pending, session = time since the interval began.
+  -- noDistance (moving, distance not measurable) is part of the classes and shown after them.
+  return string.format('EVT clock %sactive=%d idle=%d travelHard=%d travelSoft=%d paused=%d total=%d session=%d pending=%d noDistance=%d speed=%s',
+    why and (why .. ' ') or '', math.floor(s.active + 0.5), math.floor(s.idle + 0.5), math.floor(s.travelHard + 0.5),
+    math.floor(s.travelSoft + 0.5), math.floor(s.paused + 0.5), math.floor(C:Total() + 0.5),
+    math.floor(Live.SessionSeconds() + 0.5), s.pending, math.floor(s.noDistance + 0.5), #parts > 0 and table.concat(parts, ',') or 'none')
 end
 
 local function report(why)
@@ -132,7 +177,9 @@ function Live.Begin()
   if active then return true end
   if not Live.Ensure() then return false end
   C = GI.Clock.New{ distance = P.Distance }
-  C:Life(nowGT())
+  beginGT = nowGT()
+  lastTickGT = beginGT
+  C:Life(beginGT)
   C:Manual(manual)
   C:Override(override)
   active = true
@@ -146,7 +193,14 @@ end
 --- Called by Ledger.End (before the trace ends): flush the clock, drain, final lines.
 function Live.End()
   if not active then return false end
-  addSlices(C:Flush(nowGT()))
+  local gt = nowGT()
+  if lastTickGT and gt > lastTickGT then           -- the part of the last tick before the interval ended (D-115)
+    addSlices(C:Tick(gt, gt - lastTickGT, P.Where and P.Where() or nil, tickFlags()))
+    lastTickGT = gt
+  end
+  endGT = gt
+  addSlices(C:Flush(gt))
+  Live.StepBackfill(math.huge)                     -- a back-fill still running is finished before the data is saved
   if A then A:Drain() end
   report('final')
   active = false
@@ -197,8 +251,17 @@ local function onTick(p)
   local dt = (p and p.dt) or 0
   remindAcc = remindAcc + dt
   if remindAcc >= Live.REMIND_CHECK then remindAcc = 0; remind(gt) end
+  if A and A.bf then Live.StepBackfill(Live.BACKFILL_STEP) end
   if not (active and C and A) then return end
-  addSlices(C:Tick(gt, dt, p and p.loc, { taxi = P.OnTaxi and P.OnTaxi() or false, inWorld = P.InWorld and P.InWorld(), level = level() }))
+  -- D-115: every second of the interval gets exactly one class. The tick's dt is clamped (5 s) and restarts after a
+  -- loading screen; the rest of the real elapsed time is booked here: a loading screen as hard travel, a longer
+  -- freeze as idle. At the start, a tick that began before the interval counts only from the interval's start.
+  local real = gt - (lastTickGT or gt)
+  lastTickGT = gt
+  if dt > real then dt = real end
+  local extra = real - dt
+  if extra > 1e-6 then C:Unobserved(extra, (p and p.out) and 'loading' or 'stall') end
+  addSlices(C:Tick(gt, dt, p and p.loc, tickFlags()))
   drainAcc = drainAcc + dt
   if drainAcc >= Live.DRAIN_EVERY then drainAcc = 0; A:Drain() end
   reportAcc = reportAcc + dt
@@ -246,20 +309,40 @@ local function placeName(key, place)
   return tostring(place.zone) .. (place.sub and place.sub ~= '' and (' / ' .. place.sub) or '')
 end
 
+Live.TOP_MIN_SECONDS = 600       -- D-115: a cell is ranked by gold per hour only with at least 10 minutes of recorded time
+
+--- D-115: { ranked = rows by gold per hour (cells with >= TOP_MIN_SECONDS), backfilled = back-filled cells (bracket '?',
+-- no time) by gold, short = number of other cells with gold but too little time }. Each list holds at most n rows.
+-- Row: { name, cell, value, s, rate (copper per hour; ranked only) }.
 function Live.Top(n)
-  if not Live.Ensure() then return {} end
+  n = n or 5
+  local res = { ranked = {}, backfilled = {}, short = 0 }
+  if not Live.Ensure() then return res end
   A:Drain()
-  local rows = {}
   for key, place in pairs(state.places) do
     for ck, cell in pairs(place.cells) do
       local value = cell.coin + cell.vc
-      if value > 0 then rows[#rows + 1] = { name = placeName(key, place), cell = ck, value = value, s = cell.s } end
+      local s = cell.s or 0
+      if value > 0 then
+        local row = { name = placeName(key, place), cell = ck, value = value, s = s }
+        if ck:find('|%?$') then
+          res.backfilled[#res.backfilled + 1] = row
+        elseif s >= Live.TOP_MIN_SECONDS then
+          row.rate = math.floor(value * 3600 / s)
+          res.ranked[#res.ranked + 1] = row
+        else
+          res.short = res.short + 1
+        end
+      end
     end
   end
-  table.sort(rows, function(a, b) return a.value > b.value end)
-  local out = {}
-  for i = 1, math.min(n or 5, #rows) do out[i] = rows[i] end
-  return out
+  local function byName(a, b) return a.name .. a.cell < b.name .. b.cell end
+  table.sort(res.ranked, function(a, b) if a.rate ~= b.rate then return a.rate > b.rate end return byName(a, b) end)
+  table.sort(res.backfilled, function(a, b) if a.value ~= b.value then return a.value > b.value end return byName(a, b) end)
+  for _, k in ipairs({ 'ranked', 'backfilled' }) do
+    while #res[k] > n do table.remove(res[k]) end
+  end
+  return res
 end
 
 local function money(c2)
@@ -276,11 +359,17 @@ if GI.Commands and GI.Commands.Register then
       say(string.format('agg check: cash difference %d copper, value difference %d copper %s; active time %d s',
         r.cash, r.vc, (r.cash == 0 and r.vc == 0) and '(OK)' or '(MISMATCH)', math.floor(r.seconds)))
     elseif sub == 'top' then
-      local rows = Live.Top(tonumber(args[2]) or 5)
-      if #rows == 0 then say('agg top: nothing yet') end
-      for i, r in ipairs(rows) do
-        local rate = r.s >= 60 and (money(math.floor(r.value * 3600 / r.s)) .. ' per hour') or 'time too short (or back-filled)'
-        say(string.format('%d. %s [%s] %s in %d min, %s', i, r.name, r.cell, money(r.value), math.floor(r.s / 60), rate))
+      local res = Live.Top(tonumber(args[2]) or 5)
+      local mins = math.floor(Live.TOP_MIN_SECONDS / 60)
+      say(string.format('agg top: gold per hour, places with at least %d minutes recorded', mins))
+      if #res.ranked == 0 then say('  none yet') end
+      for i, r in ipairs(res.ranked) do
+        say(string.format('%d. %s [%s] %s per hour (%s in %d min)', i, r.name, r.cell, money(r.rate), money(r.value), math.floor(r.s / 60)))
+      end
+      if res.short > 0 then say(string.format('  %d more with gold but under %d minutes (not ranked)', res.short, mins)) end
+      if #res.backfilled > 0 then
+        say('agg top: back-filled before 0.6.0 (no time recorded), by gold')
+        for i, r in ipairs(res.backfilled) do say(string.format('  %d. %s [%s] %s', i, r.name, r.cell, money(r.value))) end
       end
     else
       if not Live.Ensure() then say('agg: not available (store not writable or no character)'); return end
@@ -290,7 +379,9 @@ if GI.Commands and GI.Commands.Register then
       for _, pl in pairs(state.places) do places = places + 1; for _ in pairs(pl.cells) do cells = cells + 1 end end
       say(string.format('agg: %d places, %d cells; coin %s, value created %s, active %d min; %s', places, cells, money(T.coin), money(T.vc),
         math.floor(T.s / 60), active and 'recording' or 'not recording'))
-      if C then say(clockText():gsub('^EVT clock ', 'agg clock: ')) end
+      local bd, bn = Live.Backfilling()
+      if bd then say(string.format('agg: back-fill in progress, %d of %d records', bd, bn)) end
+      if C then say((clockText():gsub('^EVT clock ', 'agg clock: '))) end
       if manual then say('agg: time is ' .. manual .. 'd (/gi resume)') end
       if override then say('agg: activity set to ' .. override .. ' (/gi activity clear)') end
     end
@@ -316,4 +407,7 @@ function Live.Stats()
 end
 
 --- Tests only.
-function Live._Reset() A, C, state, preQueue, active, manual, override, inCombat, loadGT, lastRemind = nil, nil, nil, {}, false, nil, nil, false, nil, nil end
+function Live._Reset()
+  A, C, state, preQueue, active, manual, override, inCombat, loadGT, lastRemind = nil, nil, nil, {}, false, nil, nil, false, nil, nil
+  beginGT, lastTickGT, endGT = nil, nil, nil
+end
