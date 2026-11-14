@@ -34,9 +34,9 @@ decides the rest. A conflict that cannot be settled: stop and ask Shawn.
   Covered files: Session_Handoff.md, NEXT_SESSION_PROMPT.md, CODE_STANDING_ORDERS.md, Decisions.md (recording his
   decisions), TODO.md, Changelog.md. A pull request that touches any other file is not covered.
 - Standing permission (D-114, 2026-11-14): "GoldIntel Code always has permission to edit code and docs, run tests, build packages, commit and push to work branches. My approval of an increment or fix in chat is the go-ahead to do all of that for it. Merges still follow the merge rules; never push to main or force-push."
-  The matching `.claude/settings.json` (the user's text in D-114) is applied by the user: the session's permission
-  check refuses a session that edits its own permission rules. Until it is in, an approval in chat is enough for the
-  edit tools; if a tool is refused, quote the exact command and message in the report.
+  The `.claude/settings.json` change of D-114 is dropped (D-116). Per session the user pastes the paragraph at the top
+  of NEXT_SESSION_PROMPT.md (D-116): "Standing permissions from me, for this whole session: you may edit code and docs, run tests, build packages, commit, and push to work branches without asking (never push to main, never force-push, never change permission settings files). When I approve an increment, fix or merge in this chat, that is my explicit approval to do it, including merging that pull request yourself with the REST merge command. Docs-only pull requests (Session_Handoff, NEXT_SESSION_PROMPT, CODE_STANDING_ORDERS, Decisions, TODO, Changelog) you may merge yourself under my standing approval."
+  Never change permission settings files. If a tool is still refused, quote the exact command and message in the report.
 - How merges are done (D-106, 2026-11-08): "Once I approve a merge in chat, you merge it yourself through its pull request (gh pr merge <n> --merge; no squash, no rebase, no direct push to main), then check main and report the merge commit and the test result. Approval is still required for every merge except the docs-only standing approval. Commits and pushes to work branches need no approval. Never force-push or delete branches."
   In practice: a merge commit through the pull request only; after it, fetch main, name the merge commit and run the
   test suite on it (`lua5.4 run.lua` from GoldIntel/Tests) in the report.
