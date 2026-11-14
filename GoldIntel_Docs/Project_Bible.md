@@ -1,6 +1,6 @@
 # GoldIntel Project Bible
 
-DOC VERSION: 1.0.1  |  DATE: 2026-11-03 (header, reviewer names and inventory rows only; governance unchanged)  |  PROJECT VERSION: 0.5.1-passive  |  STATUS: Active
+DOC VERSION: 1.0.2  |  DATE: 2026-11-08 (header, section 9 and inventory only, user decision D-105; governance unchanged)  |  PROJECT VERSION: 0.5.5-passive on main (newer builds on open pull requests: see the newest Session_Handoff section)  |  STATUS: Active
 
 > Read this file first. It is self-contained. If any other project document conflicts with it on governance, this file wins; on product scope, Requirements_v1.md wins.
 
@@ -128,7 +128,7 @@ Cash GPH (always visible), Wealth GPH, Net GPH, Zone rankings, Subzone rankings,
 ## 9. How to resume (fresh AI, no memory)
 
 1. Read the documents in section 3 order.
-2. Open TODO.md; find `CURRENT PHASE`.
+2. Open TODO.md; find `CURRENT PHASE`. For Claude Code sessions, CODE_STANDING_ORDERS.md and the newest Session_Handoff section come first (D-103).
 3. Open the newest section of Session_Handoff.md; read `OPEN ISSUES`, `BLOCKERS`, `NEXT RECOMMENDED TASK`.
 4. Verify that task is allowed by TODO.md and Requirements_v1.md. If not, ask the user.
 5. Do the work. Update the bookkeeping files. Append your handoff.
@@ -149,7 +149,7 @@ Cash GPH (always visible), Wealth GPH, Net GPH, Zone rankings, Subzone rankings,
 | Risk_Register.md | Risks with likelihood, impact, mitigation, owner phase | Review at every phase gate |
 | Phase1_PostValidation_Review.md | Phase 1 live-validation review and Phase 2 go/no-go | Historical record |
 | Phase1_Compat_Analysis.md, Phase1_Client_Diagnostics.md | Load-failure analysis and in-client diagnostic commands | Historical / reference |
-| evidence/ | Dated runtime evidence files from the real client | Read-only; add new files, never edit |
+| (no evidence folder) | Runtime evidence (SavedVariables, screenshots) is not stored in the repo: the user attaches it in the session that analyzes it (D-087, D-105); findings go into the session reports and Compatibility_Notes.md | Read-only; never write to the user's WTF or SavedVariables |
 | reviews/ | External (ChatGPT, Gemini) review documents and External_Review_Log.md | Documents unedited; log is the verdict record (D-032) |
 | Phase2_Runtime_Validation_Plan.md | Step-by-step live validation of Phase 2 | Update after each client run |
 | Phase2_Closure_Recommendation.md | Formal Phase 2 closure recommendation (complete with exceptions PX-1..PX-8) | Update when the user decides |
@@ -162,3 +162,9 @@ Cash GPH (always visible), Wealth GPH, Net GPH, Zone rankings, Subzone rankings,
 | Phase3b_Increment_*, Phase3b_3b-*_* | Increment plans, milestone reports, validation session scripts for 3b-1..3b-3 | Historical once the increment is closed |
 | HANDOFF_Code_Session_2026-11-02.md | Bridge from the claude.ai chat session to the Claude Code session (2026-11-02) | Historical; newer Session_Handoff sections win |
 | PreLaunch_Review_2026-11-03.md | Pre-launch review of 0.5.1-passive and the launch-day checklist | Update after the first live session |
+| CODE_STANDING_ORDERS.md | How every Claude Code session works: gates, packages, reports, one session at a time (D-103, D-105) | Wins on how to work (D-103); change only by user decision |
+| NEXT_SESSION_PROMPT.md | Exact text the user pastes into a new Code session | Keep current; no state in it |
+| CODE_SESSION_OPENING_PROMPT.md | Opening prompt of 2026-11-02 | Replaced by NEXT_SESSION_PROMPT.md (D-105); historical |
+| Phase4_Live_Aggregation_Proposal.md | Phase 4 proposal (live aggregation per place and activity) and the Q-1..Q-7 answers (D-099) | Historical once Phase 4 closes |
+| Phase4_P4-M2_Plan.md | P4-M2 plan; section 0 lists the approvals relied on (D-102); on PR #8 / #9 until merged | Update with the user's decisions |
+| Reference_AccountantClassic.md, Reference_Auctionator.md | Notes from other addons used as design input (3b-4, Phase 6) | Reference |

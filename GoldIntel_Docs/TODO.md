@@ -1,13 +1,14 @@
 # GoldIntel TODO
 
-DOC VERSION: 1.2.0  |  UPDATED: 2026-11-03 (session S-057)
+DOC VERSION: 1.4.1  |  UPDATED: 2026-11-14 (session S-070)
 
 ```
-CURRENT PHASE:            Phase 3b increments 3b-0..3b-3 CLOSED (3b-3: D-101, 2026-11-08). Phase 4: P4-M1 built, P4-M2 built as 0.6.0-passive (D-102), not installed. 3b-4 NOT started.
-IMPLEMENTATION APPROVED:  Phases 1 and 2, Phase 3a (closed), Phase 3b scope D-067 (ledgers only, increments 3b-0..3b-4, each reviewed before the next; 3b-0..3b-2 closed, 3b-3 at M3 approved, 3b-4 NOT started). Everything else is NOT approved.
+CURRENT PHASE:            Phase 3b: 3b-0..3b-3 CLOSED (3b-3 by D-101, 2026-11-08); 3b-4 NOT started (priorities: later decision). Phase 4: P4-M1 MERGED (PR #7, modules not loaded); P4-M2 built as 0.6.0-passive (PR #9), NOT approved, not merged, not installed; P4-M3 NOT started. Build on main: 0.5.6-passive (installed on all characters).
+IMPLEMENTATION APPROVED:  Phases 1 and 2, Phase 3a (closed), Phase 3b scope D-067 (3b-0..3b-3 closed incl. M4 by D-097; 3b-4 NOT started); 0.5.6 (D-100, merged by D-109); Phase 4 P4-M1 (D-099, merged by D-109) and P4-M2 BUILD ONLY (D-102; PR #9 not approved). Docs-only merges as in D-105 and D-108; approved merges with the REST command (D-106). Everything else is NOT approved.
 PHASE 0:                  COMPLETE
-OPEN BLOCKERS:            None. M4 needs the user's go-ahead. OI-14 and OI-15 decided (D-088, D-089). OI-16 deferred (repo stays private); OI-8 closing wording, OI-5, OI-13, OI-17 unchanged.
+OPEN BLOCKERS:            None. Waiting on the user: review and approval of the 0.6.0 build (PR #9). Accountant cross-check done and price plan placed in Phase 6 as plan only (D-111). OI-14, OI-15 decided (D-088, D-089); OI-16 deferred (repo private); OI-8 closing wording, OI-5, OI-13, OI-17 unchanged.
 ```
+Note (2026-11-08, S-065): D-099..D-102 are recorded on the PR branches (#7, #8, #9) and reach main with those merges.
 
 Note (2026-11-03, S-057): the per-phase checklists for Phases 1 to 3a below are kept as a historical record. Some boxes stay unticked for work that was later finished or waived; the authoritative status is the closure decisions (D-056 Phase 2, D-066 Phase 3a, D-076 3b-1, D-079 3b-2) and the CURRENT PHASE block above.
 
@@ -119,6 +120,7 @@ Rules: work only on the current phase. Do not start the next phase without expli
 ## Phase 6: Pricing and auction profitability (REQ: FR-AH-1..3)
 
 - [ ] 6.1 PriceProvider interface and Native provider (manual prices; scan if capability exists)
+- [ ] 6.1a PLAN ONLY (D-111; Phase 6 NOT authorized): optional providers for Auctionator's and TSM's public interfaces (both installed on the user's client), fixed order, Native always the fallback; market price stored with source and age as a separate figure, never changing an acquisition value (D-063); a missing or secret answer is no price, never 0 (D-045). Before any build: verify both licences and the interface calls on Forever (D-110).
 - [ ] 6.2 PricingEngine valuation (conservative, staleness)
 - [ ] 6.3 AHMath: cut, deposit, failure risk, expected net; tests
 - [ ] 6.4 Own list/sold/expired history for sell-through estimates
@@ -278,8 +280,22 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [x] 2026-11-07 (S-060) M4 sizes measured (Phase3b_3b-3_M4_Report.md). Built 0.5.4-passive measurement build (Perf samples), PR opened.
 - [x] 2026-11-07 (S-060) User approved R-1, R-2, R-3 as a stopgap (D-098). Built 0.5.5-passive (contains 0.5.4).
 - [x] 2026-11-08 (S-062) 0.5.5 hour-of-play data received: CPU 0.04-0.06 ms per frame, lasting memory growth about 0.06 MB per hour (PASS); the memory reading caused one 100-400 ms frame per sample, removed in 0.5.6 (D-100, approved).
-- [x] 2026-11-08 (S-062) Phase3b_3b-3_Closure_Recommendation.md written. [x] 2026-11-08 User closed 3b-3 (D-101).
-- [x] 2026-11-08 (S-062) Phase4_P4-M2_Plan.md written (plan only). [ ] User confirms section 0 and decides P4-M2. Nothing beyond 0.5.6 is merged or built before that.
-- [ ] User: install 0.5.6 after approving the build (`/reload` over 0.5.5).
-- [ ] User: review Phase4_Live_Aggregation_Proposal.md (proposal only; Phase 4 NOT authorized).
+- [x] 2026-11-08 (S-062) Phase3b_3b-3_Closure_Recommendation.md written. [x] User decided the 3b-3 closure (D-101).
+- [x] 2026-11-08 (S-062) Phase4_P4-M2_Plan.md written (plan only). [x] User confirmed section 0 (D-107) and decided P4-M2 (build only, D-102).
+- [x] User: install 0.5.6 after approving the build (`/reload` over 0.5.5). (Installed on all characters, D-107.)
+- [x] User: install 0.5.5 (FULL restart from 0.5.3), play normally including one session of an hour or more, upload. Then CPU and memory against NFR-3, then the 3b-3 closure recommendation. (Done: S-062 read the files; D-100, D-101.)
+- [x] User: review Phase4_Live_Aggregation_Proposal.md (proposal only; Phase 4 NOT authorized). (Done: answers Q-1..Q-7, D-099.)
 - [ ] Still OTHER by design until 3b-4: taxi, respec, barber, guild bank, repairs (repairs at a vendor are already vendor purchases).
+- [x] 2026-11-08 (S-065) D-104 (chat-only items recorded with the user's words) and D-105 (session rules, first-report exception, docs-only merge approval); stale documents fixed (TODO, Bible, README, CODE_SESSION_OPENING_PROMPT marked replaced).
+- [ ] User: play 0.5.6 at least 3 hours in at least 3 sessions (one of 60 minutes or more; group or dungeon if possible), attach the files in the session that analyzes them, and say whether 0.5.6 works live (D-102).
+- [x] User: confirm or correct the quotes in Phase4_P4-M2_Plan.md section 0. (Confirmed correct, D-107.)
+- [x] User: decide the TOC `## Notes:` change. (Next approved build, D-107.)
+- [ ] Next approved build: update the TOC `## Notes:` line (it still says "Phase 2: core and store") (D-107).
+- [x] 2026-11-08 (S-066..S-068) D-106 (merges through the PR, REST command while `gh pr merge` is refused), D-107 (answers recorded), D-108 (standing approval covers TODO.md and Changelog.md). PRs #11, #12, #13 merged.
+- [x] 2026-11-14 (S-069) 0.5.6 baseline PASSED (D-109): 39.9 h, 224 periodic samples, 0.017 ms per frame, every 0.5.6 check 0. PR #8 and PR #7 merged.
+- [x] User: attach Accountant Classic's SavedVariables file (same WTF folder) for the income and spending cross-check with GoldIntel, especially the OTHER share (D-110). (Done 2026-11-14: nets equal to the copper, D-111.)
+- [x] User: decide the price plan (Baseline_0.5.6_Report.md section 6): optional Auctionator / TSM source with GoldIntel's own fallback. Plan only; Phase 6 territory, NOT authorized. (Added to Phase 6 as plan only, item 6.1a, D-111.)
+- [ ] Before using any other add-on as a source or reference: verify its licence (D-110); THIRD_PARTY.md with the first copied item.
+- [ ] PR #9 (0.6.0) is behind main since PR #7 and #8 merged: bring main into it (documents will conflict) when the user reviews it.
+- [ ] Note for Phase 4/7: /reload load frames cost 100-178 ms charged to GoldIntel (cause not measured; the 1.9 MB account SavedVariables file is a candidate, unverified). Track with the 0.6.0 measurements.
+

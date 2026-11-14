@@ -4,6 +4,185 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-070 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code") | STATE UPDATE (S-069 holds except as below)
+- PR #16 (baseline report) merged with the REST command: main = b3bf686, 0.5.6-passive, 1,343 tests pass.
+- D-111: Auctionator and TSM are installed on the user's client; the price plan is in Phase 6 as plan only (TODO 6.1a); Phase 6 NOT authorized; PR #9 stays unapproved.
+- Accountant Classic cross-check done (file attached this session): GoldIntel's net equals Accountant's own daily balance change to the copper (Paladin 11-12..11-14, alt 11-11); the differences are Accountant's gross pairs and category names. GoldIntel's OTHER spending is mostly flight fares, postage and AH deposits (3b-4 sinks). The report's section 7 update is on its own PR (outside the docs-only approval).
+PENDING (needs Shawn): 1. Review and approve (or not) PR #9 (0.6.0). 2. Approve merging the report update PR. 3. 3b-4 priorities when wanted (the cross-check shows flight fares are the largest OTHER item).
+BRANCHES AND PULL REQUESTS: #9 open, unapproved, behind main. This docs PR merged under D-105/D-108. Report update PR open. Merged and kept: #1 to #8, #10 to #16.
+INSTALLED: 0.5.6-passive on all characters (behaviour identical to main).
+
+## S-069 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code") | FULL CURRENT STATE (read this first)
+Standing orders: CODE_STANDING_ORDERS.md (D-103, D-105, D-106, D-108, D-110). New-session prompt: NEXT_SESSION_PROMPT.md.
+
+THIS SESSION
+- Read the user's files of 2026-11-14 (account file, three character files; 0.5.6, client build 70938). Baseline PASSED (D-109): Paladin 39.9 h loaded on 0.5.6, 224 periodic samples, 0.017 ms per frame; every 0.5.6 check 0; 0 collector errors; the two MISMATCH lines are from 2026-11-05 (0.5.1). Details: Baseline_0.5.6_Report.md (separate PR, needs the user's approval: a new report file is outside the docs-only standing approval).
+- Merged PR #8 (2ecc6cc) then PR #7 (4c78dbe) with the REST command, each after merging main into its branch (docs conflicts only). Tests on main: 1,343 passed, 0 failed.
+- Recorded D-110 (other add-ons: copy and credit where allowed, clean room otherwise, cross-checks, optional plugins) with the user's words.
+
+PHASE AND INCREMENT
+- Phase 3b: 3b-0..3b-3 CLOSED; 3b-4 NOT started. Phase 4: P4-M1 merged (not loaded); P4-M2 = 0.6.0-passive on PR #9, NOT approved; P4-M3 not started.
+
+APPROVED: D-087..D-110 (user's words in Decisions.md). PR #9 NOT approved.
+
+PENDING (needs Shawn)
+1. Review and approve (or not) the 0.6.0 build, PR #9. It is behind main now; main must be merged into it first (documents conflict).
+2. Attach Accountant Classic's SavedVariables file for the cross-check (D-110).
+3. Decide the price plan (report section 6). Plan only.
+4. Approve merging the report PR (Baseline_0.5.6_Report.md).
+
+BRANCHES AND PULL REQUESTS (main = 0.5.6-passive, contract 1.14.0; P4-M1 files present, not loaded)
+| PR | Branch | Content | Matches main |
+|---|---|---|---|
+| #9 | p4/m2-live (e6946b0) | 0.6.0-passive (P4-M2), D-101, D-102 | no: ahead, and behind main since #7/#8 merged |
+| this | docs/baseline-2026-11-14 | D-109, D-110, standing orders 9, prompt, TODO, this section | merged under D-105/D-108 |
+| report | docs/baseline-report-2026-11-14 | Baseline_0.5.6_Report.md | open, needs approval |
+Merged and kept: #1 to #8, #10 to #14 and this one.
+
+INSTALLED: 0.5.6-passive (6620666) on all characters (user, D-107). Behaviour identical to main (main adds only the unloaded P4-M1 files). Client 1.60.1, build 70938 (new since 70862), Interface 16001.
+
+OPEN QUESTIONS
+- 312 ms frame (2026-11-14 00:08-00:18 UTC) and the second >100 ms frame: garbage collection of the 1.2-1.5 GB shared Lua heap charged to GoldIntel (inferred: heap shrank in both windows; the rolling trace had rotated out). Not network lag: the profiler counts CPU time inside the add-on.
+- /reload load frames 100-178 ms (cause not measured).
+- GoldIntel's own memory is not in the 0.5.6 automatic samples (D-100); last measured 6.6-14.3 MB (0.5.5, 2026-11-08) of a 0.53-1.4 GB heap. `/gi perf` reads it on request.
+- C_Map.GetMapWorldSize in Forever unverified; soft-travel speed 8 yd/s an assumption. OI-16 deferred; OI-17 open.
+BLOCKERS: none.
+SHAWN'S NEXT STEP: reply on the four pending items; keep playing on 0.5.6 (no install needed).
+
+## S-068 | 2026-11-08 | Claude (Claude Code cloud session "GoldIntel Code") | STATE UPDATE (S-065..S-067 hold except as below)
+- D-108: the docs-only standing approval now also covers TODO.md and Changelog.md (user's words in Decisions.md and CODE_STANDING_ORDERS.md section 2).
+- TODO.md brought in line with D-107 (the S-067 note about TODO.md is resolved). Merged with the REST command under that approval; main after the merge in the report.
+- Installed: 0.5.6-passive on all characters. PRs #7, #8, #9 unchanged and open. Merged and kept: #1 to #6, #10 to #13 and this one.
+PENDING (needs Shawn): 0.5.6 hours (at least 3 hours in 3 sessions), files attached, and whether 0.5.6 works live; then approve merging PR #8, then PR #7; then review the 0.6.0 build (PR #9).
+
+## S-067 | 2026-11-08 | Claude (Claude Code cloud session "GoldIntel Code") | STATE UPDATE (S-065 and S-066 hold except as below)
+- PR #11 (.claude/settings.json, REST merge rule) merged by the user: main = 61e83f5. PR #12 merged by Claude with the REST command (0c86e19).
+- D-107: section 0 quotes CONFIRMED correct; 0.5.6-passive (6620666) INSTALLED on all characters; TOC note goes into the next approved build; package blocks name the installed build (0.5.6), not main.
+- TODO.md OPEN BLOCKERS still lists the section 0 quotes, installed versions and the TOC note as open: superseded by D-107 (TODO.md is outside the docs-only standing approval, so it is corrected with the next approved merge).
+
+INSTALLED: 0.5.6-passive on all characters (user, 2026-11-08). Client 1.60.1, build 70862, Interface 16001.
+
+BRANCHES AND PULL REQUESTS (main = 61e83f5 plus this docs PR: 0.5.5-passive, contract 1.13.0)
+| PR | Branch | Content | Matches main |
+|---|---|---|---|
+| #7 | p4/m1-pure (9f90308) | P4-M1 | no, ahead |
+| #8 | fix/0.5.6-perf (6620666) | 0.5.6-passive, INSTALLED | no, ahead |
+| #9 | p4/m2-live (e6946b0) | 0.6.0-passive, not to be installed yet | no, ahead |
+| this | docs/record-2026-11-08c | D-107, S-067 (docs only, D-105) | merged with the REST command |
+Merged and kept: #1 to #6, #10, #11, #12.
+
+PENDING (needs Shawn)
+1. 0.5.6 hours so far (placeholder "[n]"). Play at least 3 hours in at least 3 sessions (one of 60 minutes or more, at least 18 CPU samples; group or dungeon if possible), attach the files in the session that analyzes them, say whether 0.5.6 works live.
+2. Then approve: merge PR #8, then PR #7 (D-102); then review and approve the 0.6.0 build (PR #9).
+SHAWN'S NEXT STEP: play on 0.5.6; then "logged out, check" with the files attached.
+
+## S-066 | 2026-11-08 | Claude (Claude Code cloud session "GoldIntel Code") | STATE UPDATE (S-065 still holds except as below)
+- New standing order D-106 (user's words in Decisions.md, CODE_STANDING_ORDERS.md section 2, NEXT_SESSION_PROMPT.md): Claude merges approved PRs itself with `gh pr merge <n> --merge` only, then checks main and reports the merge commit and the test result; work-branch commits and pushes need no approval; never force-push or delete branches.
+- `.claude/settings.json` (allow `Bash(gh pr merge *)`) is on branch docs/claude-settings-2026-11-08, PR #11, for the user to merge.
+- KNOWN BLOCK: in this cloud environment every `gh pr` command is refused: "HTTP 403: GitHub GraphQL is not available from Claude Code sessions; use the REST API (gh api repos/{owner}/{repo}/...)". PR #10 had been merged through the REST merge endpoint before D-106; that route is not used any more.
+- EmpireIntel line of the same message: the user gave it to the EmpireIntel session himself ("already done"); nothing changed in that repo from here.
+- D-106 addendum: while `gh pr merge` is refused, approved merges use `gh api -X PUT repos/shawn571/GoldIntel/pulls/<n>/merge -f merge_method=merge` (merge commit through the PR, never a push to main). PR #11's rule changed to `Bash(gh api -X PUT repos/shawn571/GoldIntel/pulls/*/merge *)`; the user merges #11. This PR (#12) is merged with that command.
+
+BRANCHES AND PULL REQUESTS (main = 10adc91: 0.5.5-passive, contract 1.13.0)
+| PR | Branch | Content | Matches main |
+|---|---|---|---|
+| #7 | p4/m1-pure (9f90308) | P4-M1 | no, ahead |
+| #8 | fix/0.5.6-perf (6620666) | 0.5.6-passive | no, ahead |
+| #9 | p4/m2-live (e6946b0) | 0.6.0-passive | no, ahead |
+| #11 | docs/claude-settings-2026-11-08 | .claude/settings.json; user merges | no, ahead |
+| #12 | docs/merge-rule-2026-11-08 | D-106 docs, this section; docs-only standing approval (D-105) | merged with the REST command (merge commit in the report) |
+Merged and kept (branches are never deleted, D-106): #1 to #6, #10 (docs/session-state).
+
+PENDING (needs Shawn): as S-065 items 1 to 6, plus: merge PR #11.
+
+## S-065 | 2026-11-08 | Claude (Claude Code cloud session) | FULL CURRENT STATE (read this first)
+Standing orders: CODE_STANDING_ORDERS.md (D-103, D-105). New-session prompt: NEXT_SESSION_PROMPT.md. S-064 below is superseded by this section.
+
+THIS SESSION
+- First report (read-only): verified S-064 against the repo. Branch heads, versions and contracts, and tests all match (main 1,316; #7 1,340; #8 1,319; #9 1,365; all 0 failed, Lua 5.4.6). Merge order #8 then #7 conflicts only in Changelog, Decisions, Session_Handoff (as S-064 said); #10 onto #9 conflicts in Decisions, Session_Handoff.
+- User answers (D-104, D-105): chat-only items confirmed and recorded with his words; 6.1 applies to every report except a new session's first; one Code session at a time; evidence re-attached per session; CODE_SESSION_OPENING_PROMPT replaced; stale documents fixed; PR #10 merge approved; standing approval for docs-only merges of the named files.
+- Done on docs/session-state (docs only): standing orders 2, 6, 8; NEXT_SESSION_PROMPT; TODO block; Bible 1.0.2; README; D-104, D-105; this section. Then PR #10 merged into main (D-105 answer 6).
+
+PHASE AND INCREMENT
+- Phase 3b: 3b-0..3b-3 CLOSED (3b-3 by D-101). 3b-4 NOT started; priorities a later decision.
+- Phase 4: P4-M1 built (PR #7), P4-M2 built as 0.6.0-passive (PR #9). Neither merged nor installed. P4-M3 not started.
+
+APPROVED (user's words in Decisions.md)
+- D-087..D-098 on main; D-099..D-102 on the PR branches (#7, #8, #9); D-103..D-105 on main with PR #10.
+
+PENDING (needs Shawn)
+1. Play 0.5.6 at least 3 hours in at least 3 sessions (one of 60 minutes or more, at least 18 CPU samples; group or dungeon if possible), attach the files in the session that analyzes them, and say whether 0.5.6 works live.
+2. Then merge PR #8 (0.5.6), then PR #7 (P4-M1) (D-102).
+3. Then review and approve the 0.6.0 build (PR #9) before installing it.
+4. Confirm or correct the P4-M2 plan section 0 quotes (two replies arrived as placeholders).
+5. Tell which version is installed on the main character and the alt, and the 0.5.6 hours so far (arrived as a placeholder).
+6. Decide the TOC `## Notes:` change (held: it is an addon file; proposed for the next approved build).
+
+BRANCHES AND PULL REQUESTS (main = 0.5.5-passive, contract 1.13.0, plus the PR #10 docs)
+| PR | Branch | Head | Content | Matches main |
+|---|---|---|---|---|
+| #7 | p4/m1-pure | 9f90308 | P4-M1 pure modules (not loaded) + D-099 | no, ahead (base e155228) |
+| #8 | fix/0.5.6-perf | 6620666 | 0.5.6-passive, 3b-3 closure recommendation, P4-M2 plan, D-100 | no, ahead (base e155228) |
+| #9 | p4/m2-live | e6946b0 | 0.6.0-passive (P4-M2), D-101, D-102; contains #7 and #8 | no, ahead (base e155228) |
+| #10 | docs/session-state | merged | standing orders, prompt, handoff, D-103..D-105, document fixes | merged into main |
+Merged earlier: #1 to #6. After #10, merging #8, #7, #9 will conflict in the newest sections of Session_Handoff.md, Changelog.md, Decisions.md and in the TODO.md CURRENT PHASE block (keep the newest state; Decisions in number order).
+
+INSTALLED (as Shawn has told me)
+- Last reported: main character and alt 0.5.5-passive (files of 2026-11-08). 0.5.6 not yet reported installed. 0.6.0 NOT to be installed yet. Client 1.60.1, build 70862, Interface 16001.
+
+OPEN QUESTIONS
+- Section 0 quotes; installed versions and 0.5.6 hours; TOC note.
+- C_Map.GetMapWorldSize in Forever unverified; soft-travel minimum speed 8 yd/s is an assumption (tune from EVT clock speed buckets).
+- Standing orders "win on how to work" vs Bible "wins on governance": settled by D-103 (a dated user instruction); recorded here for the record.
+- OI-16 privacy scrub deferred (repo private); OI-17 status of D-029..D-031.
+
+BLOCKERS: none.
+SHAWN'S NEXT STEP
+Install 0.5.6 (`/reload` over 0.5.5) if not yet done, play at least 3 hours in 3 sessions, and say "logged out, check" in a Code session with the files attached.
+
+## S-064 | 2026-11-08 | Claude (Claude Code cloud session) | FULL CURRENT STATE (read this first)
+Standing orders: GoldIntel_Docs/CODE_STANDING_ORDERS.md (D-103). New-session prompt: GoldIntel_Docs/NEXT_SESSION_PROMPT.md.
+
+PHASE AND INCREMENT
+- Phase 3b: 3b-0, 3b-1, 3b-2, 3b-3 CLOSED (3b-3 by D-101, 2026-11-08). 3b-4 (auction house, COD, outgoing mail, postage, other sinks) NOT started; priorities left for a later decision.
+- Phase 4: P4-M1 (pure Clock and Aggregator) built; P4-M2 (live aggregation) built as 0.6.0-passive. Neither is merged. P4-M3 (live validation) not started.
+
+APPROVED (user's words in Decisions.md)
+- D-087 evidence route (attach files after play; "logged out, check"); D-088 items ON; D-089 keep beta data; D-090 package block; D-091..D-096 live fixes; D-097 M4; D-098 retention stopgap; D-099 Phase 4 answers Q-1..Q-7; D-100 0.5.6; D-101 3b-3 closed; D-102 P4-M2 build rules (build only, no install, no merge); D-103 standing orders.
+- D-099..D-102 are on the PR branches (#7, #8, #9), not on main yet.
+
+PENDING (needs Shawn)
+1. Install 0.5.6 and play at least 3 hours in at least 3 sessions (one of 60 minutes or more, at least 18 CPU samples; a group or dungeon if possible): the Q-7 baseline. Then say whether 0.5.6 works live.
+2. After that: merge PR #8 (0.5.6), then PR #7 (P4-M1) (D-102; read as covering both merges).
+3. Then: review and approve the 0.6.0 build (PR #9) before installing it.
+4. Confirm the P4-M2 plan section 0 quotes (the reply arrived as an unfilled template).
+5. Confirm the chat-only items listed below.
+
+BRANCHES AND PULL REQUESTS (main = e155228, 0.5.5-passive, contract 1.13.0)
+| PR | Branch | Head | Content | Matches main |
+|---|---|---|---|---|
+| #7 | p4/m1-pure | 9f90308 | P4-M1 pure modules (not loaded) + D-099 | no, ahead of main |
+| #8 | fix/0.5.6-perf | 6620666 | 0.5.6-passive (CPU-only perf samples), closure recommendation, P4-M2 plan, D-100 | no, ahead of main |
+| #9 | p4/m2-live | e6946b0 | 0.6.0-passive (P4-M2), D-101, D-102; contains #7 and #8 | no, ahead of main |
+| (this) | docs/session-state | see git log | CODE_STANDING_ORDERS.md, NEXT_SESSION_PROMPT.md, this section, D-103 (docs only) | no, ahead of main |
+Merged earlier: #1 to #6. Merging #8, #7, #9 and this branch will conflict only in the newest sections of Session_Handoff.md, Changelog.md and Decisions.md (keep both sides, newest first; Decisions in number order).
+
+INSTALLED (as Shawn has told me / as his files show)
+- Main character and alt: 0.5.5-passive (files of 2026-11-08). 0.5.6 delivered, not yet reported installed. 0.6.0 built, NOT to be installed yet. Client 1.60.1, build 70862, Interface 16001.
+
+OPEN QUESTIONS
+- Section 0 quotes (above). Chat-only items to confirm (below).
+- C_Map.GetMapWorldSize in Forever (soft travel) unverified; soft-travel minimum speed 8 yd/s is an assumption (tune from EVT clock speed buckets).
+- Lag case: no code change (user, see below); OI-16 privacy scrub deferred (repo private); OI-17 status of D-029..D-031.
+
+CHAT-ONLY ITEMS NOT YET RECORDED WITH EXACT WORDS (for Shawn to confirm)
+- Lag (2026-11-05 and 2026-11-06): "Lag has been very bad on launch, this may explain it" and "I had very bad lag in RFC up to 3000 ms in some cases. This is not normal and we don't need to adjust code for it". Effect: the late-money fix stays unbuilt.
+- Merge approvals: "Merge PR #1 after you update it with these" (2026-11-03), "Approve merging PR #3 (includes #2). I will install 0.5.2 myself tonight.", "Approve merging PR #4 and start M4", "Merge PR #6": the merges are in the git history, but only some are written as decisions.
+- 2026-11-05: "1. yes because some people leave unskinned corpses and that is good profit since it's gold without having to spend time killing" is in D-091; the other three answers of that message ("2. agree with recommendation", "3. yes add trainer source", "4. yes for that option") are recorded as D-092..D-094 without these exact words.
+
+SHAWN'S NEXT STEP
+Install 0.5.6 (`/reload` over 0.5.5), play at least 3 hours in 3 sessions, upload, and say whether 0.5.6 works. Start a new Code session with NEXT_SESSION_PROMPT.md when told.
+
 ## S-063 | 2026-11-08 | Claude (Claude Code cloud session)
 - User closed 3b-3 (D-101) and gave the P4-M2 answers (D-102): Q-7 baseline = 0.5.6 CPU samples; manual controls and the reminder approved; P4-M2 approved to build, not to install or merge. The line on checking the section 0 quotes arrived as an unfilled template: still OPEN. Merges of PR #8 and #7 wait until the user says 0.5.6 works live (read as covering both; flagged).
 - Built 0.6.0-passive on branch p4/m2-live (contains the P4-M1 and 0.5.6 branches), 1,365 tests, PR opened. Found and fixed during the build: the Clock's waiting buffer held up to 240 slices (about 70 KB) and is now kept as exact runs; late item values follow via a 'complete' phase.
