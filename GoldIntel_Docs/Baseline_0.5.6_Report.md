@@ -46,7 +46,7 @@ Network lag is not the cause: the profiler counts CPU time spent inside the add-
 server adds none. The two in-session frames fit a garbage-collection step of the 1.2-1.5 GB heap that all add-ons share,
 charged to GoldIntel because its code was running at that moment. That is an inference: the rolling trace had already
 rotated past both windows, and nothing of GoldIntel's ran at the time (no retention fold, `folded = 0` everywhere).
-For comparison, 0.5.5 had one such frame at every automatic sample (41 in its first 6 hours); 0.5.6 has two in 39.9 hours.
+For comparison, on 0.5.5 (2026-11-08 01:10 to 06:44) the Paladin had 49 frames over 100 ms in 5.4 hours loaded, about one per automatic sample (D-100); on 0.5.6 there are two in-session frames in 39.9 hours, plus the reload frames.
 
 ## 4. "103 unmatched against 95 intervals"
 
