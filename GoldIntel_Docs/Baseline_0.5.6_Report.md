@@ -99,9 +99,36 @@ answer yet is "unknown" and is never valued at 0. An existing value is never rev
 
 Decision for the user: whether this becomes part of the Phase 6 scope. Nothing is built before that.
 
-## 7. Accountant Classic cross-check (D-110): not done yet
+## 7. Accountant Classic cross-check (D-110, D-111)
 
-The four files of 2026-11-14 are all GoldIntel files. Accountant Classic's SavedVariables file sits in the same
-SavedVariables folder (the exact file name needs checking on your disk). When it is attached, the comparison per
-session will be: income and spending totals, OTHER against Accountant's categories, the same time windows, and any
-copper difference explained. It will be read only for comparison.
+File attached on 2026-11-14 (`Accountant_Classic.lua`, v2.21.03), read only for comparison. Accountant keeps a per-day,
+per-hour history keyed by the same character GUIDs. Its days and hours are local time: they match GoldIntel's UTC
+entries at UTC-5 (9 of 27 hours identical in both directions; no other offset matches any).
+
+**Net money: equal to the copper.**
+
+| Character | Day (local) | Accountant's balance change | GoldIntel net | Accountant category sum |
+|---|---|---|---|---|
+| Paladin 00636CEC | 2026-11-12 | +31,180 | +31,180 | +31,254 |
+| Paladin | 2026-11-13 | +30,547 | +30,547 | +30,547 |
+| Paladin | 2026-11-14 | +8,540 | +8,540 | +8,540 |
+| Paladin | 2026-11-11 | (no earlier day) | +445 | +491 |
+| Alt 00333B18 | 2026-11-11 | (no earlier day) | +82 | +82 |
+
+Both files end the Paladin at 116,116 copper. Over the four days Accountant's hourly totals are 2,170 copper higher in
+and 2,050 higher out than GoldIntel's, with nets 120 apart (the 74 and 46 copper rows above).
+
+**Where they differ (Accountant's side):**
+- Gross in/out pairs that match no money change: in many hours both "in" and "out" are higher by the same amount
+  (for example 650 and 650). Most fall in its GUILD category, which shows up in grouped play, plus small MAIL (+40/-37)
+  and OTHER (+21/-20) pairs on the alt. For the hour with the largest gap, GoldIntel's trace shows only incoming group
+  coin shares (group of 5), each confirmed by a chat share line, and no outgoing money. How Accountant derives these is
+  not known: its code was not read (D-110).
+- Category naming: a 5,757 copper vendor sale filed as REPAIRS income (Accountant MERCH + REPAIRS = GoldIntel vendor,
+  43,371); repairs counted with vendor purchases in GoldIntel (D-082); AH sales booked net of the cut (GoldIntel books
+  the sale and the cut separately; nets match).
+
+**OTHER share.** GoldIntel's OTHER spending on 11-12 and 11-13 is 11,787 copper. Accountant names most of it: flight
+fares (TAXI) 5,955, postage (MAIL) 1,401, AH deposits 1,160. These are the 3b-4 sinks that stay OTHER by design.
+GoldIntel's OTHER income (2,111 copper over the four days) is small. The cross-check supports the 3b-4 order of flight
+fares first, then postage and AH deposits, when 3b-4 is wanted.
