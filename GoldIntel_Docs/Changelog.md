@@ -4,6 +4,14 @@ Append-only. Newest entry first. Format: `VERSION | DATE | AI/session | summary`
 
 ---
 
+## 0.6.1-passive (live check 1 fixes; reload popup and Settings window) | 2026-11-14 | Claude (session S-073)
+- D-115, frame of 1,771 ms: item-data replies are handled only for items GoldIntel asked for. Another add-on's 3,566 replies (1,999 in one second) had each cost a trace line, an item lookup and a scan of the open lots. Desktop on the user's files: 1,999 foreign replies 3.8 ms (was about 120 ms).
+- D-115: the first-start back-fill runs in steps of 500 records per 0.5 s tick from a snapshot (the Paladin's 4,708 records in about 5 s); `/gi agg check` waits for it; it is finished before a logout or /reload saves.
+- D-115, time classes: active, idle, travelHard (taxi, loading screens), travelSoft, paused never overlap and add up to the session time; loading screens (not ticked before) are hard travel, freezes beyond the 5 s clamp idle. `EVT clock` shows `total=` and `session=`; `noDistance` (was travelUnknown) is shown apart.
+- D-115: `/gi agg top` ranks by gold per hour among places with at least 10 minutes recorded and lists back-filled places separately.
+- D-115: the /reload reminder is a popup (Reload Now / Ignore / Configure), never in combat or a boss encounter (new collector events ENCOUNTER_START/END, group G10), with the chat line as fallback. Configure and `/gi settings` open a small Settings window with the reminder slider in the bands Safe (15..60 min), Risky (90..180), Not Recommended (240, 360), Off; the texts give the evidence. Reload from a button click is unverified on Forever (live check).
+- Contract 1.16.0 (F24). Tests: 1,391 passing (22 new incl. 5 mutation checks; collector counts 18 -> 20). All addon Lua files parse under Lua 5.1. FULL CLIENT RESTART (new files Platform/UI.lua and Core/Reminder.lua, new events).
+
 ## 0.6.0-passive (amended before delivery: TOC note, trace.keep rule) | 2026-11-14 | Claude (session S-072)
 - D-113: periodic `EVT agg` / `EVT clock` lines no longer go to `trace.keep` (it is capped at 400 and was full on the Paladin); only the final pair of each interval and any MISMATCH line are kept. `EVT clock` lines carry `periodic|final`.
 - D-113: TOC `## Notes:` updated (it said "Phase 2: core and store"; held since D-105, D-107).

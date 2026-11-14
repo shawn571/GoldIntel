@@ -4,6 +4,18 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-073 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code", same session as S-072) | STATE UPDATE (S-069..S-072 hold except as below)
+- Live check 1 of 0.6.0 (files attached in this session): passed version, agg status, agg check 0, map.worldsize, afk/resume, activity, ledger check 0 over 5,161 s; five problems found (D-115; Phase4_P4-M3_LiveCheck1.md).
+- D-114 (standing permission, user's words in Decisions.md, CODE_STANDING_ORDERS.md section 2, NEXT_SESSION_PROMPT.md). The `.claude/settings.json` change was REFUSED by the session's permission check ("Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Unauthorized Access]"): the user applies it himself. With his approval in chat the edit tools worked for code and docs.
+- D-115: 0.6.1-passive (contract 1.16.0) built on p4/m2-live: item-info filter, stepped back-fill, non-overlapping time classes (total = session, test), agg top by gold per hour, reload popup with bands, Settings window (option A), encounter events (G10). 1,391 tests pass; Lua 5.1 parse ok. Package GoldIntel_0.6.1_passive_AddOns.zip built from the branch head and sent.
+- D-114, D-115, this section, TODO and the standing orders also went to main through a docs-only PR (D-105/D-108).
+PHASE: Phase 4 P4-M3 live check 2 (0.6.1). 3b-4 after 0.6.0 (D-112), NOT started. Plan only: soft travel across zones, retention, UI.
+PENDING (needs Shawn): install 0.6.1 (FULL restart), play, report live check 2 with files; apply `.claude/settings.json`; EmpireIntel screenshot (arrived as the placeholder "[attach one]").
+BRANCHES AND PULL REQUESTS: #9 open (p4/m2-live, 0.6.1-passive, ahead of main). Merged and kept: #1 to #8, #10 to #20 and this session's docs PR.
+INSTALLED: 0.6.0-passive on the Paladin (live check 1); other characters as the user last said (0.5.6).
+OPEN QUESTIONS: reload from a button click on Forever; StaticPopup with three buttons; ENCOUNTER_START/END registration; which add-on sends the item flood (TSM or Auctionator, not shown in the files); in-game CPU of 0.6.1.
+SHAWN'S NEXT STEP: install 0.6.1 as in the S-073 report, play, then "logged out, check" with files attached.
+
 ## S-072 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code", new session; the S-071 session makes no further commits, D-105) | STATE UPDATE (S-069..S-071 hold except as below)
 - First report (read-only) verified S-071: main e1e6498 = 0.5.6-passive, contract 1.14.0, 1,343 tests; PR #9 head was 971971d (a second docs-only merge of main after #19), 1,365 tests, addon files identical to e6946b0.
 - D-113 (user's words in Decisions.md): document gaps fixed on #9's branch; TOC `## Notes:` updated; trace.keep now holds only the final and MISMATCH `EVT agg` / `EVT clock` lines (one test, three mutation checks); Project_Bible header and inventory updated (on #9's branch). 0.6.0-passive APPROVED TO INSTALL for the P4-M3 live check; PR #9 merged ONLY after the user reports the live check passed.
