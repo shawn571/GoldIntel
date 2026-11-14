@@ -10,6 +10,13 @@ Append-only. Newest entry first. Format: `VERSION | DATE | AI/session | summary`
 - Contract 1.14.0. Tests: 1,319 passing (3 new incl. a mutation check). All addon Lua files parse under Lua 5.1. `/reload` is enough over 0.5.5.
 - Branch based on main (0.5.5); the open P4-M1 PR (#7) is not included.
 
+## P4-M1 (pure modules, not loaded; package unchanged 0.5.5-passive) | 2026-11-07 | Claude (session S-061)
+- D-099: user answered the Phase 4 proposal (Q-1..Q-7) and authorized P4-M1 only.
+- New `GoldIntel/Aggregate/Clock.lua`: every 0.5 s slice is active (with the current activity, Q-3), idle (AM-3, D-055), travel (hard: taxi, loading; soft: D-054) or paused; exactly one class per slice.
+- New `GoldIntel/Aggregate/Aggregator.lua`: totals per place x activity x 5-level bracket with item counts, 32 x 32 heat bins with seconds for every visited cell (Q-2) and credit only for GRIND / GATHER / FISH, a queue for the 2 s task, back-fill without time (Q-4), segments, and the live check.
+- Neither file is in GoldIntel.toc: the client never loads them, live behavior is unchanged. Contracts F22 (not in effect).
+- Tests: 1,340 passing (24 new, incl. 6 mutation checks, a standard-library sandbox purity check, and a check that the TOC lists no Aggregate file).
+
 ## 0.5.5-passive (retention stopgap R-1, R-2, R-3) | 2026-11-07 | Claude (session S-060)
 - D-098: cash keeps 6,000 raw entries per character before folding (was 2,000); open lots cap 4,000 (was 1,500) and lots merge only within the same zone, subzone and activity; `trace.keep` keeps one unexplained line per item id per interval (gear swaps no longer push evidence out).
 - Contains 0.5.4 (M4 measurement build). Contract 1.13.0. Tests: 1,316 passing (6 new). All addon Lua files parse under Lua 5.1.

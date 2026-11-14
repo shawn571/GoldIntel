@@ -146,6 +146,14 @@ OPEN ISSUES: 3b-3 closure decision; P4-M2 section 0 confirmation (Q-5 numbers no
 BLOCKERS: none.
 NEXT RECOMMENDED TASK: user reads the closure recommendation and the P4-M2 plan and decides; installs 0.5.6 after approving the build. No merge or build beyond 0.5.6 before that.
 
+## S-061 | 2026-11-07 | Claude (Claude Code cloud session)
+- User merged PR #6 (0.5.5, which included #5), answered the Phase 4 proposal (D-099: Q-1..Q-7) and authorized P4-M1 only.
+- Built P4-M1 on branch p4/m1-pure: Aggregate/Clock.lua and Aggregate/Aggregator.lua (pure, not in the TOC), 24 tests incl. mutation and purity checks; 1,340 tests pass. PR opened. Package unchanged: 0.5.5-passive is current.
+
+OPEN ISSUES: 0.5.5 CPU/memory data (hour of play) still to come; soft-travel minimum speed is an assumption to verify in P4-M2; map-size API unverified; lag case (fix held); OI-16 deferred; OI-17 open.
+BLOCKERS: none.
+NEXT RECOMMENDED TASK: user plays on 0.5.5 including one session of an hour or more and uploads; then CPU and memory against NFR-3, the 3b-3 closure recommendation, and a P4-M2 plan for approval.
+
 ## S-060 | 2026-11-07 | Claude (Claude Code cloud session)
 - Read the user's files of 2026-11-07 (0.5.3, client build 70862). Verified live: roll wins booked loot, split shares claimed (also with silver amounts), silver wording parsed, every check 0. Main character: OTHER income 0.6% of inflow by value; OTHER spending 33,793 copper = AH bag purchases (3 x 80 silver, user), flight fares, small sinks. BFD disconnect found in the data (21:52 UTC, +44 copper gap, nothing else lost).
 - User merged PR #4 and authorized M4 (D-097). Sizes measured; caps will be reached soon (cash ~10 h, lots ~14 h); trace keep list full of gear-swap lines. Built 0.5.4-passive (Perf samples), PR opened, not installed.
