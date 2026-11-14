@@ -4,6 +4,14 @@ Append-only. Newest entry first. Format: `VERSION | DATE | AI/session | summary`
 
 ---
 
+## 0.6.2-passive (live check 2 fixes: reminder interval, Settings window, chat prefix) | 2026-11-14 | Claude (session S-076)
+- D-118 (a): Reload Now, Ignore, Configure, Escape and any close the client makes itself restart the full interval from the close (in 0.6.1 the timer ran from the show, so after Configure at 696 s the popup came back at 722 s).
+- D-118 (b): no second show while the popup is open, so the client never cancels an open popup and a real Ignore never re-shows it at once.
+- D-118 (c): `EVT reminder click=...` only for the user's buttons; every other close is `EVT reminder closed reason=...` (override, timeout, hidden, lost, combat, encounter). Combat or an encounter hides the popup without a new interval; it comes back afterwards.
+- Settings window: shows the real setting (e.g. "1 minute: Safe (set by command; not a slider mark)"), updates when a command changes it, says "Changes are saved as soon as you move the slider" and "Saved: <value>" after each move; a Close button.
+- Chat lines carry "GoldIntel:" once (the prefix had been doubled on six messages since before 0.6.0).
+- Contract 1.17.0. Tests: 1,403 passing (12 new incl. 3 mutation checks). /reload is enough over 0.6.1 (D-117).
+
 ## 0.6.1-passive (live check 1 fixes; reload popup and Settings window) | 2026-11-14 | Claude (session S-073)
 - D-115, frame of 1,771 ms: item-data replies are handled only for items GoldIntel asked for. Another add-on's 3,566 replies (1,999 in one second) had each cost a trace line, an item lookup and a scan of the open lots. Desktop on the user's files: 1,999 foreign replies 3.8 ms (was about 120 ms).
 - D-115: the first-start back-fill runs in steps of 500 records per 0.5 s tick from a snapshot (the Paladin's 4,708 records in about 5 s); `/gi agg check` waits for it; it is finished before a logout or /reload saves.

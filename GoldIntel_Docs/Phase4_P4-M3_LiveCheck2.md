@@ -1,6 +1,10 @@
 # P4-M3 live check 2: 0.6.1-passive, and the 0.6.2 proposal (2026-11-14, session S-075)
 
-STATUS: PROPOSAL. Nothing is built before the user approves (D-117). PR #9 stays unmerged until 0.6.2 passes.
+STATUS: APPROVED (D-118) and BUILT as 0.6.2-passive (S-076). The user added three requirements: (a) after Configure,
+Ignore or Reload Now the next popup waits a full interval; (b) a real Ignore never re-shows it at once; (c) the log
+separates the user's clicks from closes the client makes itself. Each has a test and a deliberate-bug check. He clicked
+Ignore at some of 300/662/783 s but cannot say which; 0.6.2 makes both cases visible in the log. PR #9 stays unmerged
+until 0.6.2 passes.
 
 Files: the account file and the Paladin character file attached in S-075, plus the user's notes and a screenshot of the
 Settings window. Read only.

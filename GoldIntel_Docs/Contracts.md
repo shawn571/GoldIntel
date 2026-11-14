@@ -1,6 +1,6 @@
 # GoldIntel Contracts
 
-DOC VERSION: 1.16.0  |  CONTRACT VERSION: 1.16.0  |  DATE: 2026-11-14 (code 0.6.1-passive, branch p4/m2-live; D-115)
+DOC VERSION: 1.17.0  |  CONTRACT VERSION: 1.17.0  |  DATE: 2026-11-14 (code 0.6.2-passive, branch p4/m2-live; D-118)
 
 Contracts.md wins over Architecture.md on data shapes. A breaking change to any contract requires a Decisions.md entry (Project_Bible section 4) and a CONTRACT VERSION bump. Additive optional fields are non-breaking.
 
@@ -8,6 +8,7 @@ Notation: Lua tables. `copper` = integer. `t` = Unix seconds (`time()`); `gt` = 
 
 ## Change log (contract versions)
 
+- **1.17.0 (2026-11-14, D-118, build 0.6.2-passive):** reminder popup life (F24 amended): `UI.ShowReloadPrompt{ text, onReload, onCancel(reason), onConfigure, onHide }` (was onIgnore), `UI.PromptVisible()`; `AggLive.HidePrompt(reason)`, `AggLive.PromptOpen()`; the interval restarts at every close except a hide for combat or an encounter; trace `EVT reminder closed reason=<override|timeout|hidden|lost|combat|encounter>` (kept), `EVT reminder click=...` only for the user's buttons (Escape reports as Ignore). Settings window: spec fields `real` ({ label, explain, band } of the real setting) and `hint`; `onChange(i)` returns the saved text; `UI.RefreshSettings(index, real)`; `Reminder.OnMark`, `Reminder.Describe`; `Reminder.Label` says "1 minute". `Platform.Print` adds "GoldIntel: " only when the text does not start with "GoldIntel".
 - **1.16.0 (2026-11-14, D-115, build 0.6.1-passive):** `P_ITEM_INFO` only for items GoldIntel requested (`Items.stats.foreign`, `Items.Waiting()`); `P_TICK.out` (a loading screen came before this tick); new `P_ENCOUNTER { active }` from collector group G10 (ENCOUNTER_START/END); Clock: `noDistance` replaces `travelUnknown` (not a class), `:Unobserved(dt, kind)`, `:Total()`; `EVT clock` adds `total=`, `session=`, `noDistance=`; `AggLive.Top(n)` returns `{ ranked, backfilled, short }`; `AggLive.Backfilling()`, `StepBackfill(n)`, `ClockStats()`, `SessionSeconds()`, `TOP_MIN_SECONDS`, `BACKFILL_STEP`; Aggregator `:BackfillStart/Step/Progress`; new `GI.Reminder` (Core/Reminder.lua), `Platform.UI` (Platform/UI.lua), command `/gi settings`; probe capabilities `ui.popup`, `ui.reload`, `encounter.events`; trace lines `EVT reminder ...`, `EVT agg backfill done`. The `travelUnknown` rename and the `Top` shape change are breaking for 1.15.0 callers; 1.15.0 was only in the 0.6.0 test build (D-115). See F24.
 - **1.15.0 (2026-11-08, D-102, build 0.6.0-passive, additive):** the F22 modules are now loaded and in effect; new `GI.AggLive` (Aggregate/Live.lua); `GoldIntelDB.agg[charKey]` and `GoldIntelDB.heat[charKey]` written; `Platform.OnTaxi`, `Platform.Distance` / `Map.WorldSize`, probe capability `map.worldsize`; setting `reminder.reloadMinutes`; commands `/gi agg`, `/gi pause`, `/gi resume`, `/gi afk`, `/gi activity`; the Lots emit carries a phase for kind 'lot'; trace lines `EVT agg`, `EVT clock`, `EVIDENCE mapWorldSize`. See F23. Amended 2026-11-14 before any release (D-113): `EVT clock` carries `periodic|final`; only final and MISMATCH lines go to `trace.keep`.
 
