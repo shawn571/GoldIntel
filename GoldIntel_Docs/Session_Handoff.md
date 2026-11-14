@@ -4,6 +4,15 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-071 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code") | STATE UPDATE (S-069, S-070 hold except as below)
+- PR #18 merged (ce3568c). D-112 recorded with the user's words.
+- PR #9 (0.6.0-passive, contract 1.15.0) brought up to date with main: merge commit 1221a7c on p4/m2-live (documents only), then the review document a377cd4 (GoldIntel_Docs/Phase4_P4-M2_Review.md, on the branch only). 1,365 tests pass. NOT merged, NOT approved, no package built. Mergeable against main; each later docs merge to main may conflict in documents again (resolve on the branch).
+- Measured on the user's real Paladin records (desktop Lua): back-fill 4,693 records in 8.7 ms, +80 KB saved; simulated 8 h: 0.0003 ms per frame, +7 KB per hour saved. Expected in game about 0.02 ms per frame against the 0.017 baseline (budget +0.05). Not measured in the game: that is P4-M3.
+- 3b-4 after 0.6.0: flight fares, postage, AH deposits (D-112).
+PENDING (needs Shawn): approve (or not) installing 0.6.0 (full restart; starts P4-M3), and whether that also covers merging #9 after the live check; decide the minor trace.keep finding.
+BRANCHES AND PULL REQUESTS: #9 open (p4/m2-live, head after this session's merges). Merged and kept: #1 to #8, #10 to #18 and this docs PR.
+INSTALLED: 0.5.6-passive on all characters.
+
 ## S-070 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code") | STATE UPDATE (S-069 holds except as below)
 - PR #16 (baseline report) merged with the REST command: main = b3bf686, 0.5.6-passive, 1,343 tests pass.
 - D-111: Auctionator and TSM are installed on the user's client; the price plan is in Phase 6 as plan only (TODO 6.1a); Phase 6 NOT authorized; PR #9 stays unapproved.
