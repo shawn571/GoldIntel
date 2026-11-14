@@ -236,33 +236,75 @@ end
 
 local function life() if C and active then C:Life(nowGT()) end end
 
+-- 0.6.2 (D-118): the popup's life. While it is open the timer does not fire (no second show). It closes by:
+--   * a click of the user: Reload Now, Ignore, Configure (EVT reminder click=...) -> the next popup waits one full
+--     interval FROM THE CLICK (Ignore = snooze one interval);
+--   * the client itself (OnCancel reason other than 'clicked', or a hide nobody asked for; EVT reminder closed
+--     reason=...) -> also a full interval, so a client-side close can never cause a quick re-show;
+--   * GoldIntel for combat or an encounter (EVT reminder closed reason=combat|encounter) -> no new interval: the popup
+--     comes back at the next check once that is over.
+local promptOpen, promptDone, hideReason = false, false, nil
+
+local function promptClosed(gt, restart, line)
+  if promptDone then return end
+  promptDone, promptOpen = true, false
+  if restart then lastRemind = gt end
+  trace(line)
+end
+
+function Live.HidePrompt(reason)
+  if not promptOpen then return end
+  hideReason = reason
+  if P.UI and P.UI.HideReloadPrompt then P.UI.HideReloadPrompt() end
+  promptClosed(nowGT(), false, 'EVT reminder closed reason=' .. tostring(reason))   -- if OnHide did not already
+  hideReason = nil
+end
+
+function Live.PromptOpen() return promptOpen end
+
 local function remind(gt)
   local minutes = GI.Config and GI.Config.Get and GI.Config.Get('reminder.reloadMinutes') or 60
   if type(minutes) ~= 'number' or minutes <= 0 or not loadGT then return end
+  if promptOpen then
+    -- safety net: the client says the popup is gone although no close reached us
+    if P.UI and P.UI.PromptVisible and P.UI.PromptVisible() == false then
+      promptClosed(gt, true, 'EVT reminder closed reason=lost')
+    end
+    return
+  end
   if gt - loadGT < minutes * 60 then return end
   if lastRemind and gt - lastRemind < minutes * 60 then return end
   if P.UI and P.UI.Blocked and P.UI.Blocked() then return end      -- D-115: never in combat or an encounter; try again in 60 s
-  lastRemind = gt
   c.reminders = c.reminders + 1
   local R = GI.Reminder
   -- D-115: a popup (Reload Now / Ignore / Configure); the chat line stays as the fallback when no popup can be shown
   if R and P.UI and P.UI.ShowReloadPrompt then
+    promptOpen, promptDone = true, false
     local ok, why = P.UI.ShowReloadPrompt{
       text = R.PopupText(minutes),
       onReload = function()
-        trace('EVT reminder click=reload')
+        promptClosed(nowGT(), true, 'EVT reminder click=reload')
         local ok2, err = P.UI.Reload()
         if not ok2 then
           trace('EVT reminder reloadFailed err=' .. tostring(err))
           P.Print('GoldIntel: the client refused the reload (' .. tostring(err) .. '); type /reload to save')
         end
       end,
-      onIgnore = function() trace('EVT reminder click=ignore') end,
-      onConfigure = function() trace('EVT reminder click=configure'); R.OpenSettings() end,
+      onCancel = function(reason)
+        if reason == 'clicked' then promptClosed(nowGT(), true, 'EVT reminder click=ignore')
+        else promptClosed(nowGT(), true, 'EVT reminder closed reason=' .. tostring(reason)) end
+      end,
+      onConfigure = function() promptClosed(nowGT(), true, 'EVT reminder click=configure'); R.OpenSettings() end,
+      onHide = function()
+        if hideReason then promptClosed(nowGT(), false, 'EVT reminder closed reason=' .. hideReason)
+        else promptClosed(nowGT(), true, 'EVT reminder closed reason=hidden') end
+      end,
     }
     if ok then trace(string.format('EVT reminder shown minutes=%d band=%s', minutes, R.Band(minutes))); return end
+    promptOpen = false
     trace('EVT reminder popupFailed why=' .. tostring(why))
   end
+  lastRemind = gt
   P.Print(string.format(Live.REMINDER_TEXT, minutes))
   trace(string.format('EVT reminder chat minutes=%d', minutes))
 end
@@ -308,10 +350,10 @@ local function wire()
   P.On('P_CAST', guard(onCast))
   P.On('P_COMBAT', guard(function(p)
     inCombat = p and p.inCombat == true
-    if inCombat and P.UI and P.UI.HideReloadPrompt then P.UI.HideReloadPrompt() end   -- D-115: never shown in combat
+    if inCombat then Live.HidePrompt('combat') end   -- D-115: never shown in combat; D-118: back after combat, no new interval
     life()
   end))
-  P.On('P_ENCOUNTER', guard(function(p) if p and p.active and P.UI and P.UI.HideReloadPrompt then P.UI.HideReloadPrompt() end end))
+  P.On('P_ENCOUNTER', guard(function(p) if p and p.active then Live.HidePrompt('encounter') end end))
   for _, e in ipairs({ 'P_MONEY', 'P_LOOT_OPEN', 'P_ZONE', 'P_LEVEL', 'P_QUEST_DONE' }) do P.On(e, guard(life)) end
 end
 wire()
@@ -437,4 +479,5 @@ end
 function Live._Reset()
   A, C, state, preQueue, active, manual, override, inCombat, loadGT, lastRemind = nil, nil, nil, {}, false, nil, nil, false, nil, nil
   beginGT, lastTickGT, endGT = nil, nil, nil
+  promptOpen, promptDone, hideReason = false, false, nil
 end

@@ -6,7 +6,8 @@
 --  texts, steps and bands come from Core/Reminder.lua through the spec arguments.
 --
 --      UI.Blocked() -> true while in combat or during a boss encounter (the popup is never shown then)
---      UI.ShowReloadPrompt{ text, onReload, onIgnore, onConfigure } -> true | false, why
+--      UI.ShowReloadPrompt{ text, onReload, onCancel(reason), onConfigure, onHide } -> true | false, why   (0.6.2: reasons)
+--      UI.PromptVisible() -> true | false | nil;  UI.RefreshSettings(index, real);  UI.SettingsTexts() (tests)
 --      UI.HideReloadPrompt()
 --      UI.Reload() -> true | false, why          C_UI.Reload, else ReloadUI  [UNVERIFIED on Forever: live check]
 --      UI.OpenSettings{ steps, index, label = fn(i), explain = fn(i), band = fn(i), onChange = fn(i) } -> true | false, why
@@ -84,8 +85,11 @@ function UI.ShowReloadPrompt(spec)
   P.env.StaticPopupDialogs[UI.POPUP] = {
     text = '%s', button1 = 'Reload Now', button2 = 'Ignore', button3 = 'Configure',
     OnAccept = safe(function() if spec.onReload then spec.onReload() end end),
-    OnCancel = safe(function() if spec.onIgnore then spec.onIgnore() end end),
+    -- 0.6.2 (D-118): the client also cancels a popup itself (reason 'override' when it is shown again, 'timeout');
+    -- only reason 'clicked' is the Ignore button (or Escape, which the client reports as 'clicked' [inferred]).
+    OnCancel = safe(function(_, _, reason) if spec.onCancel then spec.onCancel(reason) end end),
     OnAlt = safe(function() if spec.onConfigure then spec.onConfigure() end end),
+    OnHide = safe(function() if spec.onHide then spec.onHide() end end),
     timeout = 0, whileDead = true, hideOnEscape = true, preferredIndex = 3,
   }
   local r, err = P.Call('StaticPopup_Show', UI.POPUP, spec.text or '')
@@ -98,12 +102,21 @@ function UI.HideReloadPrompt()
   if P.fn('StaticPopup_Hide') then P.Call('StaticPopup_Hide', UI.POPUP) end
 end
 
+--- true / false when the client can tell whether the popup is visible, nil when it cannot (D-118 safety net).
+function UI.PromptVisible()
+  if not P.fn('StaticPopup_Visible') then return nil end
+  local r = P.Call('StaticPopup_Visible', UI.POPUP)
+  if not r then return nil end
+  return r[1] ~= nil and r[1] ~= false
+end
+
 ---------------------------------------------------------------------------
 -- Settings window
 ---------------------------------------------------------------------------
 
-local frame, slider, valueText, explainText
+local frame, slider, valueText, explainText, statusText
 local current                                    -- the spec of the last OpenSettings call
+UI.SAVED_COLOR = '33ff33'
 
 local BACKDROP = { bgFile = 'Interface\\DialogFrame\\UI-DialogBox-Background', edgeFile = 'Interface\\DialogFrame\\UI-DialogBox-Border',
   tile = true, tileSize = 32, edgeSize = 32, insets = { left = 11, right = 12, top = 12, bottom = 11 } }
@@ -127,18 +140,26 @@ local function text(parent, font, point, x, y)
   return fs
 end
 
+-- d = { label, explain, band } (D-118: the window always shows the REAL setting, also off the slider marks)
+local function showText(d)
+  local color = current and current.color and current.color(d.band) or 'ffffff'
+  valueText:SetText('|cff' .. color .. tostring(d.label) .. '|r')
+  explainText:SetText(d.explain)
+end
+
 local function show(i)
   if not current then return end
-  local band = current.band and current.band(i) or ''
-  local color = current.color and current.color(band) or 'ffffff'
-  valueText:SetText('|cff' .. color .. tostring(current.label(i)) .. '|r')
-  explainText:SetText(current.explain(i))
+  showText({ label = current.label(i), explain = current.explain(i), band = current.band and current.band(i) or '' })
+end
+
+local function setStatus(text, color)
+  if statusText then statusText:SetText(color and ('|cff' .. color .. text .. '|r') or text) end
 end
 
 local function build()
   local parent = P.env.UIParent
   local f = create('Frame', 'GoldIntelSettingsFrame', parent, 'BackdropTemplate')
-  f:SetSize(WIDTH, 230)
+  f:SetSize(WIDTH, 262)
   f:SetPoint('CENTER')
   if f.SetFrameStrata then f:SetFrameStrata('DIALOG') end
   if f.SetBackdrop then f:SetBackdrop(BACKDROP) end
@@ -171,18 +192,36 @@ local function build()
   explainText:SetWidth(WIDTH - 52)
   explainText:SetJustifyH('LEFT')
 
+  -- D-118: the save is visible: a hint before any change, "Saved: ..." after each move
+  statusText = text(f, 'GameFontHighlightSmall', 'BOTTOMLEFT', 26, 24)
+  statusText:SetWidth(WIDTH - 150)
+  statusText:SetJustifyH('LEFT')
+
   s:SetScript('OnValueChanged', function(_, v)
     local i = math.floor((tonumber(v) or 1) + 0.5)
+    if current and current.loading then return end   -- opening the window shows the real value and saves nothing
     show(i)
-    if current and current.onChange and not current.loading then
-      local ok, err = pcall(current.onChange, i)
-      if not ok then UI.stats.errors = UI.stats.errors + 1; UI.lastError = tostring(err) end
+    if current and current.onChange then
+      local ok, res = pcall(current.onChange, i)
+      if not ok then
+        UI.stats.errors = UI.stats.errors + 1; UI.lastError = tostring(res)
+        setStatus('Not saved: ' .. tostring(res), 'ff4444')
+      else
+        setStatus('Saved: ' .. tostring(res or current.label(i)), UI.SAVED_COLOR)
+      end
     end
   end)
 
   local close = create('Button', nil, f, 'UIPanelCloseButton')
   close:SetPoint('TOPRIGHT', -6, -6)
   close:SetScript('OnClick', function() f:Hide() end)
+  -- D-118: a plain Close button, so closing does not look like cancelling (every move is already saved)
+  local done = create('Button', 'GoldIntelSettingsClose', f, 'UIPanelButtonTemplate')
+  done:SetSize(96, 22)
+  done:SetPoint('BOTTOMRIGHT', -20, 18)
+  if done.SetText then done:SetText('Close') end
+  done:SetScript('OnClick', function() f:Hide() end)
+  f.closeButton = done
 
   if type(P.env.UISpecialFrames) == 'table' then table.insert(P.env.UISpecialFrames, 'GoldIntelSettingsFrame') end   -- Escape closes it
   frame, slider = f, s
@@ -205,7 +244,8 @@ function UI.OpenSettings(spec)
       else fs:Hide() end
     end
     slider:SetValue(spec.index)
-    show(spec.index)
+    if spec.real then showText(spec.real) else show(spec.index) end   -- D-118: the real setting, also off the marks
+    setStatus(spec.hint or 'Changes are saved as soon as you move the slider.')
     current.loading = false
     frame:Show()
   end)
@@ -220,7 +260,23 @@ function UI.OpenSettings(spec)
 end
 
 function UI.SettingsShown() return frame ~= nil and frame.shown ~= false and (not frame.IsShown or frame:IsShown()) end
+
+--- D-118: the setting changed elsewhere (a command) while the window is open: show the new real value, move the thumb
+-- without saving anything.
+function UI.RefreshSettings(index, real)
+  if not (frame and current and UI.SettingsShown()) then return false end
+  current.loading = true
+  pcall(function() slider:SetValue(index) end)
+  current.loading = false
+  if real then showText(real) else show(index) end
+  return true
+end
+
+--- Tests only: the texts the window shows now.
+function UI.SettingsTexts()
+  return valueText and valueText.text, explainText and explainText.text, statusText and statusText.text
+end
 function UI.SettingsFrame() return frame, slider end
 
 --- Tests only.
-function UI._Reset() frame, slider, valueText, explainText, current = nil, nil, nil, nil, nil end
+function UI._Reset() frame, slider, valueText, explainText, statusText, current = nil, nil, nil, nil, nil, nil end

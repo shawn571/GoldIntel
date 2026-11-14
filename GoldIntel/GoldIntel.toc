@@ -1,7 +1,7 @@
 ## Interface: 16001
 ## Title: GoldIntel
 ## Notes: Gold-making intelligence and analytics for WoW Forever: cash ledger, item lots and live gold per place and activity
-## Version: 0.6.1-passive
+## Version: 0.6.2-passive
 ## SavedVariables: GoldIntelDB
 ## SavedVariablesPerCharacter: GoldIntelCharDB
 

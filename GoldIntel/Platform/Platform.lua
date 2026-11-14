@@ -24,8 +24,8 @@ GI = GI or {}   -- real clients always pass the addon table; plain-Lua tests pas
 local P = GI.Platform or {}
 GI.Platform = P
 
-P.VERSION = '0.6.1-passive'
-P.CONTRACT_VERSION = '1.16.0'
+P.VERSION = '0.6.2-passive'
+P.CONTRACT_VERSION = '1.17.0'
 P.env = P.env or _G
 P.debug = P.debug or false
 P.modules = P.modules or {}
@@ -250,7 +250,8 @@ function P.Print(msg)
   if P.Now then t = (P.Now()) end
   output[((outputTotal - 1) % OUTPUT_MAX) + 1] = tostring(t) .. ' ' .. line
   local f = P.fn('print')
-  if f then f('GoldIntel: ' .. line) end
+  -- D-118: one "GoldIntel:" prefix in chat; many callers already begin their text with it
+  if f then f(line:find('^GoldIntel') and line or ('GoldIntel: ' .. line)) end
 end
 
 --- The last n recorded output lines, oldest first ('<unix time> <text>').

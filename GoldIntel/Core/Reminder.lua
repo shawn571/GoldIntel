@@ -46,7 +46,19 @@ end
 function R.Label(minutes)
   local band = R.Band(minutes)
   if band == 'Off' then return 'Off: no reminder' end
-  return string.format('%d minutes: %s', minutes, band)
+  return string.format('%d minute%s: %s', minutes, minutes == 1 and '' or 's', band)
+end
+
+function R.OnMark(minutes)
+  for _, m in ipairs(R.STEPS) do if m == minutes then return true end end
+  return false
+end
+
+--- D-118: what the window shows for the REAL setting (also a value set by command that is not a slider mark).
+function R.Describe(minutes)
+  local label = R.Label(minutes)
+  if not R.OnMark(minutes) and R.Band(minutes) ~= 'Off' then label = label .. ' (set by command; not a slider mark)' end
+  return { label = label, explain = R.Explain(minutes), band = R.Band(minutes) }
 end
 
 --- One or two sentences on what is at risk at this interval.
@@ -70,19 +82,39 @@ end
 function R.OpenSettings()
   local P = GI.Platform
   if not (P and P.UI and P.UI.OpenSettings) then return false, 'no UI module' end
+  local real = cfgMinutes()
   local ok, why = P.UI.OpenSettings{
     steps = #R.STEPS,
-    index = R.StepIndex(cfgMinutes()),
+    index = R.StepIndex(real),
+    real = R.Describe(real),                       -- D-118: the window opens on the real value
+    hint = 'Changes are saved as soon as you move the slider.',
     label = function(i) return R.Label(R.STEPS[i]) end,
     explain = function(i) return R.Explain(R.STEPS[i]) end,
     band = function(i) return R.Band(R.STEPS[i]) end,
     color = function(band) return R.COLORS[band] end,
-    onChange = function(i) if GI.Config and GI.Config.Set then GI.Config.Set('reminder.reloadMinutes', R.STEPS[i]) end end,
+    onChange = function(i)
+      local m = R.STEPS[i]
+      if not (GI.Config and GI.Config.Set) then error('no settings store') end
+      local okSet, err = GI.Config.Set('reminder.reloadMinutes', m)
+      if not okSet then error(tostring(err)) end
+      return m == 0 and 'reminder off' or string.format('%d minute%s', m, m == 1 and '' or 's')
+    end,
   }
   if not ok and P.Print then
     P.Print('GoldIntel: the settings window could not open (' .. tostring(why) .. '); use /gi config set reminder.reloadMinutes <minutes>')
   end
   return ok, why
+end
+
+-- D-118: a change by command while the window is open shows at once (no save from the window itself)
+if GI.Bus and GI.Bus.On then
+  GI.Bus.On('CONFIG_CHANGED', function(p)
+    local P = GI.Platform
+    if p and p.key == 'reminder.reloadMinutes' and P and P.UI and P.UI.RefreshSettings then
+      local m = cfgMinutes()
+      pcall(P.UI.RefreshSettings, R.StepIndex(m), R.Describe(m))
+    end
+  end)
 end
 
 if GI.Commands and GI.Commands.Register then
