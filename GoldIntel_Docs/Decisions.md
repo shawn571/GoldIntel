@@ -684,3 +684,12 @@ Recorded in CODE_STANDING_ORDERS.md section 9 and NEXT_SESSION_PROMPT.md. THIRD_
 Open from this order: the Accountant Classic comparison needs its SavedVariables file attached (not among the four files of 2026-11-14); the price plan answer is in Baseline_0.5.6_Report.md section 6 (plan only, no code). Licences of Auctionator and TSM are NOT verified in this session (GitHub access is limited to this repository).
 Affected: documents only. Migration: none. Package: unchanged.
 
+## D-111 Report merged; price plan added to Phase 6 scope as a plan only; Accountant Classic cross-check (user 2026-11-14) | APPROVED | 2026-11-14
+User: "Approve merging #16. Accountant Classic file attached. Installed price add-ons: Auctionator and TSM (both). Price plan: add to Phase 6 scope as a plan only; Phase 6 is still not authorized. #9 stays unapproved."
+1. PR #16 (Baseline_0.5.6_Report.md) merged with the REST command (b3bf686; tests 1,343 passed, 0 failed).
+2. Price add-ons installed on the user's client: Auctionator and TSM (both).
+3. Phase 6 scope (plan only; Phase 6 NOT authorized): optional price providers behind the planned PriceProvider interface (TODO 6.1): Auctionator's and TSM's public interfaces, asked in a fixed order, with GoldIntel's own price (vendor floor, manual, later own observations) always available; a market price is a separate figure with source and age and never changes an acquisition value (D-063). Interface calls on Forever and both licences are to be verified before any build (D-110).
+4. PR #9 (0.6.0) stays unapproved.
+Accountant Classic cross-check (D-110; file attached 2026-11-14, read only for comparison; Accountant's days are local time, matched at UTC-5): Paladin Player-6796-00636CEC, 2026-11-11 to 11-14: GoldIntel's net equals Accountant's own recorded daily balance change to the copper on each day it can be checked (11-12 +31,180; 11-13 +30,547; 11-14 +8,540), and both end at 116,116. Alt Player-6796-00333B18, 11-11: both net +82. Differences are in Accountant's gross figures only: it books in/out pairs that match no money change in GoldIntel's trace (its GUILD category, small MAIL and OTHER pairs), its category sums exceed its own balance change by 74 copper on 11-12, it files a 5,757 vendor sale under REPAIRS, and it books AH sales net of the cut. GoldIntel's OTHER spending on 11-12 and 11-13 (11,787 copper) is mostly what Accountant names TAXI (5,955), MAIL postage (1,401) and AH deposits (1,160): the known 3b-4 sinks.
+Affected: documents only. Migration: none. Package: unchanged.
+

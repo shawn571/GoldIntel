@@ -4,6 +4,14 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-070 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code") | STATE UPDATE (S-069 holds except as below)
+- PR #16 (baseline report) merged with the REST command: main = b3bf686, 0.5.6-passive, 1,343 tests pass.
+- D-111: Auctionator and TSM are installed on the user's client; the price plan is in Phase 6 as plan only (TODO 6.1a); Phase 6 NOT authorized; PR #9 stays unapproved.
+- Accountant Classic cross-check done (file attached this session): GoldIntel's net equals Accountant's own daily balance change to the copper (Paladin 11-12..11-14, alt 11-11); the differences are Accountant's gross pairs and category names. GoldIntel's OTHER spending is mostly flight fares, postage and AH deposits (3b-4 sinks). The report's section 7 update is on its own PR (outside the docs-only approval).
+PENDING (needs Shawn): 1. Review and approve (or not) PR #9 (0.6.0). 2. Approve merging the report update PR. 3. 3b-4 priorities when wanted (the cross-check shows flight fares are the largest OTHER item).
+BRANCHES AND PULL REQUESTS: #9 open, unapproved, behind main. This docs PR merged under D-105/D-108. Report update PR open. Merged and kept: #1 to #8, #10 to #16.
+INSTALLED: 0.5.6-passive on all characters (behaviour identical to main).
+
 ## S-069 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code") | FULL CURRENT STATE (read this first)
 Standing orders: CODE_STANDING_ORDERS.md (D-103, D-105, D-106, D-108, D-110). New-session prompt: NEXT_SESSION_PROMPT.md.
 

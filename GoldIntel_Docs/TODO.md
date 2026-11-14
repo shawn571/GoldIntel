@@ -1,12 +1,12 @@
 # GoldIntel TODO
 
-DOC VERSION: 1.4.0  |  UPDATED: 2026-11-14 (session S-069)
+DOC VERSION: 1.4.1  |  UPDATED: 2026-11-14 (session S-070)
 
 ```
 CURRENT PHASE:            Phase 3b: 3b-0..3b-3 CLOSED (3b-3 by D-101, 2026-11-08); 3b-4 NOT started (priorities: later decision). Phase 4: P4-M1 MERGED (PR #7, modules not loaded); P4-M2 built as 0.6.0-passive (PR #9), NOT approved, not merged, not installed; P4-M3 NOT started. Build on main: 0.5.6-passive (installed on all characters).
 IMPLEMENTATION APPROVED:  Phases 1 and 2, Phase 3a (closed), Phase 3b scope D-067 (3b-0..3b-3 closed incl. M4 by D-097; 3b-4 NOT started); 0.5.6 (D-100, merged by D-109); Phase 4 P4-M1 (D-099, merged by D-109) and P4-M2 BUILD ONLY (D-102; PR #9 not approved). Docs-only merges as in D-105 and D-108; approved merges with the REST command (D-106). Everything else is NOT approved.
 PHASE 0:                  COMPLETE
-OPEN BLOCKERS:            None. Waiting on the user: review and approval of the 0.6.0 build (PR #9); Accountant Classic file for the cross-check (D-110); decision on the price plan (D-110, plan only). OI-14, OI-15 decided (D-088, D-089); OI-16 deferred (repo private); OI-8 closing wording, OI-5, OI-13, OI-17 unchanged.
+OPEN BLOCKERS:            None. Waiting on the user: review and approval of the 0.6.0 build (PR #9). Accountant cross-check done and price plan placed in Phase 6 as plan only (D-111). OI-14, OI-15 decided (D-088, D-089); OI-16 deferred (repo private); OI-8 closing wording, OI-5, OI-13, OI-17 unchanged.
 ```
 Note (2026-11-08, S-065): D-099..D-102 are recorded on the PR branches (#7, #8, #9) and reach main with those merges.
 
@@ -120,6 +120,7 @@ Rules: work only on the current phase. Do not start the next phase without expli
 ## Phase 6: Pricing and auction profitability (REQ: FR-AH-1..3)
 
 - [ ] 6.1 PriceProvider interface and Native provider (manual prices; scan if capability exists)
+- [ ] 6.1a PLAN ONLY (D-111; Phase 6 NOT authorized): optional providers for Auctionator's and TSM's public interfaces (both installed on the user's client), fixed order, Native always the fallback; market price stored with source and age as a separate figure, never changing an acquisition value (D-063); a missing or secret answer is no price, never 0 (D-045). Before any build: verify both licences and the interface calls on Forever (D-110).
 - [ ] 6.2 PricingEngine valuation (conservative, staleness)
 - [ ] 6.3 AHMath: cut, deposit, failure risk, expected net; tests
 - [ ] 6.4 Own list/sold/expired history for sell-through estimates
@@ -292,8 +293,8 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [ ] Next approved build: update the TOC `## Notes:` line (it still says "Phase 2: core and store") (D-107).
 - [x] 2026-11-08 (S-066..S-068) D-106 (merges through the PR, REST command while `gh pr merge` is refused), D-107 (answers recorded), D-108 (standing approval covers TODO.md and Changelog.md). PRs #11, #12, #13 merged.
 - [x] 2026-11-14 (S-069) 0.5.6 baseline PASSED (D-109): 39.9 h, 224 periodic samples, 0.017 ms per frame, every 0.5.6 check 0. PR #8 and PR #7 merged.
-- [ ] User: attach Accountant Classic's SavedVariables file (same WTF folder) for the income and spending cross-check with GoldIntel, especially the OTHER share (D-110).
-- [ ] User: decide the price plan (Baseline_0.5.6_Report.md section 6): optional Auctionator / TSM source with GoldIntel's own fallback. Plan only; Phase 6 territory, NOT authorized.
+- [x] User: attach Accountant Classic's SavedVariables file (same WTF folder) for the income and spending cross-check with GoldIntel, especially the OTHER share (D-110). (Done 2026-11-14: nets equal to the copper, D-111.)
+- [x] User: decide the price plan (Baseline_0.5.6_Report.md section 6): optional Auctionator / TSM source with GoldIntel's own fallback. Plan only; Phase 6 territory, NOT authorized. (Added to Phase 6 as plan only, item 6.1a, D-111.)
 - [ ] Before using any other add-on as a source or reference: verify its licence (D-110); THIRD_PARTY.md with the first copied item.
 - [ ] PR #9 (0.6.0) is behind main since PR #7 and #8 merged: bring main into it (documents will conflict) when the user reviews it.
 - [ ] Note for Phase 4/7: /reload load frames cost 100-178 ms charged to GoldIntel (cause not measured; the 1.9 MB account SavedVariables file is a candidate, unverified). Track with the 0.6.0 measurements.
