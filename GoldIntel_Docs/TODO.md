@@ -1,13 +1,14 @@
 # GoldIntel TODO
 
-DOC VERSION: 1.2.0  |  UPDATED: 2026-11-03 (session S-057)
+DOC VERSION: 1.3.1  |  UPDATED: 2026-11-08 (session S-068)
 
 ```
-CURRENT PHASE:            Phase 3b increment 3b-3: M3 APPROVED (2026-10-31); passive-play build 0.5.1-passive for live servers (launch 2026-11-04). M4 NOT authorized. 3b-0, 3b-1, 3b-2 CLOSED.
-IMPLEMENTATION APPROVED:  Phases 1 and 2, Phase 3a (closed), Phase 3b scope D-067 (ledgers only, increments 3b-0..3b-4, each reviewed before the next; 3b-0..3b-2 closed, 3b-3 at M3 approved, 3b-4 NOT started). Everything else is NOT approved.
+CURRENT PHASE:            Phase 3b: 3b-0..3b-3 CLOSED (3b-3 by D-101, 2026-11-08); 3b-4 NOT started (priorities: later decision). Phase 4: P4-M1 built (PR #7), P4-M2 built as 0.6.0-passive (PR #9); neither merged nor installed; P4-M3 (live validation) NOT started. Build on main: 0.5.5-passive; 0.5.6-passive on PR #8, INSTALLED on all characters (D-107).
+IMPLEMENTATION APPROVED:  Phases 1 and 2, Phase 3a (closed), Phase 3b scope D-067 (3b-0..3b-3 closed incl. M4 by D-097; 3b-4 NOT started); 0.5.6 build (D-100); Phase 4 P4-M1 (D-099) and P4-M2 BUILD ONLY (D-102: not installed or merged before the user approves that build). Merges of PR #8 then PR #7 only after the user says 0.5.6 works live (D-102). Docs-only merges as in D-105 and D-108 (also TODO.md and Changelog.md); approved merges with the REST command (D-106). Everything else is NOT approved.
 PHASE 0:                  COMPLETE
-OPEN BLOCKERS:            None. M4 needs the user's go-ahead. OI-14 and OI-15 decided (D-088, D-089). OI-16 deferred (repo stays private); OI-8 closing wording, OI-5, OI-13, OI-17 unchanged.
+OPEN BLOCKERS:            None. Waiting on the user: 0.5.6 baseline (at least 3 hours in at least 3 sessions, D-102), hours so far not yet reported, and his word that 0.5.6 works live (then PR #8, then PR #7). Section 0 quotes confirmed and TOC note settled (D-107). OI-14, OI-15 decided (D-088, D-089); OI-16 deferred (repo private); OI-8 closing wording, OI-5, OI-13, OI-17 unchanged.
 ```
+Note (2026-11-08, S-065): D-099..D-102 are recorded on the PR branches (#7, #8, #9) and reach main with those merges.
 
 Note (2026-11-03, S-057): the per-phase checklists for Phases 1 to 3a below are kept as a historical record. Some boxes stay unticked for work that was later finished or waived; the authoritative status is the closure decisions (D-056 Phase 2, D-066 Phase 3a, D-076 3b-1, D-079 3b-2) and the CURRENT PHASE block above.
 
@@ -277,6 +278,16 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [x] 2026-11-07 (S-060) User merged PR #4 (0.5.3) and authorized M4 (D-097). Silver wording verified live; roll wins and split shares verified live; client patch 70862 kept 1.60.1 / Interface 16001.
 - [x] 2026-11-07 (S-060) M4 sizes measured (Phase3b_3b-3_M4_Report.md). Built 0.5.4-passive measurement build (Perf samples), PR opened.
 - [x] 2026-11-07 (S-060) User approved R-1, R-2, R-3 as a stopgap (D-098). Built 0.5.5-passive (contains 0.5.4).
-- [ ] User: install 0.5.5 (FULL restart from 0.5.3), play normally including one session of an hour or more, upload. Then CPU and memory against NFR-3, then the 3b-3 closure recommendation.
-- [ ] User: review Phase4_Live_Aggregation_Proposal.md (proposal only; Phase 4 NOT authorized).
+- [x] 2026-11-08 (S-062) 0.5.5 hour-of-play data received: CPU 0.04-0.06 ms per frame, lasting memory growth about 0.06 MB per hour (PASS); the memory reading caused one 100-400 ms frame per sample, removed in 0.5.6 (D-100, approved).
+- [x] 2026-11-08 (S-062) Phase3b_3b-3_Closure_Recommendation.md written. [x] User decided the 3b-3 closure (D-101).
+- [x] 2026-11-08 (S-062) Phase4_P4-M2_Plan.md written (plan only). [x] User confirmed section 0 (D-107) and decided P4-M2 (build only, D-102).
+- [x] User: install 0.5.6 after approving the build (`/reload` over 0.5.5). (Installed on all characters, D-107.)
+- [x] User: install 0.5.5 (FULL restart from 0.5.3), play normally including one session of an hour or more, upload. Then CPU and memory against NFR-3, then the 3b-3 closure recommendation. (Done: S-062 read the files; D-100, D-101.)
+- [x] User: review Phase4_Live_Aggregation_Proposal.md (proposal only; Phase 4 NOT authorized). (Done: answers Q-1..Q-7, D-099.)
 - [ ] Still OTHER by design until 3b-4: taxi, respec, barber, guild bank, repairs (repairs at a vendor are already vendor purchases).
+- [x] 2026-11-08 (S-065) D-104 (chat-only items recorded with the user's words) and D-105 (session rules, first-report exception, docs-only merge approval); stale documents fixed (TODO, Bible, README, CODE_SESSION_OPENING_PROMPT marked replaced).
+- [ ] User: play 0.5.6 at least 3 hours in at least 3 sessions (one of 60 minutes or more; group or dungeon if possible), attach the files in the session that analyzes them, and say whether 0.5.6 works live (D-102).
+- [x] User: confirm or correct the quotes in Phase4_P4-M2_Plan.md section 0. (Confirmed correct, D-107.)
+- [x] User: decide the TOC `## Notes:` change. (Next approved build, D-107.)
+- [ ] Next approved build: update the TOC `## Notes:` line (it still says "Phase 2: core and store") (D-107).
+- [x] 2026-11-08 (S-066..S-068) D-106 (merges through the PR, REST command while `gh pr merge` is refused), D-107 (answers recorded), D-108 (standing approval covers TODO.md and Changelog.md). PRs #11, #12, #13 merged.

@@ -1,5 +1,7 @@
 # Opening prompt for the Claude Code cloud session
 
+> **REPLACED by `NEXT_SESSION_PROMPT.md`** (user 2026-11-08, D-105). Kept as a record of the 2026-11-02 session only; do not paste it. Its commands (texlua, commit a21e071, "newest handoff entries at the bottom") are out of date.
+
 Paste everything inside the box as the first message.
 
 ```

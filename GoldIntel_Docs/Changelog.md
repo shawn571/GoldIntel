@@ -4,6 +4,12 @@ Append-only. Newest entry first. Format: `VERSION | DATE | AI/session | summary`
 
 ---
 
+## 0.5.6-passive (perf samples without the memory freeze) | 2026-11-08 | Claude (session S-062)
+- D-100: the automatic perf samples (begin, every 10 minutes, final) read CPU only. The memory reading (UpdateAddOnMemoryUsage, which recounts every addon and cost one frame of 100 to 400 ms per sample in the 2026-11-08 data) runs only on `/gi perf`.
+- M4 results added to Phase3b_3b-3_M4_Report.md; new Phase3b_3b-3_Closure_Recommendation.md and Phase4_P4-M2_Plan.md (plan only).
+- Contract 1.14.0. Tests: 1,319 passing (3 new incl. a mutation check). All addon Lua files parse under Lua 5.1. `/reload` is enough over 0.5.5.
+- Branch based on main (0.5.5); the open P4-M1 PR (#7) is not included.
+
 ## P4-M1 (pure modules, not loaded; package unchanged 0.5.5-passive) | 2026-11-07 | Claude (session S-061)
 - D-099: user answered the Phase 4 proposal (Q-1..Q-7) and authorized P4-M1 only.
 - New `GoldIntel/Aggregate/Clock.lua`: every 0.5 s slice is active (with the current activity, Q-3), idle (AM-3, D-055), travel (hard: taxi, loading; soft: D-054) or paused; exactly one class per slice.
