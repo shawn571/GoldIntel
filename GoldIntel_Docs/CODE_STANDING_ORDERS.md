@@ -33,6 +33,10 @@ decides the rest. A conflict that cannot be settled: stop and ask Shawn.
   Extended (D-108, 2026-11-08): "Extend the docs-only standing approval to also cover TODO.md and Changelog.md. Record it with my words, then update TODO.md now and merge it under that approval."
   Covered files: Session_Handoff.md, NEXT_SESSION_PROMPT.md, CODE_STANDING_ORDERS.md, Decisions.md (recording his
   decisions), TODO.md, Changelog.md. A pull request that touches any other file is not covered.
+- Standing permission (D-114, 2026-11-14): "GoldIntel Code always has permission to edit code and docs, run tests, build packages, commit and push to work branches. My approval of an increment or fix in chat is the go-ahead to do all of that for it. Merges still follow the merge rules; never push to main or force-push."
+  The matching `.claude/settings.json` (the user's text in D-114) is applied by the user: the session's permission
+  check refuses a session that edits its own permission rules. Until it is in, an approval in chat is enough for the
+  edit tools; if a tool is refused, quote the exact command and message in the report.
 - How merges are done (D-106, 2026-11-08): "Once I approve a merge in chat, you merge it yourself through its pull request (gh pr merge <n> --merge; no squash, no rebase, no direct push to main), then check main and report the merge commit and the test result. Approval is still required for every merge except the docs-only standing approval. Commits and pushes to work branches need no approval. Never force-push or delete branches."
   In practice: a merge commit through the pull request only; after it, fetch main, name the merge commit and run the
   test suite on it (`lua5.4 run.lua` from GoldIntel/Tests) in the report.
