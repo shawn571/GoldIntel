@@ -4,6 +4,15 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-076 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code", same session) | STATE UPDATE (S-075 holds except as below)
+- D-118 (user's words in Decisions.md): 0.6.2 fixes approved with (a) full interval after Configure, Ignore, Reload Now; (b) no immediate re-show after Ignore; (c) clicks and the client's own closes logged apart.
+- 0.6.2-passive (contract 1.17.0) built on p4/m2-live (ad83a6d): reminder popup state, real value and "Saved" in the Settings window, Close button, single chat prefix. 1,403 tests; Lua 5.1 parse ok. Package GoldIntel_0.6.2_passive_AddOns.zip built from the branch head and sent. /reload is enough over 0.6.1 (D-117).
+- NEXT_SESSION_PROMPT.md: REST merge command is the merge method; "gh pr merge" dropped; open PRs listed with gh api (docs-only PR, merged).
+PENDING (needs Shawn): live check 3 on 0.6.2 including the boss encounter; then PR #9 is merged when he reports it passed. EmpireIntel screenshot (later).
+BRANCHES AND PULL REQUESTS: #9 open (p4/m2-live, 0.6.2-passive). Merged and kept: #1 to #8, #10 to #23 and this docs PR.
+INSTALLED: 0.6.1-passive until the user installs 0.6.2.
+SHAWN'S NEXT STEP: install 0.6.2 (/reload), run the live check 3 steps of the S-076 report, then "logged out, check" with files.
+
 ## S-075 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code", same session) | STATE UPDATE (S-074 holds except as below)
 - Live check 2 of 0.6.1 (files attached in this session, logged out 13:30 local): passed except four bugs (D-117). Reload Now reloads on Forever (verified). Boss encounter NOT tested.
 - Bug (1), measured in the trace: every re-show came 60.3 s after the previous "shown", so the timer counts from the show, not the close; the "click=ignore" lines logged in the same instant as a "shown" are most likely the client cancelling the open popup when it is shown again (StaticPopup "override" cancel, inferred from the client's popup code), not clicks.
