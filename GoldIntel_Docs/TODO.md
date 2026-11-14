@@ -1,12 +1,12 @@
 # GoldIntel TODO
 
-DOC VERSION: 1.4.1  |  UPDATED: 2026-11-14 (session S-070)
+DOC VERSION: 1.4.2  |  UPDATED: 2026-11-14 (session S-071)
 
 ```
-CURRENT PHASE:            Phase 3b: 3b-0..3b-3 CLOSED (3b-3 by D-101, 2026-11-08); 3b-4 NOT started (priorities: later decision). Phase 4: P4-M1 MERGED (PR #7, modules not loaded); P4-M2 built as 0.6.0-passive (PR #9), NOT approved, not merged, not installed; P4-M3 NOT started. Build on main: 0.5.6-passive (installed on all characters).
+CURRENT PHASE:            Phase 3b: 3b-0..3b-3 CLOSED (3b-3 by D-101, 2026-11-08); 3b-4 NOT started; it comes after 0.6.0, in the order flight fares, postage, AH deposits (D-112). Phase 4: P4-M1 MERGED (PR #7, modules not loaded); P4-M2 built as 0.6.0-passive (PR #9), NOT approved, not merged, not installed; P4-M3 NOT started. Build on main: 0.5.6-passive (installed on all characters).
 IMPLEMENTATION APPROVED:  Phases 1 and 2, Phase 3a (closed), Phase 3b scope D-067 (3b-0..3b-3 closed incl. M4 by D-097; 3b-4 NOT started); 0.5.6 (D-100, merged by D-109); Phase 4 P4-M1 (D-099, merged by D-109) and P4-M2 BUILD ONLY (D-102; PR #9 not approved). Docs-only merges as in D-105 and D-108; approved merges with the REST command (D-106). Everything else is NOT approved.
 PHASE 0:                  COMPLETE
-OPEN BLOCKERS:            None. Waiting on the user: review and approval of the 0.6.0 build (PR #9). Accountant cross-check done and price plan placed in Phase 6 as plan only (D-111). OI-14, OI-15 decided (D-088, D-089); OI-16 deferred (repo private); OI-8 closing wording, OI-5, OI-13, OI-17 unchanged.
+OPEN BLOCKERS:            None. Waiting on the user: approval of the 0.6.0 build (PR #9, reviewed in S-071: Phase4_P4-M2_Review.md on its branch). Accountant cross-check done and price plan placed in Phase 6 as plan only (D-111). OI-14, OI-15 decided (D-088, D-089); OI-16 deferred (repo private); OI-8 closing wording, OI-5, OI-13, OI-17 unchanged.
 ```
 Note (2026-11-08, S-065): D-099..D-102 are recorded on the PR branches (#7, #8, #9) and reach main with those merges.
 
@@ -298,4 +298,8 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [ ] Before using any other add-on as a source or reference: verify its licence (D-110); THIRD_PARTY.md with the first copied item.
 - [ ] PR #9 (0.6.0) is behind main since PR #7 and #8 merged: bring main into it (documents will conflict) when the user reviews it.
 - [ ] Note for Phase 4/7: /reload load frames cost 100-178 ms charged to GoldIntel (cause not measured; the 1.9 MB account SavedVariables file is a candidate, unverified). Track with the 0.6.0 measurements.
+- [x] 2026-11-14 (S-071) PR #9 brought up to date with main (documents only) and reviewed; 1,365 tests pass; NOT merged (D-112).
+- [ ] User: approve (or not) installing 0.6.0 (full restart), which starts P4-M3 live validation; say whether the approval also covers merging #9 after the live check.
+- [ ] Review finding (P4-M2, minor): `EVT agg` / `EVT clock` lines fill `trace.keep` (12 per hour, cap 400); option: keep only MISMATCH and final lines. Needs approval before any change.
+- [ ] 3b-4 after 0.6.0: flight fares, then postage, then AH deposits (D-112). Not started.
 
