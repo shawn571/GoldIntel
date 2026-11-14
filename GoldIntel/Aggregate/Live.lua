@@ -96,7 +96,7 @@ function Live.Check()
   return { cash = (T.cin - T.cout) - cum - chk.cash, vc = T.vc - createdValue(lotsSec and p and lotsSec[p.key]) - chk.vc, seconds = T.s }
 end
 
-local function clockText()
+local function clockText(why)
   if not C then return 'EVT clock none' end
   local s = C:Stats()
   local sp, keys = C:Speeds(), {}
@@ -104,8 +104,8 @@ local function clockText()
   table.sort(keys, function(a, b) return (tonumber(a:match('^(%d+)')) or 0) < (tonumber(b:match('^(%d+)')) or 0) end)
   local parts = {}
   for _, k in ipairs(keys) do parts[#parts + 1] = k .. ':' .. math.floor(sp[k]) end
-  return string.format('EVT clock active=%d idle=%d travelHard=%d travelSoft=%d paused=%d travelUnknown=%d pending=%d speed=%s',
-    math.floor(s.active), math.floor(s.idle), math.floor(s.travelHard), math.floor(s.travelSoft), math.floor(s.paused),
+  return string.format('EVT clock %sactive=%d idle=%d travelHard=%d travelSoft=%d paused=%d travelUnknown=%d pending=%d speed=%s',
+    why and (why .. ' ') or '', math.floor(s.active), math.floor(s.idle), math.floor(s.travelHard), math.floor(s.travelSoft), math.floor(s.paused),
     math.floor(s.travelUnknown), s.pending, #parts > 0 and table.concat(parts, ',') or 'none')
 end
 
@@ -115,7 +115,7 @@ local function report(why)
     trace(string.format('EVT agg %s cash=%d vc=%d seconds=%d%s', why, r.cash, r.vc, math.floor(r.seconds),
       (r.cash ~= 0 or r.vc ~= 0) and ' MISMATCH' or ''))
   end
-  trace(clockText())
+  trace(clockText(why))
 end
 
 local function addSlices(slices)

@@ -4,6 +4,18 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-072 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code", new session; the S-071 session makes no further commits, D-105) | STATE UPDATE (S-069..S-071 hold except as below)
+- First report (read-only) verified S-071: main e1e6498 = 0.5.6-passive, contract 1.14.0, 1,343 tests; PR #9 head was 971971d (a second docs-only merge of main after #19), 1,365 tests, addon files identical to e6946b0.
+- D-113 (user's words in Decisions.md): document gaps fixed on #9's branch; TOC `## Notes:` updated; trace.keep now holds only the final and MISMATCH `EVT agg` / `EVT clock` lines (one test, three mutation checks); Project_Bible header and inventory updated (on #9's branch). 0.6.0-passive APPROVED TO INSTALL for the P4-M3 live check; PR #9 merged ONLY after the user reports the live check passed.
+- 0.6.0-passive amended on p4/m2-live (version unchanged: never delivered before): 1,369 tests pass; all addon files parse under Lua 5.1. Package GoldIntel-0.6.0-passive.zip built with tools/build_package.py from a clean checkout of the branch head and sent to the user.
+- D-113 and this section are also on main through a docs-only PR (D-105/D-108 standing approval, includes the TODO.md corrections). D-101, D-102 and S-063 reach main with #9.
+PHASE: Phase 4 P4-M3 (live validation) starts when the user installs 0.6.0. 3b-4 after 0.6.0 (flight fares, postage, AH deposits; D-112), NOT started.
+PENDING (needs Shawn): install 0.6.0 (FULL restart), play normally, then "logged out, check" with the account file and character files attached; say whether the live check passed. Then approve nothing more for #9: the merge follows his report (D-113).
+BRANCHES AND PULL REQUESTS: #9 open (p4/m2-live, ahead of main: 0.6.0-passive, D-101, D-102, S-063, Bible update). The docs PR of this session merged. Merged and kept: #1 to #8, #10 to #19 and that docs PR.
+INSTALLED: 0.5.6-passive on all characters until the user installs 0.6.0.
+OPEN QUESTIONS: map.worldsize and the 8 yd/s soft-travel speed (settled from EVT clock speed buckets in P4-M3); in-game CPU of 0.6.0 (expected about 0.02 ms per frame, budget 0.017 + 0.05); reload frame times with the larger account file.
+SHAWN'S NEXT STEP: install 0.6.0 as in the S-072 report, play, then "logged out, check" with files attached.
+
 ## S-071 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code") | STATE UPDATE (S-069, S-070 hold except as below)
 - PR #18 merged (ce3568c). D-112 recorded with the user's words.
 - PR #9 (0.6.0-passive, contract 1.15.0) brought up to date with main: merge commit 1221a7c on p4/m2-live (documents only), then the review document a377cd4 (GoldIntel_Docs/Phase4_P4-M2_Review.md, on the branch only). 1,365 tests pass. NOT merged, NOT approved, no package built. Mergeable against main; each later docs merge to main may conflict in documents again (resolve on the branch).

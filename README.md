@@ -25,7 +25,7 @@ restart the client. `GIMin`, `GoldIntelDiag` and `GIProbeLoot` are diagnostic to
 `/gi price set|list|clear`, `/gi config`, `/gi perf`, `/gi agg status|check|top`, `/gi pause|resume|afk`, `/gi activity`, `/gi version`, `/gi help`.
 
 ## Layout
-- `GoldIntel/` the addon (`Platform/`, `Collect/`, `Ledger/`, `Core/`, `Store/`) and its tests (`GoldIntel/Tests`, run with `texlua run.lua` from that folder).
+- `GoldIntel/` the addon (`Platform/`, `Collect/`, `Ledger/`, `Aggregate/`, `Core/`, `Store/`) and its tests (`GoldIntel/Tests`, run with `lua5.4 run.lua` from that folder).
 - `GoldIntel_Docs/` requirements, decisions, contracts, architecture, changelog, session handoffs.
 - `tools/build_package.py` builds and verifies the AddOns zip.
 

@@ -1,6 +1,6 @@
 # GoldIntel Project Bible
 
-DOC VERSION: 1.0.2  |  DATE: 2026-11-08 (header, section 9 and inventory only, user decision D-105; governance unchanged)  |  PROJECT VERSION: 0.5.5-passive on main (newer builds on open pull requests: see the newest Session_Handoff section)  |  STATUS: Active
+DOC VERSION: 1.0.3  |  DATE: 2026-11-14 (header and inventory only, user decision D-113; governance unchanged)  |  PROJECT VERSION: 0.6.0-passive (PR #9, merged after the P4-M3 live check); 0.5.6-passive on main until then. The newest Session_Handoff section names main, open pull requests and what is installed  |  STATUS: Active
 
 > Read this file first. It is self-contained. If any other project document conflicts with it on governance, this file wins; on product scope, Requirements_v1.md wins.
 
@@ -166,5 +166,9 @@ Cash GPH (always visible), Wealth GPH, Net GPH, Zone rankings, Subzone rankings,
 | NEXT_SESSION_PROMPT.md | Exact text the user pastes into a new Code session | Keep current; no state in it |
 | CODE_SESSION_OPENING_PROMPT.md | Opening prompt of 2026-11-02 | Replaced by NEXT_SESSION_PROMPT.md (D-105); historical |
 | Phase4_Live_Aggregation_Proposal.md | Phase 4 proposal (live aggregation per place and activity) and the Q-1..Q-7 answers (D-099) | Historical once Phase 4 closes |
-| Phase4_P4-M2_Plan.md | P4-M2 plan; section 0 lists the approvals relied on (D-102); on PR #8 / #9 until merged | Update with the user's decisions |
-| Reference_AccountantClassic.md, Reference_Auctionator.md | Notes from other addons used as design input (3b-4, Phase 6) | Reference |
+| Phase4_P4-M2_Plan.md | P4-M2 plan; section 0 lists the approvals relied on (D-102, confirmed D-107) | Historical once Phase 4 closes |
+| Phase4_P4-M2_Review.md | Review of the 0.6.0-passive build before approval: what it adds, saved data, cost, findings (S-071, D-113) | Historical once P4-M3 closes |
+| Baseline_0.5.6_Report.md | 0.5.6 baseline (D-109), price plan (section 6), Accountant Classic cross-check (section 7, D-111) | Historical; Q-7 baseline for Phase 4 |
+| Phase3b_3b-3_Closure_Recommendation.md | 3b-3 closure (accepted, D-101) | Closed |
+| THIRD_PARTY.md (not yet created) | Credits for anything copied from MIT or CC BY sources (D-110) | Created with the first copied item |
+| Reference_AccountantClassic.md, Reference_Auctionator.md | Notes from other addons used as design input (3b-4, Phase 6) | Reference; copying rules in CODE_STANDING_ORDERS.md section 9 (D-110) |

@@ -54,7 +54,8 @@ account file (1.9 MB) grows by about 4 %; reload frames (100 to 178 ms on 0.5.6)
 
 1. `EVT agg` and `EVT clock` go to `trace.keep` every 10 minutes (12 lines per hour). The keep list is capped at 400
    and is already full on the Paladin, so older evidence (UNMATCHED, unexplained, checks) rotates out sooner.
-   Option: keep only MISMATCH and final lines. Minor.
+   Option: keep only MISMATCH and final lines. Minor. DECIDED and FIXED (D-113, S-072): only final and MISMATCH
+   lines are kept; `EVT clock` lines carry `periodic|final`; tests added (1,369 pass).
 2. The reminder counts from the load, not from the last save; a disconnect or logout also saves. Matches the approved
    text ("since your data was last saved" is true from the load). No change proposed.
 3. `map.worldsize` and the 8 yards per second soft-travel speed are unverified; the `EVT clock` speed buckets are the

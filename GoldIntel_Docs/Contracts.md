@@ -1,6 +1,6 @@
 # GoldIntel Contracts
 
-DOC VERSION: 1.15.0  |  CONTRACT VERSION: 1.15.0  |  DATE: 2026-11-08 (code 0.6.0-passive, branch p4/m2-live)
+DOC VERSION: 1.15.0  |  CONTRACT VERSION: 1.15.0  |  DATE: 2026-11-14 (code 0.6.0-passive, branch p4/m2-live; D-113 keep rule)
 
 Contracts.md wins over Architecture.md on data shapes. A breaking change to any contract requires a Decisions.md entry (Project_Bible section 4) and a CONTRACT VERSION bump. Additive optional fields are non-breaking.
 
@@ -8,7 +8,7 @@ Notation: Lua tables. `copper` = integer. `t` = Unix seconds (`time()`); `gt` = 
 
 ## Change log (contract versions)
 
-- **1.15.0 (2026-11-08, D-102, build 0.6.0-passive, additive):** the F22 modules are now loaded and in effect; new `GI.AggLive` (Aggregate/Live.lua); `GoldIntelDB.agg[charKey]` and `GoldIntelDB.heat[charKey]` written; `Platform.OnTaxi`, `Platform.Distance` / `Map.WorldSize`, probe capability `map.worldsize`; setting `reminder.reloadMinutes`; commands `/gi agg`, `/gi pause`, `/gi resume`, `/gi afk`, `/gi activity`; the Lots emit carries a phase for kind 'lot'; trace lines `EVT agg`, `EVT clock`, `EVIDENCE mapWorldSize`. See F23.
+- **1.15.0 (2026-11-08, D-102, build 0.6.0-passive, additive):** the F22 modules are now loaded and in effect; new `GI.AggLive` (Aggregate/Live.lua); `GoldIntelDB.agg[charKey]` and `GoldIntelDB.heat[charKey]` written; `Platform.OnTaxi`, `Platform.Distance` / `Map.WorldSize`, probe capability `map.worldsize`; setting `reminder.reloadMinutes`; commands `/gi agg`, `/gi pause`, `/gi resume`, `/gi afk`, `/gi activity`; the Lots emit carries a phase for kind 'lot'; trace lines `EVT agg`, `EVT clock`, `EVIDENCE mapWorldSize`. See F23. Amended 2026-11-14 before any release (D-113): `EVT clock` carries `periodic|final`; only final and MISMATCH lines go to `trace.keep`.
 
 - **1.14.0 (2026-11-08, D-100, build 0.5.6-passive):** `Perf.Sample(opts)`: memory (`memKB`) only with `opts.memory = true`, otherwise `memSkipped = true`; stored automatic samples carry no `memKB`; `/gi perf` reads memory. Text shows `memKB=skipped`.
 
@@ -663,5 +663,5 @@ rec = { id, t (unix s), c (signed copper), src, conf, act, ac (actConf), lc (loc
 - **Lots emit:** `emit(kind, rec, phase)`; for kind 'lot' the phase is 'add' (Lots:Add) or 'complete' (Lots:Complete).
 - **Setting** `reminder.reloadMinutes` (number, default 60, 0..600; 0 = off). Reminder line: `GoldIntel: <n> minutes since your data was last saved; /reload saves it`, once per n minutes after the load, never in combat (checked every 60 s).
 - **Commands:** `/gi agg [status|check|top [n]]`, `/gi pause`, `/gi afk`, `/gi resume`, `/gi activity <KEY>|clear` (keys: Contracts F0 ActivityKey, reserved keys included).
-- **Trace (kept):** `EVT agg <periodic|final> cash=<c> vc=<c> seconds=<s>[ MISMATCH]`, `EVT clock active=.. idle=.. travelHard=.. travelSoft=.. paused=.. travelUnknown=.. pending=.. speed=<bucket:seconds,...>`, at interval begin `EVIDENCE mapWorldSize=<true|false>`.
+- **Trace:** `EVT agg <periodic|final> cash=<c> vc=<c> seconds=<s>[ MISMATCH]`, `EVT clock <periodic|final> active=.. idle=.. travelHard=.. travelSoft=.. paused=.. travelUnknown=.. pending=.. speed=<bucket:seconds,...>`, at interval begin `EVIDENCE mapWorldSize=<true|false>`. Copied to `trace.keep` (D-113): `EVT agg final`, `EVT clock final`, and any `EVT agg` line ending in ` MISMATCH`; periodic lines stay in the rolling trace only. `/gi agg status` shows the clock as `agg clock: active=..`.
 

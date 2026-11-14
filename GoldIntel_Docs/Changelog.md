@@ -4,6 +4,12 @@ Append-only. Newest entry first. Format: `VERSION | DATE | AI/session | summary`
 
 ---
 
+## 0.6.0-passive (amended before delivery: TOC note, trace.keep rule) | 2026-11-14 | Claude (session S-072)
+- D-113: periodic `EVT agg` / `EVT clock` lines no longer go to `trace.keep` (it is capped at 400 and was full on the Paladin); only the final pair of each interval and any MISMATCH line are kept. `EVT clock` lines carry `periodic|final`.
+- D-113: TOC `## Notes:` updated (it said "Phase 2: core and store"; held since D-105, D-107).
+- Docs on the branch: TODO stale lines, README test command (`lua5.4 run.lua`), Project_Bible header and inventory.
+- Tests: 1,369 passing (4 new: the keep scenario and 3 mutation checks). All addon Lua files parse under Lua 5.1. Version unchanged (0.6.0 was never delivered). FULL CLIENT RESTART over 0.5.6.
+
 ## 0.6.0-passive (Phase 4 P4-M2: live aggregation) | 2026-11-08 | Claude (session S-063)
 - D-102: the P4-M1 Clock and Aggregator now run live (new Aggregate/Live.lua): every stored cash entry and every value-created lot is added to totals per place x activity x 5-level bracket with item counts, and every active half second to the cell and its 32 x 32 heat bin. Saved in GoldIntelDB.agg / heat per character with every /reload, logout and disconnect.
 - First start per character back-fills the saved value and items (no time) and records check offsets; `/gi agg check` must read 0 copper for cash and value.

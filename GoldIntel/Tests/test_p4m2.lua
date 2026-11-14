@@ -56,6 +56,24 @@ local function aggState(W)
   return W.env.GoldIntelDB.agg[key], W.env.GoldIntelDB.heat[key]
 end
 
+-- D-113: periodic EVT agg / EVT clock lines stay in the rolling trace; trace.keep gets the final pair and any MISMATCH.
+local function keepScenario(override)
+  local W, _, ns, run = session(nil, { override = override })
+  coinLoot(W, 5)
+  ns.AggLive.REPORT_EVERY = 5; W:advance(12); ns.AggLive.REPORT_EVERY = 600
+  ns.Trace.Line('EVT agg periodic cash=7 vc=0 seconds=10 MISMATCH')
+  run('collect off')
+  local lines = table.concat(W.env.GoldIntelCharDB.trace.lines, '\n')
+  local keep = table.concat(W.env.GoldIntelCharDB.trace.keep, '\n')
+  assert(lines:find('EVT agg periodic cash=0', 1, true), 'periodic agg line missing from the rolling trace')
+  assert(lines:find('EVT clock periodic active=', 1, true), 'periodic clock line missing from the rolling trace')
+  assert(not keep:find('EVT agg periodic cash=0', 1, true), 'periodic agg line kept')
+  assert(not keep:find('EVT clock periodic', 1, true), 'periodic clock line kept')
+  assert(keep:find('EVT agg periodic cash=7 vc=0 seconds=10 MISMATCH', 1, true), 'MISMATCH line not kept')
+  assert(keep:find('EVT agg final cash=0 vc=0', 1, true), 'final agg line not kept')
+  assert(keep:find('EVT clock final active=', 1, true), 'final clock line not kept')
+end
+
 ---------------------------------------------------------------------------
 T.describe('P4-M2 live check (D-102)', function()
   T.it('coin, a vendor sale and a looted item: the aggregates equal the ledger and the lot book (0 / 0)', function()
@@ -238,9 +256,14 @@ T.describe('P4-M2 commands and trace', function()
     local top = run('agg top 3')
     T.truthy(top:find('1. Durotar', 1, true), top)
     ns.AggLive.REPORT_EVERY = 5; W:advance(6); ns.AggLive.REPORT_EVERY = 600
-    local keep = table.concat(W.env.GoldIntelCharDB.trace.keep, '\n')
-    T.truthy(keep:find('EVT agg periodic cash=0 vc=0', 1, true), keep:sub(1, 300))
-    T.truthy(keep:find('EVT clock active=', 1, true))
+    local lines = table.concat(W.env.GoldIntelCharDB.trace.lines, '\n')
+    T.truthy(lines:find('EVT agg periodic cash=0 vc=0', 1, true), lines:sub(-300))
+    T.truthy(lines:find('EVT clock periodic active=', 1, true))
+    T.truthy(run('agg status'):find('agg clock: active=', 1, true))
+  end)
+
+  T.it('trace.keep holds only final and MISMATCH EVT agg / EVT clock lines (D-113)', function()
+    keepScenario()
   end)
 
   T.it('pause, afk, resume and activity answer, and an unknown activity key is refused', function()
@@ -287,16 +310,29 @@ local function pauseScenario(override)
 end
 
 T.describe('P4-M2 mutation checks', function()
-  T.it('the real sources pass the scenarios', function() checkScenario(); reminderScenario(); pauseScenario() end)
+  T.it('the real sources pass the scenarios', function() checkScenario(); reminderScenario(); pauseScenario(); keepScenario() end)
   local MUT = {
     { 'cash not fed', "    GI.Bus.On('LEDGER_CASH', guard(onCash))", "", checkScenario },
     { 'late value ignored', "    A:Enqueue('lotValue', rec); c.lotValues = c.lotValues + 1", "", checkScenario },
     { 'reminder in combat', "  if type(minutes) ~= 'number' or minutes <= 0 or inCombat or not loadGT then return end", "  if type(minutes) ~= 'number' or minutes <= 0 or not loadGT then return end", reminderScenario },
     { 'pause not applied', "  if C then C:Manual(mode) end", "", pauseScenario },
+    { 'final clock line unmarked', "  trace(clockText(why))", "  trace(clockText())", keepScenario },
   }
   for _, m in ipairs(MUT) do
     T.it('mutation is caught: ' .. m[1], function()
       T.falsy((pcall(m[4], mutantLive(m[2], m[3]))), 'the mutant passed: ' .. m[1])
     end)
   end
+  local TRACE = Loader.readFile(Loader.root .. '/Ledger/Trace.lua')
+  local function mutantTrace(a, b)
+    local i, j = TRACE:find(a, 1, true)
+    assert(i, 'anchor missing: ' .. a)
+    return { ['Ledger/Trace.lua'] = TRACE:sub(1, i - 1) .. b .. TRACE:sub(j + 1) }
+  end
+  T.it('mutation is caught: periodic lines kept again (the 0.6.0 rule before D-113)', function()
+    T.falsy((pcall(keepScenario, mutantTrace("text:find('^EVT agg final', 1)", "text:find('^EVT agg', 1)"))), 'the mutant passed')
+  end)
+  T.it('mutation is caught: MISMATCH lines no longer kept', function()
+    T.falsy((pcall(keepScenario, mutantTrace("(text:find('^EVT agg', 1) and text:find(' MISMATCH', 1, true))", "false"))), 'the mutant passed')
+  end)
 end)
