@@ -138,6 +138,14 @@ CHAT-ONLY ITEMS NOT YET RECORDED WITH EXACT WORDS (for Shawn to confirm)
 SHAWN'S NEXT STEP
 Install 0.5.6 (`/reload` over 0.5.5), play at least 3 hours in 3 sessions, upload, and say whether 0.5.6 works. Start a new Code session with NEXT_SESSION_PROMPT.md when told.
 
+## S-062 | 2026-11-08 | Claude (Claude Code cloud session)
+- Read the 0.5.5 hour-of-play files: CPU 0.04-0.06 ms per frame (target 0.5), lasting memory growth about 0.06 MB per hour (target 2); every automatic sample cost one 100-400 ms frame because of UpdateAddOnMemoryUsage (the user noticed no stutter). Ledger checks 0, roll wins and split shares working, no anomalies, no unknown lots.
+- User approved 0.5.6 (D-100). Built on branch fix/0.5.6-perf from main (P4-M1 PR #7 not included, not merged), 1,319 tests, PR opened. Wrote the 3b-3 closure recommendation and the P4-M2 plan (plan only; section 0 lists every approval relied on, with quotes, for the user to confirm).
+
+OPEN ISSUES: 3b-3 closure decision; P4-M2 section 0 confirmation (Q-5 numbers not approved, Q-6 reading, Q-7 baseline 0.5.6 vs 0.5.5); PR #7 merge; lag case (fix held); OI-16 deferred; OI-17 open.
+BLOCKERS: none.
+NEXT RECOMMENDED TASK: user reads the closure recommendation and the P4-M2 plan and decides; installs 0.5.6 after approving the build. No merge or build beyond 0.5.6 before that.
+
 ## S-060 | 2026-11-07 | Claude (Claude Code cloud session)
 - Read the user's files of 2026-11-07 (0.5.3, client build 70862). Verified live: roll wins booked loot, split shares claimed (also with silver amounts), silver wording parsed, every check 0. Main character: OTHER income 0.6% of inflow by value; OTHER spending 33,793 copper = AH bag purchases (3 x 80 silver, user), flight fares, small sinks. BFD disconnect found in the data (21:52 UTC, +44 copper gap, nothing else lost).
 - User merged PR #4 and authorized M4 (D-097). Sizes measured; caps will be reached soon (cash ~10 h, lots ~14 h); trace keep list full of gear-swap lines. Built 0.5.4-passive (Perf samples), PR opened, not installed.

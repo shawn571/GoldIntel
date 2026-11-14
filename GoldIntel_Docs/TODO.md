@@ -276,6 +276,10 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [x] 2026-11-07 (S-060) User merged PR #4 (0.5.3) and authorized M4 (D-097). Silver wording verified live; roll wins and split shares verified live; client patch 70862 kept 1.60.1 / Interface 16001.
 - [x] 2026-11-07 (S-060) M4 sizes measured (Phase3b_3b-3_M4_Report.md). Built 0.5.4-passive measurement build (Perf samples), PR opened.
 - [x] 2026-11-07 (S-060) User approved R-1, R-2, R-3 as a stopgap (D-098). Built 0.5.5-passive (contains 0.5.4).
+- [x] 2026-11-08 (S-062) 0.5.5 hour-of-play data received: CPU 0.04-0.06 ms per frame, lasting memory growth about 0.06 MB per hour (PASS); the memory reading caused one 100-400 ms frame per sample, removed in 0.5.6 (D-100, approved).
+- [x] 2026-11-08 (S-062) Phase3b_3b-3_Closure_Recommendation.md written. [x] User decided the 3b-3 closure (D-101).
+- [x] 2026-11-08 (S-062) Phase4_P4-M2_Plan.md written (plan only). [x] User confirmed section 0 (D-107) and decided P4-M2 (build only, D-102).
+- [x] User: install 0.5.6 after approving the build (`/reload` over 0.5.5). (Installed on all characters, D-107.)
 - [x] User: install 0.5.5 (FULL restart from 0.5.3), play normally including one session of an hour or more, upload. Then CPU and memory against NFR-3, then the 3b-3 closure recommendation. (Done: S-062 read the files; D-100, D-101.)
 - [x] User: review Phase4_Live_Aggregation_Proposal.md (proposal only; Phase 4 NOT authorized). (Done: answers Q-1..Q-7, D-099.)
 - [ ] Still OTHER by design until 3b-4: taxi, respec, barber, guild bank, repairs (repairs at a vendor are already vendor purchases).

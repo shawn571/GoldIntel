@@ -603,6 +603,13 @@ User: "Approve R-1, R-2 and R-3 as a stopgap" (options in Phase3b_3b-3_M4_Report
 Affected: Ledger/Cash.lua, Ledger/Lots.lua, Ledger/Trace.lua. Contract 1.13.0. Migration: none (existing data stays; the new caps apply from the next add). Build 0.5.5-passive (contains 0.5.4). `/reload` is enough over 0.5.4; a FULL restart over 0.5.3 (new file from 0.5.4).
 The user also asked for a Phase 4 proposal (live aggregation per location and activity, no code): Phase4_Live_Aggregation_Proposal.md. Proposal only; Phase 4 is NOT authorized.
 
+## D-100 Automatic perf samples read CPU only; memory only on /gi perf (user 2026-11-08) | APPROVED | 2026-11-08
+Evidence (user files 2026-11-08, 0.5.5, 42 samples, sessions up to 111 minutes): every automatic sample added exactly one frame over 100 ms (CountTimeOver100Ms +1 per sample; 100 to 400 ms). The cause is the memory reading: UpdateAddOnMemoryUsage recounts every loaded addon (about 60) and the time is charged to GoldIntel. GoldIntel's own work: 0.04 to 0.06 ms per frame session average. The user did not notice a stutter.
+User: "0.5.6 is approved: remove the automatic memory reading, keep the automatic CPU samples, and read memory only on /gi perf."
+Rule: `Perf.Sample(opts)` reads memory only with `opts.memory = true`; the begin, periodic and final samples read CPU only (`memSkipped`); `/gi perf` reads memory on request and says a short freeze is possible.
+Also recorded the same day: the user will decide the 3b-3 closure after reading Phase3b_3b-3_Closure_Recommendation.md; the P4-M2 plan is delivered as a plan only (Phase4_P4-M2_Plan.md); nothing beyond 0.5.6 is merged or built before the user approves.
+Affected: Platform/Perf.lua, Ledger/Trace.lua (comment), Core/Slash.lua. Contract 1.14.0. Migration: none. Build 0.5.6-passive; `/reload` is enough over 0.5.5.
+
 ## D-103 Standing orders for every Code session (user 2026-11-08) | APPROVED | 2026-11-08
 User: "Standing instruction, effective now." Recorded in full in CODE_STANDING_ORDERS.md (the user's words quoted) and kept current in NEXT_SESSION_PROMPT.md. Key sentences: "Add the rule that anything I decide in chat gets recorded in the docs with my exact words."; "Update Session_Handoff first ... Commit and push it, and say so."; "Tell me when to start a new Code session: if your context has been summarized, or a session has run long, and only at a clean stopping point with nothing half-built and nothing unpushed."; "End with three short parts: 'What you do' (plain language, numbered), 'Reply to send' (ready to paste), and the package block. Keep reports short; long evidence goes in files in the docs folder."; "Do this in your next push, docs only ... Do not change any code or merge anything for it."
 Note: D-099 to D-102 are recorded on the open branches (PR #7, #8, #9) and reach main with those merges; this entry is on branch docs/session-state.
@@ -649,4 +656,3 @@ User: "Extend the docs-only standing approval to also cover TODO.md and Changelo
 Rule: the D-105 standing approval now covers pull requests that change only Session_Handoff.md, NEXT_SESSION_PROMPT.md, CODE_STANDING_ORDERS.md, the recording of the user's decisions (Decisions.md), TODO.md and Changelog.md; Claude tells the user each time. Code, versions and every other merge still need his explicit approval. Merged with the REST command while `gh pr merge` is refused (D-106 addendum).
 Done in S-068: TODO.md CURRENT PHASE block and open tasks brought in line with D-107 (section 0 quotes confirmed, 0.5.6 installed, TOC note in the next approved build).
 Affected: documents only (CODE_STANDING_ORDERS.md section 2, TODO.md). Migration: none. Package: unchanged.
-
