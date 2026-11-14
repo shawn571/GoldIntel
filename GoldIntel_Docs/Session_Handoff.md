@@ -4,6 +4,16 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-075 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code", same session) | STATE UPDATE (S-074 holds except as below)
+- Live check 2 of 0.6.1 (files attached in this session, logged out 13:30 local): passed except four bugs (D-117). Reload Now reloads on Forever (verified). Boss encounter NOT tested.
+- Bug (1), measured in the trace: every re-show came 60.3 s after the previous "shown", so the timer counts from the show, not the close; the "click=ignore" lines logged in the same instant as a "shown" are most likely the client cancelling the open popup when it is shown again (StaticPopup "override" cancel, inferred from the client's popup code), not clicks.
+- Restart rule updated (CODE_STANDING_ORDERS.md section 3, D-117): /reload is enough on Forever for added TOC files and new events.
+- 0.6.2 PROPOSED (fixes for bugs 1 to 4, Phase4_P4-M3_LiveCheck2.md on p4/m2-live); NOT built, NOT approved.
+PENDING (needs Shawn): approve (or not) the 0.6.2 proposal; boss-encounter test in the next live check; EmpireIntel screenshot (later).
+BRANCHES AND PULL REQUESTS: #9 open (p4/m2-live, 0.6.1-passive), merged only after 0.6.2 passes. Merged and kept: #1 to #8, #10 to #22 and this docs PR.
+INSTALLED: 0.6.1-passive.
+SHAWN'S NEXT STEP: reply on the 0.6.2 proposal.
+
 ## S-074 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code", same session) | STATE UPDATE (S-073 holds except as below)
 - D-116 (user's words in Decisions.md): session permissions paragraph now at the top of the NEXT_SESSION_PROMPT.md box and quoted in CODE_STANDING_ORDERS.md section 2; the `.claude/settings.json` change is DROPPED (a session never changes permission settings files).
 - PR #21 merged with the REST command (08260ff; main tests 1,343 passed). This docs PR merged under the docs-only standing approval; main merged into p4/m2-live afterwards (documents only).

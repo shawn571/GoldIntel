@@ -6,7 +6,7 @@ DOC VERSION: 1.4.3  |  UPDATED: 2026-11-14 (session S-073, branch p4/m2-live)
 CURRENT PHASE:            Phase 3b: 3b-0..3b-3 CLOSED (3b-3 by D-101, 2026-11-08); 3b-4 NOT started; it comes after 0.6.0, in the order flight fares, postage, AH deposits (D-112). Phase 4: P4-M1 MERGED (PR #7, modules not loaded); P4-M2 on PR #9: 0.6.0-passive installed, live check 1 found five problems (D-115); 0.6.1-passive built with the fixes (D-115) for live check 2; PR #9 merged only after the user reports the live check passed. Build on main: 0.5.6-passive.
 IMPLEMENTATION APPROVED:  Phases 1 and 2, Phase 3a (closed), Phase 3b scope D-067 (3b-0..3b-3 closed incl. M4 by D-097; 3b-4 NOT started); 0.5.6 (D-100, merged by D-109); Phase 4 P4-M1 (D-099, merged by D-109), P4-M2 (built D-102; install for the live check D-113) and the 0.6.1 fixes (D-115). Standing permission for work branches (D-114). Docs-only merges as in D-105 and D-108; approved merges with the REST command (D-106). Everything else is NOT approved (soft travel across zones, retention and UI are PLAN ONLY).
 PHASE 0:                  COMPLETE
-OPEN BLOCKERS:            None. Waiting on the user: live check 2 of 0.6.1 (installed 2026-11-14, D-116; reload click, popup, Settings window, encounter events); EmpireIntel screenshot (later, D-116). Accountant cross-check done and price plan placed in Phase 6 as plan only (D-111). OI-14, OI-15 decided (D-088, D-089); OI-16 deferred (repo private); OI-8 closing wording, OI-5, OI-13, OI-17 unchanged.
+OPEN BLOCKERS:            None. Waiting on the user: approval of the 0.6.2 proposal (four bugs from live check 2, D-117); EmpireIntel screenshot (later, D-116). Accountant cross-check done and price plan placed in Phase 6 as plan only (D-111). OI-14, OI-15 decided (D-088, D-089); OI-16 deferred (repo private); OI-8 closing wording, OI-5, OI-13, OI-17 unchanged.
 ```
 Note (2026-11-08, S-065): D-099..D-102 are recorded on the PR branches (#7, #8, #9) and reach main with those merges.
 
@@ -301,7 +301,9 @@ OI-1 probe output; OI-2 metric definitions; OI-3 Ace3 policy; OI-4 scope deferra
 - [x] 2026-11-14 (S-071) PR #9 brought up to date with main (documents only) and reviewed; 1,365 tests pass; NOT merged (D-112).
 - [x] User: install 0.6.0 for the P4-M3 live check (D-113). Live check 1 done (D-115): five problems.
 - [x] 2026-11-14 (S-073) 0.6.1-passive built with the D-115 fixes on p4/m2-live; 1,391 tests.
-- [ ] User: live check 2 on 0.6.1 (full restart): popup at 60 minutes, Reload Now reloads, Configure opens the Settings window, slider saves, no popup in combat or an encounter, EVT clock total = session, agg top. Then PR #9 is merged when the user reports it passed.
+- [x] User: live check 2 on 0.6.1 (D-117, 2026-11-14): passed except four bugs; boss encounter not tested.
+- [ ] 0.6.2 (D-117): reminder interval restarts when the popup closes (Ignore = snooze one interval); Settings window shows the real value; "Saved" confirmation; single "GoldIntel:" prefix in chat. Proposed in S-075; NOT built before the user approves. Then live check 3; PR #9 merged only after 0.6.2 passes.
+- [ ] Boss encounter: popup must not show during one (not tested in live check 2).
 - [x] `.claude/settings.json` change of D-114: DROPPED (D-116); the session permissions paragraph at the top of NEXT_SESSION_PROMPT.md replaces it.
 - [ ] User: EmpireIntel window screenshot for the UI plan ("later", D-116).
 - [ ] PLAN ONLY (D-115): soft travel across zones (last productive spot on another map counts as far).

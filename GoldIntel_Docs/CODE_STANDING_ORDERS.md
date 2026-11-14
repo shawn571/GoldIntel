@@ -47,10 +47,14 @@ decides the rest. A conflict that cannot be settled: stop and ask Shawn.
 
 ## 3. Packages: the reload-or-restart statement
 
-Every package says plainly which is needed:
-- `/reload` is enough when only existing `.lua` files change and the TOC file list is unchanged.
-- A full client restart is required when a file is added to or removed from a TOC, when a new event is registered, or
-  when unsure.
+Every package says plainly which is needed (rule updated by D-117, 2026-11-14):
+- `/reload` is enough on the WoW Forever client (1.60.1, build 70938) for changed `.lua` files, files added to or
+  removed from the TOC, and newly registered events. Evidence: 0.6.1 added two TOC files and two events and was taken
+  in with `/reload` alone (user, live check 2, 2026-11-14; EmpireIntel D-034 found the same).
+- A full client restart is still required for a NEW add-on folder (the client lists add-ons at startup), a change to
+  the TOC's `## SavedVariables` lines or `## Interface`, after a client patch, or when unsure. [These cases are not
+  re-tested on Forever; kept as the safe default.]
+- If a /reload is not enough after all, the package block says so in the next report and the rule is corrected.
 It also says which version `/gi version` will show. Packages are zips built by `tools/build_package.py` from a clean
 checkout of the commit, and the files are sent to Shawn, not only described.
 
