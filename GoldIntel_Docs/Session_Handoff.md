@@ -4,6 +4,43 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-069 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code") | FULL CURRENT STATE (read this first)
+Standing orders: CODE_STANDING_ORDERS.md (D-103, D-105, D-106, D-108, D-110). New-session prompt: NEXT_SESSION_PROMPT.md.
+
+THIS SESSION
+- Read the user's files of 2026-11-14 (account file, three character files; 0.5.6, client build 70938). Baseline PASSED (D-109): Paladin 39.9 h loaded on 0.5.6, 224 periodic samples, 0.017 ms per frame; every 0.5.6 check 0; 0 collector errors; the two MISMATCH lines are from 2026-11-05 (0.5.1). Details: Baseline_0.5.6_Report.md (separate PR, needs the user's approval: a new report file is outside the docs-only standing approval).
+- Merged PR #8 (2ecc6cc) then PR #7 (4c78dbe) with the REST command, each after merging main into its branch (docs conflicts only). Tests on main: 1,343 passed, 0 failed.
+- Recorded D-110 (other add-ons: copy and credit where allowed, clean room otherwise, cross-checks, optional plugins) with the user's words.
+
+PHASE AND INCREMENT
+- Phase 3b: 3b-0..3b-3 CLOSED; 3b-4 NOT started. Phase 4: P4-M1 merged (not loaded); P4-M2 = 0.6.0-passive on PR #9, NOT approved; P4-M3 not started.
+
+APPROVED: D-087..D-110 (user's words in Decisions.md). PR #9 NOT approved.
+
+PENDING (needs Shawn)
+1. Review and approve (or not) the 0.6.0 build, PR #9. It is behind main now; main must be merged into it first (documents conflict).
+2. Attach Accountant Classic's SavedVariables file for the cross-check (D-110).
+3. Decide the price plan (report section 6). Plan only.
+4. Approve merging the report PR (Baseline_0.5.6_Report.md).
+
+BRANCHES AND PULL REQUESTS (main = 0.5.6-passive, contract 1.14.0; P4-M1 files present, not loaded)
+| PR | Branch | Content | Matches main |
+|---|---|---|---|
+| #9 | p4/m2-live (e6946b0) | 0.6.0-passive (P4-M2), D-101, D-102 | no: ahead, and behind main since #7/#8 merged |
+| this | docs/baseline-2026-11-14 | D-109, D-110, standing orders 9, prompt, TODO, this section | merged under D-105/D-108 |
+| report | docs/baseline-report-2026-11-14 | Baseline_0.5.6_Report.md | open, needs approval |
+Merged and kept: #1 to #8, #10 to #14 and this one.
+
+INSTALLED: 0.5.6-passive (6620666) on all characters (user, D-107). Behaviour identical to main (main adds only the unloaded P4-M1 files). Client 1.60.1, build 70938 (new since 70862), Interface 16001.
+
+OPEN QUESTIONS
+- 312 ms frame (2026-11-14 00:08-00:18 UTC) and the second >100 ms frame: garbage collection of the 1.2-1.5 GB shared Lua heap charged to GoldIntel (inferred: heap shrank in both windows; the rolling trace had rotated out). Not network lag: the profiler counts CPU time inside the add-on.
+- /reload load frames 100-178 ms (cause not measured).
+- GoldIntel's own memory is not in the 0.5.6 automatic samples (D-100); last measured 6.6-14.3 MB (0.5.5, 2026-11-08) of a 0.53-1.4 GB heap. `/gi perf` reads it on request.
+- C_Map.GetMapWorldSize in Forever unverified; soft-travel speed 8 yd/s an assumption. OI-16 deferred; OI-17 open.
+BLOCKERS: none.
+SHAWN'S NEXT STEP: reply on the four pending items; keep playing on 0.5.6 (no install needed).
+
 ## S-068 | 2026-11-08 | Claude (Claude Code cloud session "GoldIntel Code") | STATE UPDATE (S-065..S-067 hold except as below)
 - D-108: the docs-only standing approval now also covers TODO.md and Changelog.md (user's words in Decisions.md and CODE_STANDING_ORDERS.md section 2).
 - TODO.md brought in line with D-107 (the S-067 note about TODO.md is resolved). Merged with the REST command under that approval; main after the merge in the report.
