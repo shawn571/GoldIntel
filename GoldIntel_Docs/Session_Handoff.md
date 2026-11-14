@@ -4,6 +4,14 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-074 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code", same session) | STATE UPDATE (S-073 holds except as below)
+- D-116 (user's words in Decisions.md): session permissions paragraph now at the top of the NEXT_SESSION_PROMPT.md box and quoted in CODE_STANDING_ORDERS.md section 2; the `.claude/settings.json` change is DROPPED (a session never changes permission settings files).
+- PR #21 merged with the REST command (08260ff; main tests 1,343 passed). This docs PR merged under the docs-only standing approval; main merged into p4/m2-live afterwards (documents only).
+- INSTALLED: 0.6.1-passive (user, 2026-11-14); live check 2 in progress.
+PENDING (needs Shawn): live check 2 report with files ("logged out, check"); EmpireIntel screenshot (later). PR #9 merged only after he reports the live check passed.
+BRANCHES AND PULL REQUESTS: #9 open (p4/m2-live, 0.6.1-passive). Merged and kept: #1 to #8, #10 to #21 and this docs PR.
+SHAWN'S NEXT STEP: finish live check 2 on 0.6.1, then "logged out, check" with files attached.
+
 ## S-073 | 2026-11-14 | Claude (Claude Code cloud session "GoldIntel Code", same session as S-072) | STATE UPDATE (S-069..S-072 hold except as below)
 - Live check 1 of 0.6.0 (files attached in this session): passed version, agg status, agg check 0, map.worldsize, afk/resume, activity, ledger check 0 over 5,161 s; five problems found (D-115; Phase4_P4-M3_LiveCheck1.md).
 - D-114 (standing permission, user's words in Decisions.md, CODE_STANDING_ORDERS.md section 2, NEXT_SESSION_PROMPT.md). The `.claude/settings.json` change was REFUSED by the session's permission check ("Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Unauthorized Access]"): the user applies it himself. With his approval in chat the edit tools worked for code and docs.
