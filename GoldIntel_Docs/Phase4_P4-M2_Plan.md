@@ -2,7 +2,7 @@
 
 DATE: 2026-11-08  |  SESSION: S-062  |  STATUS: PLAN for the user's approval. No code. P4-M2 is NOT authorized.
 Builds on: Phase4_Live_Aggregation_Proposal.md (answered, D-099), the P4-M1 pure modules (PR #7, not merged),
-the M4 measurements (Phase3b_3b-3_M4_Report.md section 4) and D-100 (0.5.6).
+the M4 measurements (archive/Phase3b_3b-3_M4_Report.md section 4) and D-100 (0.5.6).
 
 ## 0. What I am treating as approved (please confirm or correct)
 

@@ -143,7 +143,7 @@ T.describe('addon source files', function()
   end
 
   -- Client-compatibility rules (Decisions D-024). They exist because the first real-client
-  -- test rejected every file; see Docs Phase1_Compat_Analysis.md.
+  -- test rejected every file; see GoldIntel_Docs/archive/Phase1_Compat_Analysis.md.
   T.it('C-1..C-3: files are plain ASCII, LF only, no BOM, end with a newline, no long brackets', function()
     for _, path in ipairs(files) do
       local raw = Loader.readFile(Loader.root .. '/' .. path)
