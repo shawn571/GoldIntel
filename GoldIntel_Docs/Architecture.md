@@ -1,6 +1,12 @@
 # GoldIntel Architecture v1
 
-DOC VERSION: 1.0.0  |  DATE: 2026-10-09  |  Must agree with Decisions.md (Decisions wins) and Requirements_v1.md (Requirements wins).
+DOC VERSION: 1.1.0  |  DATE: 2026-10-09 (status note, section 11.1, 12, 17 and section titles brought up to date 2026-11-16, D-119)  |  Must agree with Decisions.md (Decisions wins) and Requirements_v1.md (Requirements wins).
+
+> **Status 2026-11-16.** This is the v1 design. Built and in live play: the Platform layer, Core, Store, the cash ledger
+> (Collect, Reconciler, Ledger), item lots (3b-3) and, on PR #9 in live validation, Phase 4's time classes and live
+> aggregates (Aggregate/) with the first UI (the reload popup and a Settings window). Sections 8, 9 and 15 (heat map,
+> pricing, UI) are still design, not code. Exact interfaces and data shapes are in Contracts.md; facts about the client
+> in Compatibility_Notes.md; the amendments at the end of this file record decisions taken after the first draft.
 
 Self-contained consolidation of design spec Part 1 (v0 draft) and Part 2 (review), re-scoped to the charter (D-013). Contains no code beyond illustrative snippets.
 
@@ -168,17 +174,16 @@ Segment fields: id, sessionID, t0, active seconds, level, class, profs, mapID, s
 - Raw segments retained 90 days or 2 MB (configurable) then rolled into aggregates (zone, subzone, activity, bracket).
 - Migrations: ordered functions keyed by schema number; each is tested with a fixture of the previous schema.
 - Durability: working tables live in memory and are written by the client only at logout or reload. `/gi checkpoint` explains this and suggests `/reload`. Optional timed reminder. A crash loses unsaved data (documented).
-- Every price snapshot carries `scope` (Forever is realmless; scope may be global or regional), and every record carries `build` so beta data can be excluded or wiped after launch.
+- Every price snapshot carries `scope` (Forever is realmless; scope may be global or regional), and every record carries `build`, so beta records stay recognisable (beta data is kept, D-089).
 
 ## 11. WoW Forever compatibility
 
 ### 11.1 Known facts
-**Update 2026-10-10 (live validation):** measured facts about the real client are now in `Compatibility_Notes.md` (evidence ledger) and the analysis is in `Phase1_PostValidation_Review.md`. Where they differ from this section, the Compatibility Notes win. Key corrections: Interface tracks the client version; Lua is 5.1; legacy professions/auction/trade-skill APIs are absent; the beta has a named realm; the combat-log event is never registered (D-025).
+**Update 2026-10-10 (live validation):** measured facts about the real client are now in `Compatibility_Notes.md` (evidence ledger) and the analysis is in `archive/Phase1_PostValidation_Review.md`. Where they differ from this section, the Compatibility Notes win. Key corrections: Interface tracks the client version; Lua is 5.1; legacy professions/auction/trade-skill APIs are absent; the beta has a named realm; the combat-log event is never registered (D-025).
 
 **Update 2026-10-09 (D-023):** the first in-client test showed the target client uses Interface **16001** and is a modern, 12.0-based client. Where this section lists Classic-era API names first, treat modern names first (C_AuctionHouse, GetProfessions, C_Map) and keep legacy names as fallbacks.
 
-From press coverage, 2026-10-09:
-Separate game from Classic and retail; realmless; level cap 60; modernized client; launch 2026-11-04; beta 2026-09-17 to 2026-10-21; Hardcore planned for a later update. No official addon API documentation was found.
+Current facts (2026-11-16; evidence in Compatibility_Notes.md): a separate game from Classic Era and retail, launched 2026-11-04 (beta 2026-09-17 to 2026-10-21); level cap 60; client 1.60.1, Interface 16001, Lua 5.1 with the modern 12.0-era API; Hardcore planned for a later update. There is no official add-on API documentation; every API GoldIntel uses is a capability probe and has been checked live.
 
 ### 11.2 Strategy (D-016)
 Probe, do not assume. Adapters per capability family, tried in order. Degrade, never crash. Money API and PLAYER_MONEY are fatal-if-missing.
@@ -201,7 +206,7 @@ Probe, do not assume. Adapters per capability family, tried in order. Degrade, n
 | Identity | `UnitGUID('player')` at login | Name + faction fallback key |
 | SavedVariables | Account and per-character declarations in .toc | Account-wide only |
 
-### 11.4 Probe commands to run in the Forever beta client (output needed: OI-1)
+### 11.4 Probe commands used in the beta (historical; answered OI-1; `/gi probe` replaces them)
 
 ```
 /dump GetBuildInfo()
@@ -217,29 +222,27 @@ Probe, do not assume. Adapters per capability family, tried in order. Degrade, n
 ### 11.5 Forever-specific implications
 Realmless (no realm in keys; price scope field); new content (nothing hardcoded about zones or items; learn at runtime); Hardcore (GUID is permanent identity; keep data of deleted characters; checkpoint more aggressively if a Hardcore flag is detected); beta data tagged by `build`.
 
-## 12. File tree (as built through Phase 2; Phase 2 additions marked)
+## 12. File tree (as built, 2026-11-16; files marked * are on PR #9 until it merges)
 
 ```
 GoldIntel/
   GoldIntel.toc                       (minimal TOC, forward slashes, Interface 16001, D-024)
-  Platform/
-    Platform.lua  Clock.lua  Events.lua  Scheduler.lua  Unit.lua  Map.lua  Money.lua
-    SavedVars.lua   (Phase 2)  Slash.lua   (Phase 2)  Probe.lua  (last Platform file)
-  Core/                               (Phase 2)
-    Core.lua  Bus.lua  Capabilities.lua  Config.lua  Slash.lua  Boot.lua   (Boot is the last file)
-  Store/                              (Phase 2)
-    Migrations.lua  Store.lua  Pruner.lua
-  Future/                             (placeholders only, D-015)
-    CommunityDataEngine.lua  RouteEngine.lua
-  Tests/
-    run.lua  helpers/ (testlib, fake_wow, loader, svsim)  fixtures/ (real Phase 1 database)
-    test_*.lua (platform, events, scheduler, unit, map, money, probe, integration,
-                platform_adapters, bus, core, capabilities, config, migrations, store,
-                pruner, commands, libs, phase2_integration)
-Not yet built (later phases): Collect/, Ledger/ (Phase 3b, D-069), Engines/, UI/.
+  Platform/   Platform Clock Events Scheduler Unit Loot Merchant Trainer Perf Quest Trade Chat Mail Auction Items
+              Bags Map Money SavedVars Slash UI* Probe        (only layer that touches WoW API; Probe last)
+  Core/       Core Bus Capabilities Config Slash Reminder* Boot   (Boot is the last file)
+  Store/      Migrations Store Pruner
+  Collect/    Context Collector Expectations Stamps Reconciler BagDiff Sources ItemSources
+  Ledger/     Valuation Lots Cash Trace LotBook Ledger
+  Aggregate/  Clock Aggregator Live*                       (Phase 4; Live loads them, D-102)
+  Future/     CommunityDataEngine RouteEngine              (placeholders only, D-015)
+  Tests/      run.lua, helpers/ (testlib, fake_wow, collectworld, loader, svsim), fixtures/ (real files, replay corpus),
+              test_*.lua (about 70 files, 1,343 tests on main, 1,403 on PR #9)
+GIMin/, GoldIntelDiag/, GIProbeLoot/   development tools (not shipped to players)
+tools/build_package.py                 builds and verifies the AddOns zip
 ```
 
-Load order is the TOC order: Platform first, Probe last among Platform files, then Core, Store, Future, and Boot last (so Core starts only after everything is registered).
+Load order is the TOC order: Platform first (Probe last among Platform files), then Core, Store, Collect, Ledger,
+Aggregate, Future, and Boot last, so Core starts only after everything is registered.
 
 ## 13. Performance and scheduling
 
@@ -286,11 +289,11 @@ AH Profit: item list with price, deposit, cut, P(sell) [estimate], expected net,
 
 `Future/CommunityDataEngine.lua` and `Future/RouteEngine.lua` expose the function names listed in Contracts.md F8, each returning `{ ok = false, err = 'NOT_IMPLEMENTED' }`. They persist nothing and add no UI. Implementation requires an explicit user instruction and a new decision.
 
-## 17. Risks (also in the latest handoff)
+## 17. Risks
 
-Unconfirmed Forever API; localized subzone keys; SavedVariables flush timing; price data may not exist at launch; normalization lacks empirical baseline; activity auto-detection is heuristic (manual override always wins).
+The current risks are in Risk_Register.md (reviewed 2026-11-16). Design-level ones that remain: localized subzone keys; SavedVariables are written only at logout, /reload or disconnect; price data may be missing (no price source is required); normalization lacks an empirical baseline; activity detection is heuristic (manual override always wins).
 
-## 18. Phase 2: Core and Store (built; live validation pending)
+## 18. Phase 2: Core and Store (built; validated, D-056)
 
 Decisions D-033 to D-039; contracts F2a, F3a, F10 to F13. Everything here runs without any library and without any collection of game data.
 
@@ -328,7 +331,7 @@ Four stages that stay separate in data, events and code: (1) balance observation
 No collector, no ledger, no sessions, no activity detection, no pricing, no UI, no new raw event registration (still exactly the 12 Phase 1 events; tests enforce it), no deletion of saved data, no use of the combat log, no library dependency.
 
 
-## 19. Phase 3b amendments (approved D-069; text only, code arrives with 3b-0..3b-3)
+## 19. Phase 3b amendments (approved D-069; built in 3b-0..3b-3)
 
 Scope: D-067 (ledgers only). Everything below is design, not yet built.
 
