@@ -1,5 +1,5 @@
 -- GoldIntelDiag / Lab.lua
--- Phase 3a signal verification lab (Decision D-051; protocol: GoldIntel_Docs/Phase3a_Verification_Protocol.md).
+-- Phase 3a signal verification lab (Decision D-051; protocol: GoldIntel_Docs/archive/Phase3a_Verification_Protocol.md).
 --
 -- READ-ONLY EXPERIMENTS. This file contains NO collector, ledger, valuation, activity or session
 -- logic. It never reads or writes GoldIntelDB. Results go to GoldIntelDiagDB.lab and stay bounded.
