@@ -1,14 +1,14 @@
 # WoW Forever Compatibility Notes
 
-DOC VERSION: 1.2.1  |  DATE: 2026-11-03 (header only; the newest entries are from 2026-10-21)  |  Verified against: client 1.60.1, Interface 16001, beta builds 70338, 70374 and 70450. The launch client is NOT yet re-probed (section 8, OI-11)
+DOC VERSION: 2.0.0  |  DATE: 2026-11-16 (header, sections 1, 4, 6 and 8 brought up to date; live facts of 2026-11-14 added; D-119)  |  Verified against: client 1.60.1, Interface 16001; live builds 70790 (launch, 2026-11-04), 70862 and 70938; beta builds 70338, 70374 and 70450 (Phase 1 to 3a evidence)
 
-Single place for facts about the target client. Every fact carries an evidence tag: **[file]** observed in an attached evidence file, **[reported]** stated by the user, **[inferred]** deduced, **[assumed]** not verified. Re-verify after every client patch and at launch (section 8).
+Single place for facts about the target client. Every fact carries an evidence tag: **[file]** observed in an attached evidence file, **[reported]** stated by the user, **[inferred]** deduced, **[assumed]** not verified. Re-verify after every client patch (section 8). Sections 1 to 7 come from the beta (October 2026) unless a row says otherwise; the live sections at the end are newer and win where they differ.
 
 ## 1. Client profile
 
 | Item | Value | Evidence |
 |---|---|---|
-| Game version / build / date | 1.60.1 / 70338 / Oct 9 2026 | E-01 [file] |
+| Game version / build / date | 1.60.1; beta 70338 (Oct 9 2026) to 70450; live 70790 (launch), 70862, 70938 (Nov 12 2026) | E-01 [file]; live sections [file] |
 | Interface (TOC) number | 16001; equals 1x10000 + 60x100 + 1, so it tracks the client version | E-01 [file], encoding [inferred] |
 | Locale tested | enUS | E-01 [file] |
 | WOW_PROJECT_ID | 18 (not a known Classic or retail constant) | E-01 [file] |
@@ -16,7 +16,7 @@ Single place for facts about the target client. Every fact carries an evidence t
 | Engine / API generation | Modern retail-engine API: 272 `C_` namespaces with 12.x-style members (C_Housing, C_Secrets, C_RestrictedActions, C_DamageMeter, C_EncounterTimeline, C_CooldownViewer, C_AssistedCombat) | E-05 [file] |
 | Content | Classic Era content: Orgrimmar (map 1454), Kalimdor (1414), subzone 'Valley of Strength' | E-06 [file] |
 | Map ID numbering | Looks like Classic Era numbering (retail differs) | E-06 [file] + memory [assumed] |
-| Realm model (beta) | Named realm 'Classic Beta PvE' (normalized 'ClassicBetaPvE'); GUID `Player-4618-0083E4B2` server field 4618. Launch model unknown | E-07 [file] |
+| Realm model | Beta: named realm 'Classic Beta PvE', GUID server field 4618. Live: GUID server fields 6796 and 6933 seen on the user's characters; GoldIntel keys characters by GUID only | E-07 [file]; live files [file] |
 | Addon info API | `C_AddOns.GetAddOnInfo` (6 returns); global `GetAddOnInfo` is nil; metadata returns Version but blank for Interface and SavedVariables | E-08 [file] |
 | Installed addons in the test environment | 62 (so libraries seen there may come from other addons) | E-08 [file] |
 
@@ -61,11 +61,11 @@ Single place for facts about the target client. Every fact carries an evidence t
 - **Handlers running at PLAYER_LOGOUT can write to the saved variables and the writes are saved**: the runtime snapshot (generatedGT equals the logout time) and `meta.lastCheckpoint` are in the file. Useful: logout-time persistence works; but still do not rely on it (crash, client kill).
 - A client HOTFIX (build 70338 to 70374, both 1.60.1, Interface 16001) changed no capability: all 40 probe results are identical.
 
-Phase 2 note: registrations are now verified with `IsEventRegistered`, delivery is counted, and `/gi caps` shows the four stages per event. The behavior of `IsEventRegistered` in the real client is **unverified** (risk R-26); validation step V2 of Phase2_Runtime_Validation_Plan.md reads it for all 12 events. Until then the 12 live-proven events are trusted if the check disagrees, and all other events are verified strictly.
+Phase 2 note: registrations are now verified with `IsEventRegistered`, delivery is counted, and `/gi caps` shows the four stages per event. The behavior of `IsEventRegistered` in the real client is **unverified** (risk R-26); validation step V2 of archive/Phase2_Runtime_Validation_Plan.md reads it for all 12 events. Until then the 12 live-proven events are trusted if the check disagrees, and all other events are verified strictly.
 
 ## 4. Differences from the Classic-era assumptions
 
-See Phase1_PostValidation_Review.md section 2 (24 rows). Short list: interface number; modern API instead of Classic names; Lua 5.1 confirmed; realm names exist in the beta; project ID 18; legacy professions, auction and trade-skill APIs absent; events can be restricted; secret values exist.
+See archive/Phase1_PostValidation_Review.md section 2 (24 rows). Short list: interface number; modern API instead of Classic names; Lua 5.1 confirmed; realm names exist in the beta; project ID 18; legacy professions, auction and trade-skill APIs absent; events can be restricted; secret values exist.
 
 ## 5. Rules that follow from the evidence
 
@@ -77,17 +77,16 @@ See Phase1_PostValidation_Review.md section 2 (24 rows). Short list: interface n
 - Key characters by GUID only; realm text is at most an attribute.
 - Treat a capability as unknown (not ok) when it cannot be checked safely.
 
-## 6. Open compatibility unknowns
+## 6. Open compatibility unknowns (2026-11-16)
 
-- Which events are restricted for addons (OI-8).
-- How `C_RestrictedActions`, `C_Secrets` and `C_CombatLog` express restrictions.
-- Secret-value behavior in combat, encounters and instances.
-- Meaning of the second return of `UnitName('player')`.
-- Profession rank semantics of `GetProfessionInfo` in Forever.
-- Behavior of the auction house, mail, trade, loot and vendor APIs in Forever (not visited).
-- Launch differences from the beta (realm model, interface number, API changes) (OI-11).
+- Secret values in combat, encounters and instances: none has reached GoldIntel in live play so far (R-03); still guarded.
+- `ENCOUNTER_START` / `ENCOUNTER_END`: registered without trouble in 0.6.1 (`encounter.events` ok), delivery during a boss fight not yet observed.
+- Behaviour of `IsEventRegistered` for a BLOCKED event (never seen; R-26, OI-12).
+- Profession rank semantics of `GetProfessionInfo`; herbalism and fishing cast names (mining and skinning verified).
+- Coin share wording with gold (silver verified 2026-11-07).
 - Whether the TOC accepts a comma-separated Interface list (OI-10).
-- Real-client behavior of `Frame:IsEventRegistered` for a BLOCKED event (the registered case is confirmed: returns true) (R-26, OI-12).
+- Which add-on (TSM or Auctionator) sends the item-data flood after a login (not shown in the files).
+- Closed since the beta: restricted events for the ledgers (OI-8: every needed event verified), launch drift (OI-11: re-probed at launch), auction house, mail, trade, loot and vendor behaviour (E-17..E-40 and live play), `UnitName` second return (a secondary name).
 
 ## 7. Evidence ledger
 
@@ -139,9 +138,9 @@ See Phase1_PostValidation_Review.md section 2 (24 rows). Short list: interface n
 | E-45 | 3b-1 validation round 3 (addon 0.3.1-phase3b1, build 70450, 2026-10-18 14:10-14:27, collect ON about 16 minutes, character Rehgar-Deadeye). (1) **Registration:** 14 registered, 0 failed, 0 skipped, no popup; off unregistered 14; off after `/reload`. (2) **Mail:** 3 mailbox opens (one took an item, one accidental) -> context mail 3 opened / 3 closed, 0 stray; `MAIL_INBOX_UPDATE` 7 received = 7 kept, 0 dropped, snapshots 7, stale 0; **CPU 1.1 ms total, 0.3 ms max (mean 0.16 ms per snapshot)**, max 2 per second. Inbox size was not recorded. (3) **Quest:** `QUEST_TURNED_IN` 1/1 kept, context quest 1/1; the quest offered a reward choice (Ley Orb 4 silver, Ley Staff 3 silver 5 copper; Ley Orb taken), the event carries no information about which choice was taken. (4) **Trade (3 windows: items for 39 copper; opened and closed without trading; 1 silver given for nothing):** `TRADE_SHOW` 3/3, `TRADE_CLOSED` **5** received = 3 kept + 2 duplicates (so the close arrives once OR twice per window, not always twice), `TRADE_ACCEPT_UPDATE` 2, **`TRADE_MONEY_CHANGED` 0 although the player gave money in 2 trades**; context trade 3 opened / 3 closed. (5) **Auction posting:** `AUCTION_HOUSE_AUCTION_CREATED` 1/1, context ah 1/1 (E-36 ordering unchanged). (6) `BAG_UPDATE_DELAYED` 4 (mail take, trade items, quest reward, posted item), `GET_ITEM_INFO_RECEIVED` 15 (burst of 4 per second), errors 0, total received 38, kept 36, dropped 2. (7) CPU for the whole round: mail 1.1 ms, trade events 0.1 ms, item info 0.1 ms, everything else 0.0 ms. (8) Not covered: gathering casts (no cast this round), mail field decoding live (counts and cost only), a mail with invoice or COD, poll cost of the mail, loot and auction-house frame polls (not part of the per-event counters). The per-event money lags are not available from these files (first and last timestamps only; correlation is a 3b-2 job). |
 | E-12 | Money deltas (vendor sale/buyback), ready/inWorld/diag=0, no popup | user message 2026-10-10 [reported]; not in files |
 
-## 8. Re-verification protocol (after every client patch and at launch)
+## 8. Re-verification protocol (after every client patch)
 
-1. Install the current zip; log in; run `/gi probe` and `/gidiag all`; save the SavedVariables files into `evidence/` with a dated name.
+1. Log in; run `/gi probe` (and `/gidiag all` if the diagnostic add-on is installed); attach the SavedVariables files in the session that analyses them (evidence is not stored in the repository, D-087).
 1. Compare build, interface and every capability line with this document; list differences in Compatibility_Notes and Risk_Register.
 1. Update the TOC Interface number (D-028).
 1. Re-run follow-up F1-F4 and any `/gidiag reg` tests whose result changed risk.
@@ -221,4 +220,14 @@ See Phase1_PostValidation_Review.md section 2 (24 rows). Short list: interface n
 - [reported, user] Three payments of 80 silver in Thunder Bluff (2026-11-07 06:14 UTC) were 10-slot bags bought at the auction house: AH buyouts are a plain PLAYER_MONEY with no other signal while AUCTION_HOUSE_SHOW is not registered.
 - [file + reported] A disconnect in Blackfathom Deeps (session end 21:52 UTC, next login 21:57): SavedVariables were written at the disconnect; only 44 copper became a login gap.
 - [file] Flight fares (330 to 540 copper) appear as plain PLAYER_MONEY at the flight master.
+
+## Live evidence 2026-11-14 (user files, builds 0.5.6, 0.6.0 and 0.6.1; client build 70938)
+- [file] `C_Map.GetMapWorldSize` exists and works (`map.worldsize` ok); distances are measurable within one map, not across maps.
+- [file] Another add-on requested item data after a full client restart: 3,566 `GET_ITEM_INFO_RECEIVED` in one session, up to 1,999 in one second, 2,526 items of which 31 were in the Paladin's lots. GoldIntel handles only items it asked for since 0.6.1.
+- [file] The add-on profiler (`C_AddOnProfiler`) works: GoldIntel 0.5.6 averaged 0.017 ms per frame over 39.9 hours (D-109).
+- [file + reported] StaticPopup with three buttons works; `C_UI.Reload` / `ReloadUI` called from a popup button reloads the UI (0.6.1, live check 2).
+- [file] The client cancels an open StaticPopup when the same popup is shown again (OnCancel in the same instant as the new show); 0.6.2 never shows it twice. [inferred from the client's popup code: the cancel reason is 'override'.]
+- [reported] `/reload` takes in add-on files added to the TOC and newly registered events (0.6.1 installed with /reload alone; EmpireIntel D-034 found the same). Rule in CODE_STANDING_ORDERS.md section 3 (D-117).
+- [file] Loading screens stop the 0.5 s tick (`PLAYER_LEAVING_WORLD` / `PLAYER_ENTERING_WORLD`); 0.6.1 books that time as hard travel.
+- [reported] The Settings window (BackdropTemplate frame, slider, close button) displays and saves (screenshot 2026-11-14).
 

@@ -1,6 +1,6 @@
 # GoldIntel Requirements v1
 
-DOC VERSION: 1.1.0  |  DATE: 2026-10-17  |  STATUS: FROZEN (changes only by explicit user decision, recorded in Decisions.md). Amendments in section 10.
+DOC VERSION: 1.1.1  |  DATE: 2026-10-17 (NFR-5 wording 2026-11-16, D-119; scope unchanged)  |  STATUS: FROZEN (changes only by explicit user decision, recorded in Decisions.md). Amendments in section 10.
 
 > Requirements_v1.md wins over all implementation decisions. Requirements below are derived strictly from the project charter dated 2026-10-09. Anything not in the charter is in section 9 as an ASSUMPTION, not a requirement.
 
@@ -93,7 +93,7 @@ IDs are stable. Tests reference them.
 - NFR-2 Testability: Core, Collect (logic), Engines, Store logic run in plain Lua 5.1 outside the client.
 - NFR-3 Performance (targets, to be measured): event handlers allocate minimal garbage and only enqueue; average addon CPU under 0.5 ms per frame during play; memory growth under 2 MB per hour of play; heatmap rebuild only on map change or filter change.
 - NFR-4 Durability: documented that SavedVariables write only on logout or reload; checkpoint prompt available; storage caps with automatic rollup.
-- NFR-5 Maintainability by another AI: comments, contracts, no hidden state.
+- NFR-5 Maintainability across sessions (wording updated by D-119; the project has one AI developer): comments, contracts, no hidden state; any session can continue from the repository alone.
 - NFR-6 Transparency: calculations documented in Architecture.md and visible in-UI.
 - NFR-7 Extensibility: versioned schema with migrations; activity keys for deferred activities are reserved in the enum but have no detection logic in v1.
 
@@ -153,7 +153,7 @@ Status: A-1, A-2, A-5 CONFIRMED by user (OI-4, "Deferrals approved as written").
 - **AM-1 Heatmap is location-level (D-052).** FR-HEA-1 means an overlay drawn ON the map that shows density by coordinates. It never colors a whole zone because money was made somewhere inside it. Assumption A-2 is amended accordingly: v1 heatmaps are location-level density maps drawn on a zone's map; a world-level map stays deferred. Nearby areas cool gradually away from a productive location. The user generally agrees with 32 x 32 bins, coordinate-based attribution, value per active hour and minimum sample thresholds. Example target: "Lake Nazferiti, about 38.0, 3.3, 20 gph, red; Kurzen Compound, 10 gph, yellow."
 - **AM-2 Overlay toggle (D-052).** FR-HEA-6: the overlay can be switched on and off easily (so the user can use Gatherer, Questie or other map addons without GoldIntel hiding information).
 - **AM-3 Idle exclusion (D-049 clarified).** FR-SES-3 applies everywhere: idle time is excluded from all GPH calculations (Cash, Wealth, Net; segment, session, zone, subzone, activity) and from map heat. Waiting for a node respawn counts as idle after the timeout; fishing does not, because casts are activity.
-- **AM-4 Travel (D-054, direction only).** Taxi travel time is not productive time. Long-distance travel must not dilute hotspot accuracy. The model is NOT decided: see Travel_Model_Options.md.
+- **AM-4 Travel (D-054, direction only).** Taxi travel time is not productive time. Long-distance travel must not dilute hotspot accuracy. (The model was decided in AM-7; the options are in archive/Travel_Model_Options.md.)
 - **AM-7 Travel (D-054, model chosen).** Option B: taxi, loading-screen and teleport time are non-productive; soft travel (fast, far from the last productive spot, no productive event for the dry window) is excluded from bin seconds and, by default, from GPH (`travel.countInGph` = false). Gathering routes and camp-to-camp movement while grinding remain productive. `TRAVEL` is an activity type. Starting values: dry window 60 s, stay-near about 150 yards (tunable).
 - **AM-8 Colour scale and hotspots (D-057, D-058).** FR-HEA-8: the default colour scale is relative to the best well-sampled locations on the map; a fixed-threshold option follows in Settings. FR-HEA-7: a ranked hotspot list shows coordinates, place name if available, activity, GPH, active hours and sample count/confidence.
 - **AM-9 Overlay commands (D-059).** `/gi overlay on|off|toggle`; the settings window exposes the same.

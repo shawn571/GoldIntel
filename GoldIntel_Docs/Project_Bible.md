@@ -1,99 +1,86 @@
 # GoldIntel Project Bible
 
-DOC VERSION: 1.0.2  |  DATE: 2026-11-08 (header, section 9 and inventory only, user decision D-105; governance unchanged)  |  PROJECT VERSION: 0.5.5-passive on main (newer builds on open pull requests: see the newest Session_Handoff section)  |  STATUS: Active
+DOC VERSION: 2.0.0  |  DATE: 2026-11-16 (rewritten for the current project: one AI developer, the game is live; user decision D-119)  |  STATUS: Active
 
-> Read this file first. It is self-contained. If any other project document conflicts with it on governance, this file wins; on product scope, Requirements_v1.md wins.
+> Read this file after CODE_STANDING_ORDERS.md and the newest Session_Handoff section. It is self-contained on
+> governance. If a project document conflicts with it on governance, this file wins; on how a Claude Code session works,
+> CODE_STANDING_ORDERS.md wins; on product scope, Requirements_v1.md wins. The current state (versions, branches,
+> pull requests, what is installed, what is pending) is only in the newest Session_Handoff section, never here.
 
 ## 1. What GoldIntel is
 
-A gold-making intelligence and analytics addon for **World of Warcraft: Forever** (Blizzard's "Classic+" game; separate from Classic and retail; launch 2026-11-04, beta 2026-09-17 to 2026-10-21). It tracks every gold-generating activity, attributes income without double-counting, computes Cash / Wealth / Net gold-per-hour (GPH), ranks zones and subzones, models auction-house profit, and shows opportunity on map overlays and heatmaps.
+A gold-making analytics add-on for **World of Warcraft: Forever**, Blizzard's "Classic+" game (separate from Classic Era
+and retail; launched 2026-11-04). It records where every copper comes from: the source (loot, vendor, quest, mail,
+trade, auction), the activity, the place and the level, so the player can see where and how gold is earned per hour.
+It also values the items picked up (item lots) and follows them to the sale, so value created and value converted are
+both known and nothing is counted twice.
 
-Goal: become the definitive gold analytics platform for WoW Forever.
+Goal: the definitive gold analytics add-on for WoW Forever.
 
-## 2. Multi-AI collaboration contract
-
-The project is developed across several AI systems (Claude, ChatGPT, Gemini; roles in D-032). Any session can end at any time.
-
-Every AI MUST:
-
-1. Never assume context that is not in the project documents or the user's message.
-2. Read documents in the **mandatory order** (section 3) before doing any work.
-3. State assumptions explicitly, and record them in Decisions.md (decisions) or Requirements_v1.md section 9 (assumptions).
-4. End every session with a `SESSION HANDOFF` block, appended to Session_Handoff.md, and update Changelog.md and TODO.md (and Decisions.md if applicable).
-5. Never leave hidden state in the conversation. If it matters, it is in a document.
-
-### 2.1 Roles and review model (Decisions D-032, set by the user 2026-10-10)
+## 2. People and roles (D-032 superseded by D-119)
 
 | Role | Holder | Responsibilities |
 |---|---|---|
-| Project sponsor, project manager, client tester, final decision authority | User | Approves phases and decisions; runs the real client; resolves disagreements |
-| Lead architect, lead developer; owner of requirements, architecture, contracts, code, changelogs and governance documents | Claude | Source of truth for all project artifacts |
-| Independent reviewer: risk assessment, architecture review, runtime evidence review, phase gate review | ChatGPT | Advises; does not implement |
-| Platform analyst: WoW Forever compatibility, research review, alternate design review | Gemini | Advises; does not implement |
+| Sponsor, project manager, tester, final decision authority | Shawn (the user) | Approves phases, increments, builds and merges; plays the real client and supplies the evidence (SavedVariables, screenshots); decides every open question |
+| Lead architect and lead developer | Claude (Claude Code sessions) | Owns requirements, architecture, contracts, code, tests, packages and every project document; gives a recommendation with the evidence; Shawn decides |
 
-**External review intake rules** (apply to every finding from ChatGPT, Gemini or any later reviewer):
+There are no other AI reviewers. The ChatGPT and Gemini reviews of October 2026 are kept in `archive/reviews/` as a
+record; their accepted findings are already in the documents. Other add-ons (Accountant Classic, Auctionator, TSM) are
+used only as described in CODE_STANDING_ORDERS.md section 9 (D-110).
 
-1. External reviews are independent peer-review inputs. Each finding is recorded and answered with a verdict: **accepted**, **rejected** or **partially accepted**, each with a technical justification (evidence, code, a test, or a documented rule).
-2. Architecture is never changed solely because another AI suggested it. A claim that cannot be verified stays tagged [assumed] and becomes a probe, a risk (Risk_Register.md) or a question, not a design change.
-3. An accepted finding that changes architecture follows the governance rules in section 4 (why, affected modules, migration, Decisions.md entry) and needs the user's approval where it changes scope, requirements or a phase.
-4. Reviewers advise; they cannot approve a phase gate. The user decides. Claude gives a recommendation with the evidence.
-5. Findings that expose an error in Claude's own work are acknowledged and corrected in the artifacts.
-6. Conflicting reviewer findings are both recorded; Claude states which it follows and why; the user decides if the conflict is material.
-7. Review documents are stored unedited in `GoldIntel_Docs/reviews/` with dated names (D-031 evidence discipline). Outcomes go where they belong: Decisions.md (decisions), Risk_Register.md (risks), Compatibility_Notes.md (client facts, only with evidence), TODO.md (work).
-8. Finding record: `ID (ER-ChatGPT-001 / ER-Gemini-001) | claim | evidence tier | verdict | technical justification | resulting action`. A log file is created when the first external review arrives.
+Every Claude Code session:
+1. Works only from the repository: nothing that matters may live only in a chat.
+2. Follows CODE_STANDING_ORDERS.md (gates, packages, test steps, report format, merges).
+3. Records each of Shawn's decisions in Decisions.md with his exact words.
+4. Ends each report with an updated Session_Handoff section, committed and pushed.
 
-## 3. Mandatory document review order
+## 3. Reading order and precedence
 
-1. Project_Bible.md (this file)
-2. Requirements_v1.md
-3. Decisions.md
-4. Changelog.md
-5. TODO.md
-6. Latest Session_Handoff.md
-7. Architecture.md
-8. Contracts.md
-
-### Conflict resolution (strict precedence)
+For a new Claude Code session: CODE_STANDING_ORDERS.md, then the newest Session_Handoff section, then this file, then
+as needed: TODO.md (phases and tasks), Decisions.md, Requirements_v1.md, Contracts.md, Architecture.md,
+Compatibility_Notes.md.
 
 | Conflict | Winner |
 |---|---|
+| How a session works | CODE_STANDING_ORDERS.md |
 | Requirements_v1.md vs any implementation decision | Requirements_v1.md |
 | Decisions.md vs Architecture.md | Decisions.md |
-| Newest Session_Handoff.md section vs older handoffs | Newest |
 | Contracts.md vs Architecture.md on a data shape | Contracts.md |
-| Anything vs a direct, dated instruction from the user | The user (record it as a decision) |
-| An external review finding vs Requirements / Decisions / Contracts | The existing documents, until the finding is accepted through the governance process (section 2.1) |
+| Compatibility_Notes.md vs Architecture.md on a fact about the client | Compatibility_Notes.md |
+| Newest Session_Handoff section vs older ones | Newest |
+| Anything vs a dated instruction from Shawn | Shawn (recorded as a decision) |
+| A current document vs a document in `archive/` | The current one |
 
-If you find a conflict you cannot resolve with this table, STOP, list it under OPEN ISSUES in the handoff, and ask the user.
+A conflict this table cannot settle: stop and ask Shawn.
 
 ## 4. Governance rules
 
-**Changing architecture requires, in this order:**
+**Changing architecture requires, in this order:** why the change is needed; the affected modules; the migration
+(SavedVariables schema, contracts, tests); a Decisions.md entry. It needs Shawn's approval where it changes scope,
+requirements or a phase.
 
-1. Explain why the change is needed.
-2. List affected modules.
-3. List migration requirements (SavedVariables schema, contracts, tests).
-4. Record the decision in Decisions.md (ID, status, rationale, affected modules, migration).
+**Bookkeeping:**
+- Every approved decision goes in Decisions.md (append-only; supersede, never delete).
+- Every implementation change goes in Changelog.md (append-only).
+- TODO.md shows the current phase and tasks; Session_Handoff.md gets a new section at the top with every report.
+- A contract change goes into Contracts.md in the same change as the code (D-031).
+- Work only on what Shawn has approved (TODO.md `IMPLEMENTATION APPROVED`). Plans and proposals are documents only
+  until he approves them.
 
-**Bookkeeping rules**
-
-- Every approved architectural decision goes in Decisions.md.
-- Every implementation change goes in Changelog.md.
-- Every completed task updates TODO.md.
-- Every session appends a section to Session_Handoff.md.
-- Do not expand scope. Work only on the current phase named in TODO.md.
-- Planning phase = produce documents and architecture only. Implementation begins only when TODO.md says implementation is approved for a named phase (see Decisions D-019).
+**Evidence:** measured behaviour beats documents and memory. Facts about the client are recorded in
+Compatibility_Notes.md with an evidence tag; an unverified claim is marked [assumed] or [inferred] and becomes a check.
+Shawn's SavedVariables are read only, and only from files attached in the session that analyses them.
 
 ## 5. Core design principles (ordered; earlier wins ties)
 
-1. Correctness over convenience
+1. Correctness over convenience (the cash ledger must match the real balance to the copper)
 2. Prevent double-counting of gold
 3. Platform independence (no WoW API calls outside `Platform/`)
-4. Modular design (talk through contracts and the bus only)
+4. Modular design (modules talk through contracts and the bus only)
 5. Testability (pure-Lua engines; unit tests outside the client)
-6. Performance (event handlers only enqueue; heavy work is scheduled)
+6. Performance (event handlers only enqueue; heavy work is scheduled or spread over frames)
 7. Future extensibility (placeholders, versioned schemas)
-8. AI-to-AI transferability
+8. Session-to-session transferability (any session can end at any time; the repository holds everything)
 9. Explicit assumptions
 10. User trust through transparent calculations (every number can be explained)
 
@@ -102,69 +89,71 @@ If you find a conflict you cannot resolve with this table, STOP, list it under O
 | Term | Meaning |
 |---|---|
 | Cash ledger | Record of actual copper changes on the character |
-| Asset ledger | Record of item lots (what you hold and what it is worth) |
-| Lot | A quantity of one item acquired together, with acquire-time valuation and origin |
+| Lot (asset ledger) | A quantity of one item acquired together, with its valuation at acquisition and its origin |
 | Conversion | Asset becomes cash (sale) or cash becomes asset (purchase); NOT new income |
 | Settlement | Delayed income that arrives by mail (AH proceeds, COD, mailed payments) |
-| Segment | A slice of a session with a constant zone, subzone, activity, level and profession set |
-| Session | One play period made of segments |
-| Active time | Session time minus idle and paused time |
-| Expectation | A pending, source-declared expected copper amount used to attribute a money change |
-| Reconciler | Turns money deltas into tagged cash entries; guarantees entries sum to the delta |
-| Provenance | The activity and location that produced an item, carried by its lot |
-| Capability | A WoW API feature probed at startup; features degrade if absent |
-| GUID | Character identity key (Forever is realmless) |
+| Interval | One recording period, from the automatic start after login to the logout or /reload |
+| Segment | A slice of play with a constant place, activity and level |
+| Active time | Session time minus idle, travel and paused time (Phase 4 time classes) |
+| Expectation | A pending, source-declared copper amount used to attribute a money change |
+| Reconciler | Turns money changes into tagged cash entries; guarantees the entries sum to the change |
+| Provenance | The activity and place that produced an item, carried by its lot |
+| Aggregates | Phase 4 totals per place x activity x level bracket, and heat bins per map (`agg`, `heat`) |
+| Capability | A WoW API feature probed at startup (`/gi probe`); features degrade if absent |
+| GUID | Character identity key |
 
 ## 7. Approved metrics (names are fixed; formulas in Requirements_v1.md section 5)
 
-Cash GPH (always visible), Wealth GPH, Net GPH, Zone rankings, Subzone rankings, Heatmap metrics, Activity-specific rankings, Normalization metrics (experimental).
+Cash GPH (always visible), Wealth GPH, Net GPH, Zone rankings, Subzone rankings, Heatmap metrics, Activity-specific
+rankings, Normalization metrics (experimental).
 
-## 8. Known facts about the target game (verified 2026-10-09 from press coverage; not from Blizzard API docs)
+## 8. Facts about the game (details and evidence in Compatibility_Notes.md)
 
-- Separate game from Classic and retail; realmless; level cap 60; modernized client; Hardcore announced for a later update.
-- **Interface number is 16001 and the client is modern, 12.0-based** (first in-client test, 2026-10-09; Decisions D-023).
-- **Addon API surface is NOT confirmed.** No official documentation was found. All API assumptions live in Architecture.md section 11 as capability probes. See OI-1 in the latest handoff.
+- WoW: Forever launched on 2026-11-04 (beta 2026-09-17 to 2026-10-21). Level cap 60, Classic Era content, modern client.
+- Client 1.60.1, Interface 16001, WOW_PROJECT_ID 18; builds seen live: 70790 (launch), 70862, 70938.
+- Add-ons run on Lua 5.1 with the modern (12.0-era) API: `C_` namespaces, `C_Map` with world sizes, `C_Item`,
+  `C_AuctionHouse`, StaticPopup; reloading the UI from a popup button works (verified 2026-11-14).
+- There is no official add-on API documentation for Forever. Every API GoldIntel relies on is a capability probe; the
+  live results are in Compatibility_Notes.md.
+- `/reload` takes in changed and added add-on files and new events (verified 2026-11-14, D-117).
+- Other add-ons in the same client can be heavy: TSM or Auctionator request thousands of items after a login, which
+  GoldIntel now ignores (D-115).
 
-## 9. How to resume (fresh AI, no memory)
+## 9. Phases (the authoritative status is TODO.md `CURRENT PHASE`)
 
-1. Read the documents in section 3 order.
-2. Open TODO.md; find `CURRENT PHASE`. For Claude Code sessions, CODE_STANDING_ORDERS.md and the newest Session_Handoff section come first (D-103).
-3. Open the newest section of Session_Handoff.md; read `OPEN ISSUES`, `BLOCKERS`, `NEXT RECOMMENDED TASK`.
-4. Verify that task is allowed by TODO.md and Requirements_v1.md. If not, ask the user.
-5. Do the work. Update the bookkeeping files. Append your handoff.
+| Phase | Content | Status |
+|---|---|---|
+| 0 | Documentation baseline | Closed |
+| 1, 2 | Platform layer, probes, core, store | Closed |
+| 3a | Signal verification lab | Closed (D-066) |
+| 3b | Cash ledger (3b-1, 3b-2) and item lots (3b-3); 3b-4 more spending sources (flight fares, postage, AH deposits) | 3b-0..3b-3 closed; 3b-4 next after Phase 4 |
+| 4 | Sessions, activity, time classes, live aggregates per place and activity, reload reminder | In live validation (P4-M3) |
+| 5 | Rankings and aggregates | Planned |
+| 6 | Pricing and auction profitability (optional Auctionator / TSM prices, D-111) | Planned; plan only |
+| 7 | Heatmap | Planned |
+| 8 | UI (main window with tabs; the Settings window of 0.6.1 is its seed, D-115) | Planned; plan only |
+| 9 | Hardening and release | Planned |
 
 ## 10. Document inventory
 
-| File | Purpose | Owner rule |
+| File | Purpose | Rule |
 |---|---|---|
-| Project_Bible.md | Governance and orientation | Change only by user decision |
-| Requirements_v1.md | What v1 must do (frozen) | Change only by user decision |
-| Decisions.md | Approved architectural decisions | Append-only; supersede, never delete |
-| Changelog.md | Implementation changes | Append-only |
-| TODO.md | Phases and tasks, current phase | Update every session |
-| Session_Handoff.md | Per-session state transfer | Append newest section at top |
+| CODE_STANDING_ORDERS.md | How every Claude Code session works | Shawn's decision only; wins on how to work |
+| NEXT_SESSION_PROMPT.md | The text Shawn pastes into a new session | Kept current; no state in it |
+| Session_Handoff.md | Current state, newest section at the top | A new section with every report |
+| Project_Bible.md | Governance and orientation (this file) | Shawn's decision only |
+| Requirements_v1.md | What v1 must do (frozen) | Shawn's decision only |
+| Decisions.md | Every decision, with Shawn's words | Append-only |
+| Changelog.md | Every implementation change, per version | Append-only |
+| TODO.md | Current phase, approvals, tasks | Updated with every change |
 | Architecture.md | The v1 design | Must agree with Decisions.md |
-| Contracts.md | Interfaces and data shapes | Versioned; breaking changes need a decision; changes in the same change as the code (D-031) |
-| Compatibility_Notes.md | Verified facts about the WoW Forever client with an evidence ledger | Wins over Architecture.md on client facts; update after each probe |
-| Risk_Register.md | Risks with likelihood, impact, mitigation, owner phase | Review at every phase gate |
-| Phase1_PostValidation_Review.md | Phase 1 live-validation review and Phase 2 go/no-go | Historical record |
-| Phase1_Compat_Analysis.md, Phase1_Client_Diagnostics.md | Load-failure analysis and in-client diagnostic commands | Historical / reference |
-| (no evidence folder) | Runtime evidence (SavedVariables, screenshots) is not stored in the repo: the user attaches it in the session that analyzes it (D-087, D-105); findings go into the session reports and Compatibility_Notes.md | Read-only; never write to the user's WTF or SavedVariables |
-| reviews/ | External (ChatGPT, Gemini) review documents and External_Review_Log.md | Documents unedited; log is the verdict record (D-032) |
-| Phase2_Runtime_Validation_Plan.md | Step-by-step live validation of Phase 2 | Update after each client run |
-| Phase2_Closure_Recommendation.md | Formal Phase 2 closure recommendation (complete with exceptions PX-1..PX-8) | Update when the user decides |
-| Runtime_Session_Records_Proposal.md | Design proposal to keep the current and previous runtime records (D-041) | Update when approved/implemented |
-| Travel_Model_Options.md | Options for taxi/transit time (D-054), pending the user's choice | Update when decided |
-| Phase3a_Verification_Protocol.md | Phase 3a experiments, safety rules, review gate (D-051) | Update with results |
-| Phase3_Planning_Package.md | Phase 3 PLANNING ONLY: value attribution, loot valuation, location credit, activity, AFK, signal selection (D-042..D-050) | Update with the user's decisions |
-| Phase3a_Closure_Recommendation.md | Phase 3a closure (accepted, D-066) | Closed |
-| Phase3b_Scope_and_Readiness.md | Phase 3b scope, readiness, exit criteria (PROPOSED, not authorization) | Update with the user's decisions |
-| Phase3b_Increment_*, Phase3b_3b-*_* | Increment plans, milestone reports, validation session scripts for 3b-1..3b-3 | Historical once the increment is closed |
-| HANDOFF_Code_Session_2026-11-02.md | Bridge from the claude.ai chat session to the Claude Code session (2026-11-02) | Historical; newer Session_Handoff sections win |
-| PreLaunch_Review_2026-11-03.md | Pre-launch review of 0.5.1-passive and the launch-day checklist | Update after the first live session |
-| CODE_STANDING_ORDERS.md | How every Claude Code session works: gates, packages, reports, one session at a time (D-103, D-105) | Wins on how to work (D-103); change only by user decision |
-| NEXT_SESSION_PROMPT.md | Exact text the user pastes into a new Code session | Keep current; no state in it |
-| CODE_SESSION_OPENING_PROMPT.md | Opening prompt of 2026-11-02 | Replaced by NEXT_SESSION_PROMPT.md (D-105); historical |
-| Phase4_Live_Aggregation_Proposal.md | Phase 4 proposal (live aggregation per place and activity) and the Q-1..Q-7 answers (D-099) | Historical once Phase 4 closes |
-| Phase4_P4-M2_Plan.md | P4-M2 plan; section 0 lists the approvals relied on (D-102); on PR #8 / #9 until merged | Update with the user's decisions |
-| Reference_AccountantClassic.md, Reference_Auctionator.md | Notes from other addons used as design input (3b-4, Phase 6) | Reference |
+| Contracts.md | Interfaces and data shapes, versioned | Changed with the code (D-031) |
+| Compatibility_Notes.md | Facts about the Forever client with evidence | Updated after each live check |
+| Risk_Register.md | Open and closed risks | Reviewed at each phase gate |
+| Phase4_Live_Aggregation_Proposal.md, Phase4_P4-M2_Plan.md | Phase 4 design answers (D-099) and the P4-M2 plan (D-102) | Moved to archive when Phase 4 closes |
+| Phase4_P4-M2_Review.md, Phase4_P4-M3_LiveCheck*.md | 0.6.x review and live checks (on PR #9 until it merges) | Same |
+| Reference_AccountantClassic.md, Reference_Auctionator.md | Notes from other add-ons (design input only, D-110) | Reference |
+| archive/ | Finished-phase plans, reports, the pre-launch review, the October reviews | Records only; see archive/README.md |
+
+Runtime evidence (SavedVariables, screenshots) is never stored in the repository: Shawn attaches it in the session
+that analyses it (D-087, D-105).

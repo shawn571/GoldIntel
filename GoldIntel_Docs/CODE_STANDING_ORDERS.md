@@ -40,10 +40,11 @@ decides the rest. A conflict that cannot be settled: stop and ask Shawn.
 - How merges are done (D-106, 2026-11-08): "Once I approve a merge in chat, you merge it yourself through its pull request (gh pr merge <n> --merge; no squash, no rebase, no direct push to main), then check main and report the merge commit and the test result. Approval is still required for every merge except the docs-only standing approval. Commits and pushes to work branches need no approval. Never force-push or delete branches."
   In practice: a merge commit through the pull request only; after it, fetch main, name the merge commit and run the
   test suite on it (`lua5.4 run.lua` from GoldIntel/Tests) in the report.
-- While `gh pr merge` is refused (D-106 addendum, 2026-11-08): "While gh pr merge is refused: use the REST merge endpoint (gh api -X PUT repos/shawn571/GoldIntel/pulls/<n>/merge -f merge_method=merge), a merge commit through the PR, never a push to main."
-  In this cloud environment every `gh pr` command is refused ("HTTP 403: GitHub GraphQL is not available from Claude
-  Code sessions"), so approved merges use exactly that command. Any other refusal: report the exact message and do not
-  merge by another route.
+- The merge command (D-106 addendum, D-118): `gh api -X PUT repos/shawn571/GoldIntel/pulls/<n>/merge -f merge_method=merge`
+  is THE merge method: GitHub GraphQL, which every `gh pr` command needs, is refused in this environment ("HTTP 403:
+  GitHub GraphQL is not available from Claude Code sessions"). Pull requests are listed and opened with `gh api` too.
+  Shawn's addendum words: "While gh pr merge is refused: use the REST merge endpoint (gh api -X PUT repos/shawn571/GoldIntel/pulls/<n>/merge -f merge_method=merge), a merge commit through the PR, never a push to main."
+  Any other refusal: report the exact message and do not merge by another route.
 
 ## 3. Packages: the reload-or-restart statement
 
@@ -104,7 +105,7 @@ Format:
   Session_Handoff.md, never in the prompt.
 - The documents a new session needs may be ahead of `main` on an open pull request branch until Shawn approves a
   merge; Session_Handoff.md names the branches.
-- `CODE_SESSION_OPENING_PROMPT.md` is replaced by `NEXT_SESSION_PROMPT.md` (D-105) and kept only as a record.
+- `CODE_SESSION_OPENING_PROMPT.md` is replaced by `NEXT_SESSION_PROMPT.md` (D-105) and kept only as a record in `archive/`.
 
 ## 8. One session at a time; evidence per session (D-105)
 
