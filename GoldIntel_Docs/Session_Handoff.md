@@ -4,6 +4,16 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-079 | 2026-11-20 | Claude (Claude Code cloud session "GoldIntel Code", same session) | STATE UPDATE (S-078 holds except as below)
+- PR #27 (realm facts, realm-scope and retention plan, R-35/R-38) merged 76712a4; tests on main 1,343.
+- D-121 (user's words in Decisions.md): retention B.6 decided (7-day window; stale lots after 7 days, mailbox and AH listings count as present; segments 50, merge under 60 s; test mode ON until Phase 4 closes); realm scope approved to build after #9; order realm scope, then retention.
+- Repository public on purpose (found public 2026-11-20). CODE_STANDING_ORDERS section 7: no private check; every push is checked for character names, GUIDs and account names. Already in the files (OI-16, the user's decision): the main characters' names (about 230 occurrences each), the main character's GUID (4 files), the Battle.net account folder number (2 archived files), three test-character names added in D-120 and Compatibility_Notes.
+- For the record: Legacy points are account-wide across normal realms; Hardcore will have its own (no GoldIntel change).
+PENDING (needs Shawn): rest of live check 3 (next session); OI-16 scope (scrub current files or leave them).
+BRANCHES AND PULL REQUESTS: #9 open (p4/m2-live, 0.6.2-passive). Merged and kept: #1 to #8, #10 to #27 and this docs PR.
+INSTALLED: 0.6.2-passive.
+NEXT: after live check 3 passes and #9 merges: realm scope, then retention.
+
 ## S-078 | 2026-11-20 | Claude (Claude Code cloud session "GoldIntel Code", same session) | STATE UPDATE (S-077 holds except as below)
 - PR #25 (documents cleanup) merged 0d3ec9a; main merged into p4/m2-live (3148f0e).
 - Live check 3 of 0.6.2, part 1 (files attached in this session): popup at 120 minutes, Reload Now, Ignore without re-show, total = session, no frame over 500 ms. Still to test: 2-minute steps, combat hide, Settings window text, boss fight. PR #9 stays unmerged.

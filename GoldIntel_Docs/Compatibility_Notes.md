@@ -1,6 +1,6 @@
 # WoW Forever Compatibility Notes
 
-DOC VERSION: 2.0.0  |  DATE: 2026-11-16 (header, sections 1, 4, 6 and 8 brought up to date; live facts of 2026-11-14 added; D-119)  |  Verified against: client 1.60.1, Interface 16001; live builds 70790 (launch, 2026-11-04), 70862 and 70938; beta builds 70338, 70374 and 70450 (Phase 1 to 3a evidence)
+DOC VERSION: 2.0.0  |  DATE: 2026-11-20 (realm facts and build 71037 added; sections 1, 4, 6 and 8 updated 2026-11-16, D-119)  |  Verified against: client 1.60.1, Interface 16001; live builds 70790 (launch, 2026-11-04), 70862, 70938 and 71037 (2026-11-18); beta builds 70338, 70374 and 70450 (Phase 1 to 3a evidence)
 
 Single place for facts about the target client. Every fact carries an evidence tag: **[file]** observed in an attached evidence file, **[reported]** stated by the user, **[inferred]** deduced, **[assumed]** not verified. Re-verify after every client patch (section 8). Sections 1 to 7 come from the beta (October 2026) unless a row says otherwise; the live sections at the end are newer and win where they differ.
 
@@ -16,7 +16,7 @@ Single place for facts about the target client. Every fact carries an evidence t
 | Engine / API generation | Modern retail-engine API: 272 `C_` namespaces with 12.x-style members (C_Housing, C_Secrets, C_RestrictedActions, C_DamageMeter, C_EncounterTimeline, C_CooldownViewer, C_AssistedCombat) | E-05 [file] |
 | Content | Classic Era content: Orgrimmar (map 1454), Kalimdor (1414), subzone 'Valley of Strength' | E-06 [file] |
 | Map ID numbering | Looks like Classic Era numbering (retail differs) | E-06 [file] + memory [assumed] |
-| Realm model | Beta: named realm 'Classic Beta PvE', GUID server field 4618. Live: GUID server fields 6796 and 6933 seen on the user's characters; GoldIntel keys characters by GUID only | E-07 [file]; live files [file] |
+| Realm model | Beta: named realm 'Classic Beta PvE', GUID server field 4618. Live: one GUID server number per realm: 6796 Realm 1 PvE, 6800 PvP, 6928 RP, 6935 RP-PvP (6933 was a beta realm that no longer exists). Since build 71037 `GetRealmName()` and `GetNormalizedRealmName()` return "". GoldIntel keys characters by GUID only and never calls the realm functions | E-07 [file]; live files [file]; 2026-11-20 section [reported, file] |
 | Addon info API | `C_AddOns.GetAddOnInfo` (6 returns); global `GetAddOnInfo` is nil; metadata returns Version but blank for Interface and SavedVariables | E-08 [file] |
 | Installed addons in the test environment | 62 (so libraries seen there may come from other addons) | E-08 [file] |
 
@@ -230,4 +230,11 @@ See archive/Phase1_PostValidation_Review.md section 2 (24 rows). Short list: int
 - [reported] `/reload` takes in add-on files added to the TOC and newly registered events (0.6.1 installed with /reload alone; EmpireIntel D-034 found the same). Rule in CODE_STANDING_ORDERS.md section 3 (D-117).
 - [file] Loading screens stop the 0.5 s tick (`PLAYER_LEAVING_WORLD` / `PLAYER_ENTERING_WORLD`); 0.6.1 books that time as hard travel.
 - [reported] The Settings window (BackdropTemplate frame, slider, close button) displays and saves (screenshot 2026-11-14).
+
+## Realms and build 71037 (user report and files, 2026-11-20)
+- [reported] Client build 1.60.1 / 71037 (2026-11-18) returns "" from `GetRealmName()` and `GetNormalizedRealmName()`; possibly deliberate. Add-ons that key data by realm name broke (DataStore / Altoholic: blank-realm duplicate keys).
+- [reported + file] Each realm has its own GUID server number: 6796 = Realm 1 PvE (the user's main realm), 6800 = PvP, 6928 = RP, 6935 = RP-PvP. 6933 was a beta realm that no longer exists. The user's account file of 2026-11-20 holds characters under 6796, 6800, 6928 and 6935 (level-1 test characters Obiwan, Kenobi and Ben Malifax on the last three). It also still holds one character under 6933 with 156 cash entries from 2026-10-21 and 10-22: beta data, kept by D-089.
+- [file, code check 2026-11-20] GoldIntel never calls `GetRealmName`, `GetNormalizedRealmName`, DataStore or Altoholic; its character key is the GUID (`Platform.Player().key`, Unit.lua). Only the diagnostic add-on GoldIntelDiag reads the realm functions, for its report. A blank realm name therefore changes nothing in GoldIntel's data. Fallback: before the GUID is known the key is `name:<Name>:<Faction>`, which has no realm part (see the realm-scope plan).
+- [reported] The user runs a local add-on "!RealmFix" 2.0 (not part of this repository) that fills in the realm name from the GUID server number when the game returns "". GoldIntel must not depend on it, and does not: it reads no realm name.
+- [reported] Live check 3 (0.6.2, 2026-11-20, partial; [file] in four character files): popup at 7,230 s and 7,240 s with reminder.reloadMinutes 120; Reload Now reloads; after Ignore no popup for the remaining 22 minutes of that session; every final `EVT clock` line has total = session; no frame over 500 ms. `ENCOUNTER_START` registers but was never delivered (no boss fight yet).
 

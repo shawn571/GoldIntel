@@ -106,6 +106,15 @@ Format:
 - The documents a new session needs may be ahead of `main` on an open pull request branch until Shawn approves a
   merge; Session_Handoff.md names the branches.
 - `CODE_SESSION_OPENING_PROMPT.md` is replaced by `NEXT_SESSION_PROMPT.md` (D-105) and kept only as a record in `archive/`.
+- Public repository (D-121, 2026-11-20): "both GoldIntel and EmpireIntel are public on purpose for now (my decision)".
+  A public repository does not block a push; there is no "verify private" check. Instead, before every commit and
+  push, check the diff for character names, character GUIDs (`Player-<server>-<id>`) and account names (the Battle.net
+  account folder under `WTF\Account\`), and add none:
+  - say "the Paladin", "the main character" or "a level-1 test character on the PvP realm" instead of names;
+  - a GUID's server number alone (6796, 6800, ...) is a realm, not a person, and may be written;
+  - Shawn's own words are recorded unchanged in Decisions.md; if they contain a name, the report says so.
+  - What is already in the files and the history is OI-16 (privacy scrub), Shawn's decision. History is never
+    rewritten (no force-push).
 
 ## 8. One session at a time; evidence per session (D-105)
 

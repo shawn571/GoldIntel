@@ -1,6 +1,6 @@
 # GoldIntel Risk Register
 
-DOC VERSION: 2.0.0  |  DATE: 2026-11-16 (reviewed against live play since the launch of 2026-11-04; D-119)  |  Likelihood
+DOC VERSION: 2.0.0  |  DATE: 2026-11-20 (R-35 updated, R-38 added, D-120; reviewed against live play 2026-11-16, D-119)  |  Likelihood
 (L) and impact (I) are Claude's judgement: L/M/H. Evidence numbers (E-nn) are in Compatibility_Notes.md.
 
 ## Open and accepted risks
@@ -23,7 +23,8 @@ DOC VERSION: 2.0.0  |  DATE: 2026-11-16 (reviewed against live play since the la
 | R-31 | Account-best heat: one outlier in a thin bin becomes the account best | M | M | Not built yet | Confidence floor and minimum active seconds (D-061) | 7 | Open |
 | R-32 | Account-best heat goes stale after price or patch changes | M | L | Not built yet | Show date and valuation basis; optional recency window | 7 | Open |
 | R-33 | Instance accounting: inside an instance the map id is nil, only the zone name is known | M | M | Ragefire Chasm 2026-11-05 | Place instance runs at the entrance (D-060); design in Phase 7 | 7 | Open |
-| R-35 | The saved data grows (account file about 2 MB, mostly raw cash entries and lots); load, /reload and logout get slower | M | M | Paladin: 3,211 cash entries, 1,233 open lots after 10 days; /reload frames 100-178 ms | Retention plan (7-day raw window plus daily summaries, open-lot rule, test-mode switch), plan only (D-115) | 4, 5 | Open |
+| R-35 | The saved data grows; load, /reload and logout get slower | H | M | Account file 2.0 MB (2026-11-14) -> 3.9 MB (2026-11-20): ledger 1.8 MB, lots 1.2 MB, agg 0.7 MB, heat 0.2 MB; Paladin 4,762 cash entries, 1,276 open lots; /reload frames 100-178 ms | Plan_Retention_and_Realm_Scope.md part B (7-day raw window plus daily summaries, stale-lot rule, segment cap, test-mode switch), plan only (D-120) | 4, 5 | Open |
+| R-38 | Realm-dependent data mixes realms: the manual price (`/gi price`) is account-wide by item id; later market prices and account-wide views would mix realms whose prices differ | M | M | Four realms with separate GUID server numbers (6796, 6800, 6928, 6935); `GetRealmName()` returns "" since build 71037; `prices.manual` empty today | Key realm-dependent data by the GUID server number, never by realm name (Plan_Retention_and_Realm_Scope.md part A), plan only (D-120) | 5, 6 | Open |
 | R-36 | A client patch changes an API or an event's behaviour | M | M | Three builds since launch, no change seen so far | Re-probe after each patch; `/gi probe` lists every capability | All | Open |
 
 ## Mitigated by design or by the code (kept for reference)
