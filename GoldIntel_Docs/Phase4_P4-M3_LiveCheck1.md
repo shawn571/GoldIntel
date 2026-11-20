@@ -6,7 +6,7 @@ summaries, a separate rule for open lots, a test-mode switch. Built as 0.6.1-pas
 desktop with the same files: 1,999 foreign item replies in one frame 3.8 ms (was about 120 ms); largest 0.5 s step
 during the back-fill 3.2 ms including the tick's other work. The EmpireIntel screenshot is still missing.
 
-Files: the account file and the Paladin character file (Player-6796-00636CEC) attached in this session, plus your notes. Read
+Files: the account file and the Paladin character file (Player-6796-<main>) attached in this session, plus your notes. Read
 only. Times are UTC: your 09:17 is 14:17 UTC. "Measured" means computed from the files or timed on desktop Lua 5.4 with
 the real files loaded in the test client. "Inferred" means not proven.
 

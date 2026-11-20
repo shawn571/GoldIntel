@@ -4,7 +4,7 @@
 --  The /reload reminder's interval steps and bands, and the text that explains them. Pure: no WoW API; the popup and
 --  the settings window live in Platform/UI.lua, the timing in Aggregate/Live.lua.
 --
--- WHY THE BANDS (evidence, Paladin Player-6796-00636CEC, 17 recorded sessions of 30 minutes or more, 42.2 hours,
+-- WHY THE BANDS (evidence, Paladin Player-6796-<main>, 17 recorded sessions of 30 minutes or more, 42.2 hours,
 -- 2026-11-08..14): per hour of play about 34 cash entries on average, 68 at the 90th percentile, 81 at most; about
 -- 1.1 g moved. WoW writes saved data only at /reload, logout or disconnect; a client crash loses everything since the
 -- last save: the gold is still booked at the next login (one OTHER entry, a login gap), but its sources, the time per
