@@ -1,11 +1,11 @@
 # GoldIntel TODO
 
-DOC VERSION: 2.0.0  |  UPDATED: 2026-11-20 (D-120, D-121; rewritten 2026-11-16; the full history up to this date is in archive/TODO_history_2026-11-16.md, D-119)
+DOC VERSION: 2.0.0  |  UPDATED: 2026-11-20 (D-120, D-121, D-122; rewritten 2026-11-16; the full history up to this date is in archive/TODO_history_2026-11-16.md, D-119)
 
 ```
-CURRENT PHASE:            Phase 4 (sessions, activity, live aggregates): P4-M1 merged (PR #7); P4-M2 on PR #9 as 0.6.2-passive, in live validation (P4-M3, live check 3); PR #9 merged only after the user reports that 0.6.2 passed. Next: 3b-4 (flight fares, postage, AH deposits; D-112). Phases 0..3b-3 closed. Build on main: 0.5.6-passive.
+CURRENT PHASE:            Phase 4 (sessions, activity, live aggregates): P4-M1 merged (PR #7); P4-M2 on PR #9 as 0.6.2-passive, in live validation (P4-M3, live check 3); PR #9 merged only after the user reports that 0.6.2 passed. Next, after PR #9 (D-121, D-122): realm scope, then retention, then 3b-4 (flight fares, postage, AH deposits; D-112; needs its own approval). Phases 0..3b-3 closed. Build on main: 0.5.6-passive.
 IMPLEMENTATION APPROVED:  Phase 4 P4-M2 and its live-check fixes (D-102, D-113, D-115, D-118). Standing permissions for work branches (D-114, D-116). Docs-only merges (D-105, D-108); merges with the REST command (D-106, D-118). Everything else is NOT approved: 3b-4 waits for its own approval; soft travel across zones, retention, the main window and the price plan are PLAN ONLY.
-OPEN BLOCKERS:            None. Waiting on the user: live check 3 of 0.6.2 (reminder (a)-(c), Settings window, boss encounter); EmpireIntel screenshot (later, D-116).
+OPEN BLOCKERS:            None. Waiting on the user: live check 3 of 0.6.2 (reminder (a)-(c), combat hide, Settings window, boss encounter); EmpireIntel screenshot (later, D-116).
 ```
 
 Rules: work only on what is approved above. Do not start the next increment or phase without Shawn's explicit approval.
@@ -23,6 +23,8 @@ newest Session_Handoff section.
 - [ ] User: live check 3, rest: (a) a full interval after Configure, Ignore and Reload Now (2-minute steps); (b) no immediate
   re-show after Ignore; (c) clicks and the client's own closes logged apart; Settings window shows the real value and
   "Saved"; one "GoldIntel:" prefix; a boss encounter (no popup during it; not tested yet).
+- [ ] User: live check 3, combat hide (D-122, its own step): with the reminder popup open, start any fight; the popup
+  hides, and comes back about a minute after combat ends, without starting a new interval.
 - [ ] After live check 3 passes: merge PR #9 (with the user's approval in chat), then the Phase 4 closure
   recommendation.
 - [ ] Phase 4 requirement items still to map against what 0.6.x does: 4.1 ActivityEngine (v1 activities, manual
@@ -50,7 +52,7 @@ newest Session_Handoff section.
   item in the mailbox (up to 30 days) or listed on the auction house counts as present, with tests for both; segments
   at most 50 per character, merging under 60 s; test mode ON until Phase 4 closes. Update the plan text first.
 
-## Next: 3b-4 more spending sources (after Phase 4; D-112; NOT started, needs approval)
+## Then: 3b-4 more spending sources (after realm scope and retention; D-112, D-122; NOT started, needs approval)
 
 - [ ] Flight fares (largest OTHER item in the Accountant cross-check), then postage, then AH deposits.
 - [ ] Still OTHER by design until then: respec, barber, guild bank (repairs at a vendor are already vendor purchases).
@@ -110,7 +112,9 @@ ML recommendations; world heatmap; craft profitability ranking; auto-detection o
 
 - [ ] Before using any other add-on as a source or reference: verify its licence (D-110); THIRD_PARTY.md with the first
   copied item.
-- [ ] OI-16 privacy scrub: the repository is public on purpose (D-121); what is already in the files (character names, the main character's GUID, the account folder number) is the user's decision; every push is checked (CODE_STANDING_ORDERS section 7); OI-17 status of D-029..D-031; OI-5, OI-13 and the
+- [ ] OI-16 privacy scrub (D-122): the current files are scrubbed of the account folder and of real character GUIDs
+  (server number kept), except the replay fixtures; character names stay; history is not rewritten; every push is
+  checked (CODE_STANDING_ORDERS section 7); OI-17 status of D-029..D-031; OI-5, OI-13 and the
   OI-8 closing wording unchanged (Decisions.md).
 - [ ] Optional: a folder link from Shawn's computer to cloud sessions (D-087); today evidence files are attached by
   hand.

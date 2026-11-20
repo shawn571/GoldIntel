@@ -1,6 +1,6 @@
 # GoldIntel Project Bible
 
-DOC VERSION: 2.0.0  |  DATE: 2026-11-16 (rewritten for the current project: one AI developer, the game is live; user decision D-119)  |  STATUS: Active
+DOC VERSION: 2.0.1  |  DATE: 2026-11-20 (rewritten 2026-11-16 for the current project: one AI developer, the game is live, D-119; build order after Phase 4 and inventory, D-122)  |  STATUS: Active
 
 > Read this file after CODE_STANDING_ORDERS.md and the newest Session_Handoff section. It is self-contained on
 > governance. If a project document conflicts with it on governance, this file wins; on how a Claude Code session works,
@@ -126,8 +126,9 @@ rankings, Normalization metrics (experimental).
 | 0 | Documentation baseline | Closed |
 | 1, 2 | Platform layer, probes, core, store | Closed |
 | 3a | Signal verification lab | Closed (D-066) |
-| 3b | Cash ledger (3b-1, 3b-2) and item lots (3b-3); 3b-4 more spending sources (flight fares, postage, AH deposits) | 3b-0..3b-3 closed; 3b-4 next after Phase 4 |
+| 3b | Cash ledger (3b-1, 3b-2) and item lots (3b-3); 3b-4 more spending sources (flight fares, postage, AH deposits) | 3b-0..3b-3 closed; 3b-4 after Phase 4, realm scope and retention (D-122); needs its own approval |
 | 4 | Sessions, activity, time classes, live aggregates per place and activity, reload reminder | In live validation (P4-M3) |
+| 4+ | After PR #9 merges, in this order: realm scope, then retention (Plan_Retention_and_Realm_Scope.md; D-121, D-122) | Approved to build after #9 |
 | 5 | Rankings and aggregates | Planned |
 | 6 | Pricing and auction profitability (optional Auctionator / TSM prices, D-111) | Planned; plan only |
 | 7 | Heatmap | Planned |
@@ -152,6 +153,7 @@ rankings, Normalization metrics (experimental).
 | Risk_Register.md | Open and closed risks | Reviewed at each phase gate |
 | Phase4_Live_Aggregation_Proposal.md, Phase4_P4-M2_Plan.md | Phase 4 design answers (D-099) and the P4-M2 plan (D-102) | Moved to archive when Phase 4 closes |
 | Phase4_P4-M2_Review.md, Phase4_P4-M3_LiveCheck*.md | 0.6.x review and live checks (on PR #9 until it merges) | Same |
+| Plan_Retention_and_Realm_Scope.md | Realm scope (part A) and retention (part B, decided in D-121) | Updated when each build starts; moved to archive when built |
 | Reference_AccountantClassic.md, Reference_Auctionator.md | Notes from other add-ons (design input only, D-110) | Reference |
 | archive/ | Finished-phase plans, reports, the pre-launch review, the October reviews | Records only; see archive/README.md |
 

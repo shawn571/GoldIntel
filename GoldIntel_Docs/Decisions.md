@@ -776,3 +776,15 @@ User: "Approve merging #27. Plan B.6: (1) window 7 days. (2) Stale-lot rule 7 da
 5. For the record (no GoldIntel change): Legacy points are account-wide across normal realms; Hardcore will have its own (Blizzard, via EmpireIntel).
 6. Live check 3 continues next session (2-minute steps, combat hide, Settings text, boss fight).
 Affected: documents only. Migration: none. Package: unchanged (0.6.2-passive).
+
+## D-122 Order after #9; combat hide is its own live-check-3 step; documents fixed; OI-16 scrub of GUIDs and account folder (user 2026-11-20) | APPROVED | 2026-11-20
+User: "Verified, thanks. Order after #9: realm scope, then retention, then 3b-4 (3b-4 still needs its own approval). “Combat hide” is separate from the boss-encounter check: with a popup open, start any fight; the popup hides and comes back about a minute after combat ends without starting a new interval. Add it to TODO as its own live-check-3 step. Fix conflicts 1 to 3 in a docs PR; I approve merging it, including the Project_Bible inventory and section 9 change."
+"Package block correction: rollback for 0.6.2 is the 0.6.1 zip plus /reload, not a rebuild of 0.5.6."
+"OI-16: scrub the current files of the Battle.net account folder number and the character GUID (all files except the replay fixtures). Leave character names as they are, including the fixtures. Keep the per-push check. Docs-only where possible; show me the file list before merging anything that isn’t docs-only."
+"Live check 3: I’ll attach files and report when done."
+1. Order after PR #9 merges: realm scope, then retention, then 3b-4. 3b-4 still needs its own approval. TODO.md and Project_Bible section 9 say so.
+2. Live check 3 gets its own step "combat hide": with the reminder popup open, start any fight; the popup hides, and comes back about a minute after combat ends, without starting a new interval. It is separate from the boss-encounter check.
+3. Conflicts 1 to 3 of the S-080 first report fixed in one docs PR (TODO order, Bible section 9 and the inventory entry for Plan_Retention_and_Realm_Scope.md, the handoff names #9's head); merge approved by the user, Bible change included.
+4. Rollback for 0.6.2-passive is the 0.6.1-passive zip plus /reload (D-117); the package block says so from now on.
+5. OI-16, part decided: the current files (not the history, which is never rewritten) are scrubbed of the Battle.net account folder name or number and of every real character GUID, except in the replay fixtures. A GUID keeps its server number (a realm, not a person; CODE_STANDING_ORDERS section 7) and the rest becomes a role label, for example `Player-6796-<main>`. Character names stay, fixtures included. The per-push check stays. Documentation files are scrubbed in a docs PR; any other file (code, tests) goes on its own branch and its file list is shown to the user before merging.
+Affected: documents only (the scrub of the one code comment on PR #9's branch rides with #9). Migration: none. Package: unchanged (0.6.2-passive).
