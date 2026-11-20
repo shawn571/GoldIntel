@@ -4,6 +4,17 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-080 | 2026-11-20 | Claude (Claude Code cloud session "GoldIntel Code", new session; the S-079 session makes no further commits, D-105) | STATE UPDATE (S-079 holds except as below)
+- First report (read-only) verified S-079: main 3e2190a = 0.5.6-passive, contract 1.14.0, 1,343 tests; #9 head e13a8aa = 0.6.2-passive, contract 1.17.0, 1,403 tests, 59 add-on files parse under Lua 5.1; its add-on files differ from the 0.6.2 package commit ad83a6d only in two comments. Four conflicts reported.
+- D-122 (user's words in Decisions.md): order after #9 is realm scope, retention, then 3b-4 (own approval); combat hide is its own live-check-3 step (popup open, start a fight: it hides, comes back about a minute after combat, no new interval); rollback for 0.6.2 is the 0.6.1 zip plus /reload; OI-16 scrub of GUIDs and the account folder (names stay).
+- PR #29 (conflicts 1 to 3: TODO order and combat-hide step, Bible section 9 and inventory, D-122) merged 716448e; tests on main 1,343.
+- PR #30 (OI-16 scrub of documentation files on main: five real character GUIDs to `Player-<server>-<role>`, two account folders to `<account>`) merged 2ef4e46; tests 1,343. The test helper's made-up GUID (`Player-4372-0A1B2C3D`, "Tester") stays; the replay fixtures hold no GUID.
+- p4/m2-live: main merged (6c883ca), then the branch-only scrub 6f6217e: `GoldIntel/Core/Reminder.lua` (one comment line) and `Phase4_P4-M3_LiveCheck1.md`. 1,403 tests; Reminder.lua parses under Lua 5.1. Comment only, version unchanged; it reaches main with #9 (not docs-only; file list shown to the user).
+PENDING (needs Shawn): live check 3, rest (2-minute steps, combat hide, Settings text, boss fight), with files.
+BRANCHES AND PULL REQUESTS: #9 open (p4/m2-live, head 6f6217e plus any docs-only merge of main after this section, 0.6.2-passive). Merged and kept: #1 to #8, #10 to #30 and this docs PR.
+INSTALLED: 0.6.2-passive (user). Rollback: 0.6.1-passive zip plus /reload.
+NEXT: after live check 3 passes and #9 merges: realm scope, then retention, then 3b-4 (needs approval).
+
 ## S-079 | 2026-11-20 | Claude (Claude Code cloud session "GoldIntel Code", same session) | STATE UPDATE (S-078 holds except as below)
 - PR #27 (realm facts, realm-scope and retention plan, R-35/R-38) merged 76712a4; tests on main 1,343.
 - D-121 (user's words in Decisions.md): retention B.6 decided (7-day window; stale lots after 7 days, mailbox and AH listings count as present; segments 50, merge under 60 s; test mode ON until Phase 4 closes); realm scope approved to build after #9; order realm scope, then retention.
