@@ -1,6 +1,6 @@
 # GoldIntel TODO
 
-DOC VERSION: 2.0.0  |  UPDATED: 2026-11-20 (D-120; rewritten 2026-11-16; the full history up to this date is in archive/TODO_history_2026-11-16.md, D-119)
+DOC VERSION: 2.0.0  |  UPDATED: 2026-11-20 (D-120, D-121; rewritten 2026-11-16; the full history up to this date is in archive/TODO_history_2026-11-16.md, D-119)
 
 ```
 CURRENT PHASE:            Phase 4 (sessions, activity, live aggregates): P4-M1 merged (PR #7); P4-M2 on PR #9 as 0.6.2-passive, in live validation (P4-M3, live check 3); PR #9 merged only after the user reports that 0.6.2 passed. Next: 3b-4 (flight fares, postage, AH deposits; D-112). Phases 0..3b-3 closed. Build on main: 0.5.6-passive.
@@ -37,14 +37,18 @@ newest Session_Handoff section.
 
 - [ ] Soft travel across zones: a last productive spot on another map counts as far (D-115: "not now, plan it
   separately").
-- [ ] Retention: 7-day raw cash window plus daily summaries, a separate rule for open lots, a test-mode switch for trace
-  and perf (Phase4_P4-M3_LiveCheck1.md section 6, on PR #9 until it merges; direction D-115).
 - [ ] Main window with tabs (Opportunities, Map, Settings), GoldIntel's own map drawing with a heat overlay; in-game
   checks first (Phase4_P4-M3_LiveCheck1.md section 5, on PR #9). Needs the EmpireIntel screenshot.
-- [ ] Realm scope: key realm-dependent data (manual prices, later market prices, auctions, account-wide views) by the
-  GUID server number, never the realm name (Plan_Retention_and_Realm_Scope.md part A, D-120).
-- [ ] Retention, measured 2026-11-20 (account file 3.9 MB): Plan_Retention_and_Realm_Scope.md part B, decisions in B.6.
 - [ ] Prices: Auctionator and TSM public interfaces as optional sources with GoldIntel's own fallback (D-111, Phase 6).
+
+## Approved, to build after PR #9 merges (D-121), in this order
+
+- [ ] Realm scope (Plan_Retention_and_Realm_Scope.md part A): `server` from the GUID; manual prices (and later market
+  prices, auctions, account-wide views) keyed by server number, never the realm name; no data under the fallback
+  name key; tests incl. a deliberate-bug check.
+- [ ] Retention (part B, decisions D-121): 7-day raw cash window plus daily summaries; stale-lot rule of 7 days where an
+  item in the mailbox (up to 30 days) or listed on the auction house counts as present, with tests for both; segments
+  at most 50 per character, merging under 60 s; test mode ON until Phase 4 closes. Update the plan text first.
 
 ## Next: 3b-4 more spending sources (after Phase 4; D-112; NOT started, needs approval)
 
@@ -106,7 +110,7 @@ ML recommendations; world heatmap; craft profitability ranking; auto-detection o
 
 - [ ] Before using any other add-on as a source or reference: verify its licence (D-110); THIRD_PARTY.md with the first
   copied item.
-- [ ] OI-16 privacy scrub (deferred while the repository is private); OI-17 status of D-029..D-031; OI-5, OI-13 and the
+- [ ] OI-16 privacy scrub: the repository is public on purpose (D-121); what is already in the files (character names, the main character's GUID, the account folder number) is the user's decision; every push is checked (CODE_STANDING_ORDERS section 7); OI-17 status of D-029..D-031; OI-5, OI-13 and the
   OI-8 closing wording unchanged (Decisions.md).
 - [ ] Optional: a folder link from Shawn's computer to cloud sessions (D-087); today evidence files are attached by
   hand.

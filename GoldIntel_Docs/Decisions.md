@@ -763,3 +763,16 @@ User: "Live check 3 (0.6.2), partial, files attached. Passed in normal play at r
 3. Answer: ledger, lots, aggregates and heat are stored per character GUID, so they never mix realms. The one account-wide, realm-dependent table is the manual price (`prices.manual`, by item id; empty today); auctions and price snapshots are empty placeholders. Proposal (plan only): key realm-dependent data by the GUID server number. Plan_Retention_and_Realm_Scope.md part A.
 4. Retention plan (plan only) with the measured sizes of 2026-11-20: Plan_Retention_and_Realm_Scope.md part B.
 Affected: documents only. Migration: none. Package: unchanged (0.6.2-passive).
+
+## D-121 Plan B.6 decided; realm scope approved to build after #9; repository public on purpose (user 2026-11-20) | APPROVED | 2026-11-20
+User: "Approve merging #27. Plan B.6: (1) window 7 days. (2) Stale-lot rule 7 days, but an item in the mailbox or listed on the auction house counts as present (mail can hold items up to 30 days); include that in the design and tests. (3) Segments 50 per character, merge under 60 s. (4) Test mode ON until Phase 4 closes. (5) Order: realm scope first, then retention, both after #9 merges. Realm scope plan A: approve to build after #9."
+"Repository: both GoldIntel and EmpireIntel are public on purpose for now (my decision). Update CODE_STANDING_ORDERS section 7 so pushes aren’t blocked by the “verify private” check, and keep checking every push for character names, GUIDs and account names. Record it as a decision; docs-only PR under standing approval."
+"FYI from EmpireIntel: Legacy points are account-wide across normal realms; Blizzard says Hardcore will have its own. Not a GoldIntel change; for the record only."
+"I’ll finish live check 3 (2-minute steps, combat hide, Settings text, boss fight) next session."
+1. PR #27 merged with the REST command (76712a4; tests on main 1,343 passed).
+2. Retention (Plan_Retention_and_Realm_Scope.md B.6): raw window 7 days; stale-lot rule 7 days, where an item in the mailbox (mail keeps items up to 30 days) or listed on the auction house counts as present, with tests for both; segments at most 50 per character, merging those under 60 s; test mode ON until Phase 4 closes; order: realm scope first, then retention, both after PR #9 merges. This decision amends the plan's stale-lot rule (the plan text is updated when the build starts).
+3. Realm scope (plan part A) approved to build after PR #9 merges.
+4. The repository is public on purpose (it was found public: `private=false`, 2026-11-20). CODE_STANDING_ORDERS.md section 7 records it; every push is checked for character names, GUIDs and account names. OI-16 (privacy scrub of what is already in the files) stays the user's decision; the S-079 report lists what is there.
+5. For the record (no GoldIntel change): Legacy points are account-wide across normal realms; Hardcore will have its own (Blizzard, via EmpireIntel).
+6. Live check 3 continues next session (2-minute steps, combat hide, Settings text, boss fight).
+Affected: documents only. Migration: none. Package: unchanged (0.6.2-passive).
