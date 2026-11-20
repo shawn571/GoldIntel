@@ -4,6 +4,16 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-078 | 2026-11-20 | Claude (Claude Code cloud session "GoldIntel Code", same session) | STATE UPDATE (S-077 holds except as below)
+- PR #25 (documents cleanup) merged 0d3ec9a; main merged into p4/m2-live (3148f0e).
+- Live check 3 of 0.6.2, part 1 (files attached in this session): popup at 120 minutes, Reload Now, Ignore without re-show, total = session, no frame over 500 ms. Still to test: 2-minute steps, combat hide, Settings window text, boss fight. PR #9 stays unmerged.
+- D-120: build 71037 returns "" for the realm functions; GUID server numbers per realm (6796 PvE, 6800 PvP, 6928 RP, 6935 RP-PvP; 6933 beta). Confirmed from the code: GoldIntel never calls realm functions, keys characters by GUID, does not depend on "!RealmFix".
+- Answer: ledger, lots, agg, heat are per character GUID (no mixing); prices.manual is account-wide by item id (empty). Plan (plan only): key realm-dependent data by GUID server number; retention plan with the measured 3.9 MB file. Both in Plan_Retention_and_Realm_Scope.md on the docs PR "realm-retention" (needs approval: it also updates Compatibility_Notes and Risk_Register).
+PENDING (needs Shawn): rest of live check 3; approve merging the realm-retention docs PR; decide B.6 of the plan (window length, stale-lot rule, segments, test mode, order).
+BRANCHES AND PULL REQUESTS: #9 open (p4/m2-live, 0.6.2-passive). Docs PR realm-retention open (needs approval). Merged and kept: #1 to #8, #10 to #25 and this docs PR.
+INSTALLED: 0.6.2-passive (user); local add-on "!RealmFix" 2.0 (not ours).
+SHAWN'S NEXT STEP: finish live check 3; reply on the plan and the docs PR.
+
 ## S-077 | 2026-11-16 | Claude (Claude Code cloud session "GoldIntel Code", same session) | STATE UPDATE (S-076 holds except as below)
 - D-119 (user's words in Decisions.md): documents cleaned up on branch docs/cleanup-2026-11-16: one AI developer (D-032 superseded), the game is live, finished-phase documents and old TODO/handoff history moved to GoldIntel_Docs/archive/. Living documents rewritten or updated: Project_Bible, README, TODO, Risk_Register, Compatibility_Notes, Architecture, CODE_STANDING_ORDERS, Requirements_v1 (NFR-5 wording only).
 - The cleanup PR touches files outside the docs-only standing approval (Bible, README, Architecture, Requirements, Risk_Register, Compatibility_Notes, archive moves): it waits for the user's merge approval.

@@ -1,6 +1,6 @@
 # GoldIntel TODO
 
-DOC VERSION: 2.0.0  |  UPDATED: 2026-11-16 (rewritten; the full history up to this date is in archive/TODO_history_2026-11-16.md, D-119)
+DOC VERSION: 2.0.0  |  UPDATED: 2026-11-20 (D-120; rewritten 2026-11-16; the full history up to this date is in archive/TODO_history_2026-11-16.md, D-119)
 
 ```
 CURRENT PHASE:            Phase 4 (sessions, activity, live aggregates): P4-M1 merged (PR #7); P4-M2 on PR #9 as 0.6.2-passive, in live validation (P4-M3, live check 3); PR #9 merged only after the user reports that 0.6.2 passed. Next: 3b-4 (flight fares, postage, AH deposits; D-112). Phases 0..3b-3 closed. Build on main: 0.5.6-passive.
@@ -18,7 +18,9 @@ newest Session_Handoff section.
 
 - [x] P4-M1 pure modules (Clock, Aggregator), merged with PR #7 (D-099, D-109).
 - [x] P4-M2 built as 0.6.0-passive (D-102); live check 1 (D-115) -> 0.6.1; live check 2 (D-117) -> 0.6.2 (D-118).
-- [ ] User: live check 3 on 0.6.2: (a) a full interval after Configure, Ignore and Reload Now; (b) no immediate
+- [x] Live check 3, part 1 (D-120, 2026-11-20): popup at 120 minutes, Reload Now, Ignore with no re-show for 22 minutes,
+  total = session, no frame over 500 ms.
+- [ ] User: live check 3, rest: (a) a full interval after Configure, Ignore and Reload Now (2-minute steps); (b) no immediate
   re-show after Ignore; (c) clicks and the client's own closes logged apart; Settings window shows the real value and
   "Saved"; one "GoldIntel:" prefix; a boss encounter (no popup during it; not tested yet).
 - [ ] After live check 3 passes: merge PR #9 (with the user's approval in chat), then the Phase 4 closure
@@ -39,6 +41,9 @@ newest Session_Handoff section.
   and perf (Phase4_P4-M3_LiveCheck1.md section 6, on PR #9 until it merges; direction D-115).
 - [ ] Main window with tabs (Opportunities, Map, Settings), GoldIntel's own map drawing with a heat overlay; in-game
   checks first (Phase4_P4-M3_LiveCheck1.md section 5, on PR #9). Needs the EmpireIntel screenshot.
+- [ ] Realm scope: key realm-dependent data (manual prices, later market prices, auctions, account-wide views) by the
+  GUID server number, never the realm name (Plan_Retention_and_Realm_Scope.md part A, D-120).
+- [ ] Retention, measured 2026-11-20 (account file 3.9 MB): Plan_Retention_and_Realm_Scope.md part B, decisions in B.6.
 - [ ] Prices: Auctionator and TSM public interfaces as optional sources with GoldIntel's own fallback (D-111, Phase 6).
 
 ## Next: 3b-4 more spending sources (after Phase 4; D-112; NOT started, needs approval)
