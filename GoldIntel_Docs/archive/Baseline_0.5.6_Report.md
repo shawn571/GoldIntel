@@ -10,9 +10,9 @@ first load whose automatic samples carry no memory reading (D-100).
 
 | File | Character | 0.5.6 loads | Hours loaded | Loads >= 60 min | Periodic samples | CPU ms/frame (load-weighted) |
 |---|---|---|---|---|---|---|
-| char file 3 (552 KB) | Paladin, Player-6796-00636CEC | 29 | 39.9 | 13 | 224 | 0.017 |
-| char file 1 (334 KB) | alt, Player-6796-00333B18 | 7 | 2.6 | 1 | 13 | 0.013 |
-| char file 2 (329 KB) | alt, Player-6796-0137B07D | 9 | 4.0 | 2 | 21 | 0.014 |
+| char file 3 (552 KB) | Paladin, Player-6796-<main> | 29 | 39.9 | 13 | 224 | 0.017 |
+| char file 1 (334 KB) | alt, Player-6796-<alt 1> | 7 | 2.6 | 1 | 13 | 0.013 |
+| char file 2 (329 KB) | alt, Player-6796-<alt 2> | 9 | 4.0 | 2 | 21 | 0.014 |
 
 "Hours loaded" runs from the begin sample to the final sample of each load, so it includes AFK time. The user's
 figure of about 11.9 hours of play is lower for that reason. Groups and dungeons: group sizes 2 to 5; Gnomeregan and
@@ -61,7 +61,7 @@ interval is the normal rate; all nine characters together have 120 over 164 inte
 ## 5. Ledger, OTHER share, memory
 
 - Ledger checks: Paladin 105 periodic and 6 final checks in the file, all 0. The only MISMATCH lines in any file
-  (-271 and -6, alt Player-6796-00333B18) are from 2026-11-05: the entries reach +271 at 03:08 and fall back to +6 at
+  (-271 and -6, alt Player-6796-<alt 1>) are from 2026-11-05: the entries reach +271 at 03:08 and fall back to +6 at
   05:37 that day. That was 0.5.1, before the D-092 logout fix (S-059 already reported "MISMATCH only on old 0.5.1
   lines"). The lines remain in `trace.keep`.
 - Paladin, 0.5.6 period: income 23.85 g (vendor 44.5 %, loot 26.6 %, quest 24.6 %, AH sale 2.8 %, OTHER 1.2 %);
@@ -109,11 +109,11 @@ entries at UTC-5 (9 of 27 hours identical in both directions; no other offset ma
 
 | Character | Day (local) | Accountant's balance change | GoldIntel net | Accountant category sum |
 |---|---|---|---|---|
-| Paladin 00636CEC | 2026-11-12 | +31,180 | +31,180 | +31,254 |
+| Paladin | 2026-11-12 | +31,180 | +31,180 | +31,254 |
 | Paladin | 2026-11-13 | +30,547 | +30,547 | +30,547 |
 | Paladin | 2026-11-14 | +8,540 | +8,540 | +8,540 |
 | Paladin | 2026-11-11 | (no earlier day) | +445 | +491 |
-| Alt 00333B18 | 2026-11-11 | (no earlier day) | +82 | +82 |
+| Alt 1 | 2026-11-11 | (no earlier day) | +82 | +82 |
 
 Both files end the Paladin at 116,116 copper. Over the four days Accountant's hourly totals are 2,170 copper higher in
 and 2,050 higher out than GoldIntel's, with nets 120 apart (the 74 and 46 copper rows above).

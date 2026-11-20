@@ -28,7 +28,7 @@ Use Chilly Slaps (or any character). Auto-loot on. Type each command exactly as 
 
 ## Return
 - The chat copy from steps 6 and 14.
-- The character file `GoldIntel.lua` from `...\WTF\Account\50437587#1\70\Chilly-Slaps\SavedVariables` (written on /reload or logout).
+- The character file `GoldIntel.lua` from `...\WTF\Account\<account>\70\Chilly-Slaps\SavedVariables` (written on /reload or logout).
 - Optional: log out and back in once and tell me if the status shows gaps = 0.
 
 ## What I will answer from it
