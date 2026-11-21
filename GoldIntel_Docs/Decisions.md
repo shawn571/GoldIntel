@@ -801,3 +801,20 @@ User: "Verified, thanks. Order after #9: realm scope, then retention, then 3b-4 
 4. Rollback for 0.6.2-passive is the 0.6.1-passive zip plus /reload (D-117); the package block says so from now on.
 5. OI-16, part decided: the current files (not the history, which is never rewritten) are scrubbed of the Battle.net account folder name or number and of every real character GUID, except in the replay fixtures. A GUID keeps its server number (a realm, not a person; CODE_STANDING_ORDERS section 7) and the rest becomes a role label, for example `Player-6796-<main>`. Character names stay, fixtures included. The per-push check stays. Documentation files are scrubbed in a docs PR; any other file (code, tests) goes on its own branch and its file list is shown to the user before merging.
 Affected: documents only (the scrub of the one code comment on PR #9's branch rides with #9). Migration: none. Package: unchanged (0.6.2-passive).
+
+## D-123 Live check 3 of 0.6.2: two failures, 0.6.3 to be proposed; archive files count as docs-only (user 2026-11-21) | RECORDED (0.6.3 NOT approved) | 2026-11-21
+User: "Logged out, check (0.6.2), live check 3, files attached. Results at reloadMinutes 2:"
+"* Settings window: shows the real value and the “saved as soon as you move the slider” text. Pass."
+"* (b) Ignore: no quick re-show. Pass."
+"* Combat hide: the popup hid in combat and came back afterwards. Pass."
+"* Reload Now: reloads. Pass."
+"* (a) Configure: fail. After clicking Configure on the popup and closing the Settings window (Close button, setting left at 2 minutes), the popup came back after about 4 minutes, not 2. Earlier the same evening it didn’t come back at all until I opened /gi settings and closed it again; after that it appeared at 2 minutes."
+"* Boss fight: fail. The popup appeared during a dungeon boss fight."
+"Use the trace in the attached files to find the exact click, close and show times and whether ENCOUNTER_START/END were seen during the boss fight. Then propose the fixes as 0.6.3 with tests; don’t build until I approve. Keep #9 unmerged until 0.6.3 passes."
+"Also: yes, the archive files count as docs-only; merging #30 was fine."
+1. Live check 3 rest: Settings window text, (b) Ignore, combat hide, Reload Now pass; (a) Configure and the boss fight fail.
+2. Measured (account file and one character file, a low-level Shaman, attached in S-081): after Configure the popup came 178.0, 171.5 and 221.1 s after the click; cause: 60 s polling, one check blocked by combat, and the count starting at the click instead of the window's close. The Settings window's open and close are not traced in 0.6.2.
+3. The boss fight and the "did not come back at all" case are not in the attached files (another character). ENCOUNTER_START/END: registered, 0 delivered in the two sessions counted, both without a dungeon; no evidence either way.
+4. 0.6.3-passive proposed (Phase4_P4-M3_LiveCheck3.md section 5 on PR #9: F1 interval from the window's close, F2 exact due time, F3 one-minute cool-down after combat and encounters, F4 group guard in instances, F5 evidence lines, F6 lost-popup check every tick; tests). NOT built; waits for the user's approval. PR #9 stays unmerged until 0.6.3 passes.
+5. Docs-only standing approval (D-105, D-108) also covers documentation files in GoldIntel_Docs/archive/ (the user's confirmation for PR #30).
+Affected: documents only. Migration: none. Package: unchanged (0.6.2-passive).
