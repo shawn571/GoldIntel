@@ -90,6 +90,14 @@ local function call(name, ...)
   return a, b
 end
 
+--- 0.6.0 (P4-M2): true when the player is on a flight path (UnitOnTaxi, verified in Phase 3a), false, or nil when unreadable.
+function Unit.OnTaxi()
+  local v = call('UnitOnTaxi', 'player')
+  if type(v) == 'boolean' then return v end
+  return nil
+end
+P.OnTaxi = Unit.OnTaxi
+
 --- Platform.Player(). Returns the snapshot table, or nil plus a reason when the
 -- character cannot be identified yet (too early in login).
 function Unit.Player()

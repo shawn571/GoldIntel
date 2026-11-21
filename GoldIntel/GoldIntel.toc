@@ -1,7 +1,7 @@
 ## Interface: 16001
 ## Title: GoldIntel
-## Notes: Gold-making intelligence and analytics for WoW Forever (Phase 2: core and store)
-## Version: 0.5.6-passive
+## Notes: Gold-making intelligence and analytics for WoW Forever: cash ledger, item lots and live gold per place and activity
+## Version: 0.6.2-passive
 ## SavedVariables: GoldIntelDB
 ## SavedVariablesPerCharacter: GoldIntelCharDB
 
@@ -25,6 +25,7 @@ Platform/Map.lua
 Platform/Money.lua
 Platform/SavedVars.lua
 Platform/Slash.lua
+Platform/UI.lua
 Platform/Probe.lua
 Core/Core.lua
 Core/Bus.lua
@@ -34,6 +35,7 @@ Store/Migrations.lua
 Store/Store.lua
 Store/Pruner.lua
 Core/Slash.lua
+Core/Reminder.lua
 Collect/Context.lua
 Collect/Collector.lua
 Collect/Expectations.lua
@@ -48,6 +50,9 @@ Ledger/Cash.lua
 Ledger/Trace.lua
 Ledger/LotBook.lua
 Ledger/Ledger.lua
+Aggregate/Clock.lua
+Aggregate/Aggregator.lua
+Aggregate/Live.lua
 Future/CommunityDataEngine.lua
 Future/RouteEngine.lua
 Core/Boot.lua

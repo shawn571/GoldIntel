@@ -64,7 +64,8 @@ local SPEC = {
   P_LEVEL         = { level = 'number' },
   P_PROFS         = { profs = 'table' },
   P_COMBAT        = { inCombat = 'boolean' },
-  P_TICK          = { loc = 'table?', dt = 'number' },
+  P_ENCOUNTER     = { active = 'boolean' },
+  P_TICK          = { loc = 'table?', dt = 'number', out = 'boolean?' },
   P_LOGOUT        = {},
   -- Phase 3b-1 additive entries (Contracts 1.7, D-074 A-2 and consequences)
   P_LOOT_OPEN     = { sourceType = 'string', guid = 'string?' },   -- creature | object | item | unknown; guid of the first slot's source (M2)

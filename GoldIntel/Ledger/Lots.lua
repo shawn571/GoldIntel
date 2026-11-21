@@ -142,8 +142,8 @@ local function note(self, kind, t, detail)
   if self.alert then pcall(self.alert, kind, rec) end
 end
 
-local function say(self, kind, rec)
-  if self.emit then pcall(self.emit, kind, rec) end
+local function say(self, kind, rec, phase)
+  if self.emit then pcall(self.emit, kind, rec, phase) end   -- phase (0.6.0): 'add' | 'complete' for kind 'lot'
 end
 
 -- value bookkeeping: totals follow the lot's value so a later first valuation is attributed to the original lot
@@ -200,7 +200,7 @@ function Ledger:Add(spec)
   elseif flags.unattributed then tot.unattributed.n = tot.unattributed.n + 1; tot.unattributed.qty = tot.unattributed.qty + lot.qty
   elseif flags.transfer or flags.opening or flags.gap then tot.transfer.n = tot.transfer.n + 1 end
   book(self, lot, each * lot.qty)
-  say(self, 'lot', lot)
+  say(self, 'lot', lot, 'add')
   if #s.open > self.capOpen then self:Compact() end
   return lot
 end
@@ -322,7 +322,7 @@ function Ledger:Complete(itemID, info, manual, now)
       if V.Complete(lot, info, manual, now) then
         n = n + 1
         book(self, lot, lot.valueEach * lot.qty)
-        say(self, 'lot', lot)
+        say(self, 'lot', lot, 'complete')
       end
     end
   end

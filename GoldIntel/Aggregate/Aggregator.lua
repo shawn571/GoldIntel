@@ -79,7 +79,7 @@ function AG.New(state, heat, opts)
   state.totals = state.totals or zeroTotals()
   state.segments = state.segments or {}
   return setmetatable({ s = state, h = heat, locale = opts.locale, queue = {}, cur = nil,
-    stats = { time = 0, cash = 0, lots = 0, noPlace = 0, drained = 0 } }, Obj)
+    stats = { slices = 0, cash = 0, lots = 0, noPlace = 0, drained = 0 } }, Obj)
 end
 
 function Obj:cell(loc, act, level)
@@ -142,7 +142,7 @@ function Obj:AddTime(sl)
   local b = self:bin(sl.loc)
   if b then b.s = b.s + sl.dt end
   self:segment(key, sl.act, sl.level, sl.t, sl.dt, 0, 0)
-  self.stats.time = self.stats.time + 1
+  self.stats.slices = self.stats.slices + 1
   return true
 end
 
@@ -204,6 +204,7 @@ function Obj:Drain()
     local kind, rec = item[1], item[2]
     if kind == 'cash' then self:AddCash(rec)
     elseif kind == 'lot' then self:AddLot(rec)
+    elseif kind == 'lotValue' then self:AddLotValue(rec)
     elseif kind == 'time' then self:AddTime(rec) end
   end
   self.stats.drained = self.stats.drained + #q
@@ -213,31 +214,67 @@ end
 --- Once per character: value and item counts of the saved raw records, NO time (Q-4). Records keep `bf = true`.
 -- ledger = GoldIntelDB.ledger[charKey] (cash, locs); lotState = GoldIntelDB.lots[charKey] (open, closed).
 function Obj:Backfill(ledger, lotState)
+  local ok, why = self:BackfillStart(ledger, lotState)
+  if not ok then return false, why end
+  self:BackfillStep(math.huge)
+  return true, self.s.backfilled.n
+end
+
+--- 0.6.1 (D-115): the back-fill in steps. Start takes a snapshot (cash records by reference: they never change once
+-- stored; lots by value: a lot may get its value later, which then arrives live), so records stored while the steps
+-- run are not counted twice. Step(n) adds at most n records and returns true when the back-fill is complete.
+function Obj:BackfillStart(ledger, lotState)
   if self.s.backfilled then return false, 'already' end
-  local n = 0
+  if self.bf then return false, 'running' end
+  local cash, lotsSnap = {}, {}
   if ledger and ledger.cash then
-    for _, rec in ipairs(ledger.cash) do
-      local e = AG.FromStored(rec, ledger.locs)
-      e.backfill = true
-      self:AddCash(e)
-      n = n + 1
-    end
+    for i, rec in ipairs(ledger.cash) do cash[i] = rec end
   end
-  local function lots(list)
+  local function snap(list)
     for _, lot in ipairs(list or {}) do
       if lot.vc then
-        self:AddLot({ itemID = lot.itemID, qty = lot.qty, valueEach = lot.valueEach, vc = true, origin = lot.origin,
-          locConf = lot.locConf, t = lot.t, backfill = true })
-        n = n + 1
+        lotsSnap[#lotsSnap + 1] = { itemID = lot.itemID, qty = lot.qty, valueEach = lot.valueEach, vc = true, origin = lot.origin,
+          locConf = lot.locConf, t = lot.t, backfill = true }
       end
     end
   end
-  if lotState then lots(lotState.open); lots(lotState.closed) end
+  if lotState then snap(lotState.open); snap(lotState.closed) end
   -- completeness is recorded, never assumed: folded cash and lots that left the closed ring are not in the raw records
-  local folded = ledger and ledger.totals and ledger.totals.folded or 0
-  local created = lotState and lotState.totals and lotState.totals.created and lotState.totals.created.n or nil
-  self.s.backfilled = { n = n, foldedCash = folded, lotsCreated = created }
-  return true, n
+  self.bf = { cash = cash, locs = ledger and ledger.locs, lots = lotsSnap, ci = 0, li = 0,
+    folded = ledger and ledger.totals and ledger.totals.folded or 0,
+    created = lotState and lotState.totals and lotState.totals.created and lotState.totals.created.n or nil }
+  return true, #cash + #lotsSnap
+end
+
+function Obj:BackfillStep(n)
+  local b = self.bf
+  if not b then return self.s.backfilled ~= nil end
+  local budget = n or 500
+  while budget > 0 and b.ci < #b.cash do
+    b.ci = b.ci + 1
+    local e = AG.FromStored(b.cash[b.ci], b.locs)
+    e.backfill = true
+    self:AddCash(e)
+    budget = budget - 1
+  end
+  while budget > 0 and b.li < #b.lots do
+    b.li = b.li + 1
+    self:AddLot(b.lots[b.li])
+    budget = budget - 1
+  end
+  if b.ci >= #b.cash and b.li >= #b.lots then
+    self.s.backfilled = { n = b.ci + b.li, foldedCash = b.folded, lotsCreated = b.created }
+    self.bf = nil
+    return true
+  end
+  return false
+end
+
+--- Progress of a running back-fill: done, total (nil when none is running).
+function Obj:BackfillProgress()
+  local b = self.bf
+  if not b then return nil end
+  return b.ci + b.li, #b.cash + #b.lots
 end
 
 --- Live check (D-099): net cash of the aggregates minus the ledger's net over the same period, and value created minus
@@ -245,6 +282,23 @@ end
 function Obj:Check(ledgerNet, createdValue)
   local T = self.s.totals
   return { cash = (T.cin - T.cout) - (ledgerNet or 0), vc = T.vc - (createdValue or 0), seconds = T.s }
+end
+
+--- 0.6.0: the value of a lot whose item data arrived later (Lots:Complete). Value only: the item count was added at creation.
+function Obj:AddLotValue(lot)
+  if type(lot) ~= 'table' or not lot.vc then return false end
+  local value = (tonumber(lot.qty) or 0) * (tonumber(lot.valueEach) or 0)
+  if value <= 0 then return false end
+  local o = lot.origin or {}
+  self.s.totals.vc = self.s.totals.vc + value
+  local c = self:cell(o, o.act, lot.level)
+  if not c then return false end
+  c.vc = c.vc + value
+  if AG.CREDIT[o.act] and lot.locConf ~= 'stale' and lot.locConf ~= 'none' then
+    local b = self:bin(o)
+    if b then b.c = b.c + value; b.a[o.act] = (b.a[o.act] or 0) + value end
+  end
+  return true
 end
 
 function Obj:Totals() return self.s.totals end

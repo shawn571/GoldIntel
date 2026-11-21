@@ -1,6 +1,6 @@
 # Phase 4 P4-M2 plan: live aggregation wired in (PLAN ONLY)
 
-DATE: 2026-11-08  |  SESSION: S-062  |  STATUS: PLAN for the user's approval. No code. P4-M2 is NOT authorized.
+DATE: 2026-11-08  |  SESSION: S-062  |  STATUS: APPROVED TO BUILD by the user 2026-11-08 (D-102); built as 0.6.0-passive (S-063). Not installed, not merged. Q-7 baseline: the 0.5.6 automatic CPU samples. Confirmation of the section 0 quotes still open.
 Builds on: Phase4_Live_Aggregation_Proposal.md (answered, D-099), the P4-M1 pure modules (PR #7, not merged),
 the M4 measurements (archive/Phase3b_3b-3_M4_Report.md section 4) and D-100 (0.5.6).
 

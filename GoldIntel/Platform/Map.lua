@@ -75,6 +75,35 @@ local function readPosition(mapID)
   return x, y
 end
 
+-- 0.6.0 (P4-M2): map size in yards for the soft-travel distance (D-054). C_Map.GetMapWorldSize is NOT yet verified in
+-- Forever (probe capability map.worldsize); without it Distance returns nil and soft travel stays undecided (counted).
+local sizeCache = {}
+function Map.WorldSize(mapID)
+  if type(mapID) ~= 'number' then return nil end
+  local c = sizeCache[mapID]
+  if c ~= nil then return c and c.w, c and c.h end
+  local cm = P.env.C_Map
+  local w, h
+  if type(cm) == 'table' and type(cm.GetMapWorldSize) == 'function' then
+    local ok, a, b = pcall(cm.GetMapWorldSize, mapID)
+    if ok and type(a) == 'number' and type(b) == 'number' and a > 0 and b > 0 and not P.IsSecret(a) then w, h = a, b end
+  end
+  sizeCache[mapID] = w and { w = w, h = h } or false
+  return w, h
+end
+
+--- Yards between two Locs on the same map, or nil (different maps, no position, or no map size).
+function Map.Distance(a, b)
+  if type(a) ~= 'table' or type(b) ~= 'table' or a.mapID ~= b.mapID then return nil end
+  if type(a.x) ~= 'number' or type(b.x) ~= 'number' then return nil end
+  local w, h = Map.WorldSize(a.mapID)
+  if not w then return nil end
+  local dx, dy = (a.x - b.x) * w, (a.y - b.y) * h
+  return math.sqrt(dx * dx + dy * dy)
+end
+P.Distance = Map.Distance
+function Map.ResetSizes() sizeCache = {} end
+
 --- Platform.Where(). Returns a Loc table, or nil plus a reason.
 function Map.Where()
   local mapID = readMapID()
@@ -110,9 +139,11 @@ function Map.Check()
 end
 
 --- One 0.5 s step: detect zone changes and emit P_TICK. Exposed for tests.
+local wasOut = false
 function Map.OnTick()
   if not P.InWorld() then
     lastTickGT = nil               -- do not credit time spent in loading screens
+    wasOut = true                  -- 0.6.1 (D-115): the next tick says so; AggLive books that time as hard travel
     return
   end
   local _, gt = P.Now()
@@ -124,7 +155,9 @@ function Map.OnTick()
   end
   lastTickGT = gt
   local loc = Map.Check()
-  P.Events.Emit('P_TICK', { loc = loc, dt = dt })
+  local out = wasOut
+  wasOut = false
+  P.Events.Emit('P_TICK', { loc = loc, dt = dt, out = out or nil })
 end
 
 local function onZoneEvent()

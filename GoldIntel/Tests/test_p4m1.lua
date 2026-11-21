@@ -141,7 +141,7 @@ T.describe('P4-M1 Clock (D-054, D-055, AM-3, Q-3)', function()
     drive(C, 0, 100, pos, { [1] = function(c, gt) c:Productive(gt, 'GRIND', pos(gt)) end })
     C:Flush(100)
     local st = C:Stats()
-    T.eq(st.travelSoft, 0); T.truthy(st.travelUnknown > 0); T.eq(st.active, 100)
+    T.eq(st.travelSoft, 0); T.truthy(st.noDistance > 0); T.eq(st.active, 100)
   end)
 
   T.it('Q-3: time is split by the current activity, and a manual override wins', function()
@@ -316,8 +316,12 @@ T.describe('P4-M1 Aggregator (D-099 Q-1, Q-2, Q-4)', function()
     T.eq(extra, {})
   end)
 
-  T.it('P4-M1 changes no live behaviour: the TOC lists no Aggregate file', function()
-    for _, f in ipairs(Loader.tocFiles()) do T.falsy(f:find('^Aggregate/'), f) end
+  T.it('P4-M2 (0.6.0): the TOC loads the Aggregate files after the ledger, Clock and Aggregator before Live', function()
+    local pos = {}
+    for i, f in ipairs(Loader.tocFiles()) do pos[f] = i end
+    T.truthy(pos['Aggregate/Clock.lua'] and pos['Aggregate/Aggregator.lua'] and pos['Aggregate/Live.lua'])
+    T.truthy(pos['Ledger/Ledger.lua'] < pos['Aggregate/Clock.lua'])
+    T.truthy(pos['Aggregate/Clock.lua'] < pos['Aggregate/Live.lua'] and pos['Aggregate/Aggregator.lua'] < pos['Aggregate/Live.lua'])
   end)
 end)
 

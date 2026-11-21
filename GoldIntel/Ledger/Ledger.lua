@@ -74,6 +74,7 @@ function Ledger.Begin()
     GI.ItemSources.Begin()
     if GI.LotBook then GI.LotBook.Begin() end                               -- 3b-3 M3: stores lots (never cash)
   end
+  if GI.AggLive then pcall(GI.AggLive.Begin) end                           -- 0.6.0 (P4-M2): live aggregation (reads only)
   intervalStart = nowGT()
   setLastMoney(P.MoneyModule.Last())
   last = { reason = 'on' }
@@ -87,6 +88,7 @@ function Ledger.End()
   GI.Sources.End()
   if GI.LotBook then GI.LotBook.End() end
   if GI.ItemSources then GI.ItemSources.End() end
+  if GI.AggLive then pcall(GI.AggLive.End) end                             -- 0.6.0: flush and final check before the trace ends
   if GI.Trace then GI.Trace.End() end
   GI.Sources.SetSink(nil)
   local s = GI.Sources.Stats()

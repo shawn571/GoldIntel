@@ -327,7 +327,7 @@ local MUTANTS = {
   { 'lots', 'closed summary not updated', 'sum.qty = sum.qty + lot.qty', 'sum.qty = sum.qty' },
   { 'lots', 'merge ignores value', 'lot.itemID, lot.valueEach, lot.valueSrc', 'lot.itemID, 0, lot.valueSrc' },
   { 'lots', 'check misses carried-only items', 'if open[id] == nil and q ~= 0 then', 'if false then' },
-  { 'lots', 'completion not booked', 'book(self, lot, lot.valueEach * lot.qty)\n        say(self, \'lot\', lot)\n      end\n    end\n  end\n  return n', 'say(self, \'lot\', lot)\n      end\n    end\n  end\n  return n' },
+  { 'lots', 'completion not booked', 'book(self, lot, lot.valueEach * lot.qty)\n        say(self, \'lot\', lot, \'complete\')\n      end\n    end\n  end\n  return n', 'say(self, \'lot\', lot, \'complete\')\n      end\n    end\n  end\n  return n' },
   { 'lots', 'price weights ignored', 'weights[i] = p * removed[id]', 'weights[i] = removed[id]' },
   { 'lots', 'unallocated copper lost', 'unalloc = unalloc + share', 'unalloc = unalloc' },
   { 'lots', 'emptied lots not closed', 'if lot.qtyLeft == 0 then closeLot(self, lot) else', 'if lot.qtyLeft == 0 then else' },

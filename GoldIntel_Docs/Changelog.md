@@ -4,6 +4,39 @@ Append-only. Newest entry first. Format: `VERSION | DATE | AI/session | summary`
 
 ---
 
+## 0.6.2-passive (live check 2 fixes: reminder interval, Settings window, chat prefix) | 2026-11-14 | Claude (session S-076)
+- D-118 (a): Reload Now, Ignore, Configure, Escape and any close the client makes itself restart the full interval from the close (in 0.6.1 the timer ran from the show, so after Configure at 696 s the popup came back at 722 s).
+- D-118 (b): no second show while the popup is open, so the client never cancels an open popup and a real Ignore never re-shows it at once.
+- D-118 (c): `EVT reminder click=...` only for the user's buttons; every other close is `EVT reminder closed reason=...` (override, timeout, hidden, lost, combat, encounter). Combat or an encounter hides the popup without a new interval; it comes back afterwards.
+- Settings window: shows the real setting (e.g. "1 minute: Safe (set by command; not a slider mark)"), updates when a command changes it, says "Changes are saved as soon as you move the slider" and "Saved: <value>" after each move; a Close button.
+- Chat lines carry "GoldIntel:" once (the prefix had been doubled on six messages since before 0.6.0).
+- Contract 1.17.0. Tests: 1,403 passing (12 new incl. 3 mutation checks). /reload is enough over 0.6.1 (D-117).
+
+## 0.6.1-passive (live check 1 fixes; reload popup and Settings window) | 2026-11-14 | Claude (session S-073)
+- D-115, frame of 1,771 ms: item-data replies are handled only for items GoldIntel asked for. Another add-on's 3,566 replies (1,999 in one second) had each cost a trace line, an item lookup and a scan of the open lots. Desktop on the user's files: 1,999 foreign replies 3.8 ms (was about 120 ms).
+- D-115: the first-start back-fill runs in steps of 500 records per 0.5 s tick from a snapshot (the Paladin's 4,708 records in about 5 s); `/gi agg check` waits for it; it is finished before a logout or /reload saves.
+- D-115, time classes: active, idle, travelHard (taxi, loading screens), travelSoft, paused never overlap and add up to the session time; loading screens (not ticked before) are hard travel, freezes beyond the 5 s clamp idle. `EVT clock` shows `total=` and `session=`; `noDistance` (was travelUnknown) is shown apart.
+- D-115: `/gi agg top` ranks by gold per hour among places with at least 10 minutes recorded and lists back-filled places separately.
+- D-115: the /reload reminder is a popup (Reload Now / Ignore / Configure), never in combat or a boss encounter (new collector events ENCOUNTER_START/END, group G10), with the chat line as fallback. Configure and `/gi settings` open a small Settings window with the reminder slider in the bands Safe (15..60 min), Risky (90..180), Not Recommended (240, 360), Off; the texts give the evidence. Reload from a button click is unverified on Forever (live check).
+- Contract 1.16.0 (F24). Tests: 1,391 passing (22 new incl. 5 mutation checks; collector counts 18 -> 20). All addon Lua files parse under Lua 5.1. FULL CLIENT RESTART (new files Platform/UI.lua and Core/Reminder.lua, new events).
+
+## 0.6.0-passive (amended before delivery: TOC note, trace.keep rule) | 2026-11-14 | Claude (session S-072)
+- D-113: periodic `EVT agg` / `EVT clock` lines no longer go to `trace.keep` (it is capped at 400 and was full on the Paladin); only the final pair of each interval and any MISMATCH line are kept. `EVT clock` lines carry `periodic|final`.
+- D-113: TOC `## Notes:` updated (it said "Phase 2: core and store"; held since D-105, D-107).
+- Docs on the branch: TODO stale lines, README test command (`lua5.4 run.lua`), Project_Bible header and inventory.
+- Tests: 1,369 passing (4 new: the keep scenario and 3 mutation checks). All addon Lua files parse under Lua 5.1. Version unchanged (0.6.0 was never delivered). FULL CLIENT RESTART over 0.5.6.
+
+## 0.6.0-passive (Phase 4 P4-M2: live aggregation) | 2026-11-08 | Claude (session S-063)
+- D-102: the P4-M1 Clock and Aggregator now run live (new Aggregate/Live.lua): every stored cash entry and every value-created lot is added to totals per place x activity x 5-level bracket with item counts, and every active half second to the cell and its 32 x 32 heat bin. Saved in GoldIntelDB.agg / heat per character with every /reload, logout and disconnect.
+- First start per character back-fills the saved value and items (no time) and records check offsets; `/gi agg check` must read 0 copper for cash and value.
+- Time classes: idle, taxi (UnitOnTaxi), loading screen, soft travel (needs the client's map size; probe `map.worldsize`; otherwise counted as unknown), paused; `/gi pause`, `/gi resume`, `/gi afk`, `/gi activity`.
+- Q-6 reminder: one chat line every 60 minutes after a load, only outside combat (`reminder.reloadMinutes`, 0 = off).
+- Clock waiting slices kept as exact runs (the waiting buffer would otherwise hold up to 240 slices); late item values follow through a 'complete' phase on the lot signal.
+- Measured in the test world: the aggregation adds about 9 KB of retained memory per simulated hour (budget 200 KB per hour).
+- Contract 1.15.0 (F23). Tests: 1,365 passing (19 new incl. 4 mutation checks; existing tests updated for the new commands, version strings and the Lots phase). All addon Lua files parse under Lua 5.1.
+- FULL CLIENT RESTART required (three new TOC files). Not installed, not merged (D-102).
+
+
 ## 0.5.6-passive (perf samples without the memory freeze) | 2026-11-08 | Claude (session S-062)
 - D-100: the automatic perf samples (begin, every 10 minutes, final) read CPU only. The memory reading (UpdateAddOnMemoryUsage, which recounts every addon and cost one frame of 100 to 400 ms per sample in the 2026-11-08 data) runs only on `/gi perf`.
 - M4 results added to Phase3b_3b-3_M4_Report.md; new Phase3b_3b-3_Closure_Recommendation.md and Phase4_P4-M2_Plan.md (plan only).

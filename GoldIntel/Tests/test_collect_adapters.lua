@@ -678,11 +678,30 @@ T.describe('Items adapter', function()
   T.it('GET_ITEM_INFO_RECEIVED emits P_ITEM_INFO with the success flag (E-30)', function()
     local W, P = boot()
     local seen = World.capture(P, 'P_ITEM_INFO')
+    T.eq(P.ItemsModule.Get(2770).status, 'pending')              -- GoldIntel asks: the replies are ours
+    T.eq(P.ItemsModule.Get(999999).status, 'pending')
     W:fire('GET_ITEM_INFO_RECEIVED', 2770, true)
     W:fire('GET_ITEM_INFO_RECEIVED', 999999, false)
     T.eq(seen[1].payload, { itemID = 2770, ready = true })
     T.eq(seen[2].payload, { itemID = 999999, ready = false })
     T.eq(P.ItemsModule.stats.failed, 1)
+  end)
+
+  T.it('0.6.1 (D-115): replies to other add-ons\' requests are counted as foreign and emit nothing', function()
+    local W, P = boot()
+    local seen = World.capture(P, 'P_ITEM_INFO')
+    for id = 100001, 101999 do W:fire('GET_ITEM_INFO_RECEIVED', id, true) end   -- 1,999 in one go, as on 2026-11-14
+    T.eq(#seen, 0)
+    T.eq(P.ItemsModule.stats.foreign, 1999)
+    T.eq(P.ItemsModule.stats.received, 0)
+    P.ItemsModule.Get(4242)                                      -- one of ours among them still arrives
+    W.state.items[4242] = { 'Item4242', 'link', 1, 1, 1, '', '', 1, '', 0, 7, 7, 1, 0, 0, 0, 0 }
+    W.state.cached[4242] = true                                  -- the real client caches the item before the event
+    W:fire('GET_ITEM_INFO_RECEIVED', 4242, true)
+    T.eq(P.ItemsModule.Waiting(), 0)
+    W:fire('GET_ITEM_INFO_RECEIVED', 4242, true)                 -- a second reply for it is foreign again
+    T.eq(#seen, 1)
+    T.eq(P.ItemsModule.stats.foreign, 2000)
   end)
 
   T.it('secret or malformed info events are dropped', function()
