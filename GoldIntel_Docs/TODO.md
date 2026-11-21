@@ -1,11 +1,11 @@
 # GoldIntel TODO
 
-DOC VERSION: 2.0.0  |  UPDATED: 2026-11-20 (D-120, D-121, D-122; rewritten 2026-11-16; the full history up to this date is in archive/TODO_history_2026-11-16.md, D-119)
+DOC VERSION: 2.0.0  |  UPDATED: 2026-11-21 (D-120..D-123; rewritten 2026-11-16; the full history up to this date is in archive/TODO_history_2026-11-16.md, D-119)
 
 ```
-CURRENT PHASE:            Phase 4 (sessions, activity, live aggregates): P4-M1 merged (PR #7); P4-M2 on PR #9 as 0.6.2-passive, in live validation (P4-M3, live check 3); PR #9 merged only after the user reports that 0.6.2 passed. Next, after PR #9 (D-121, D-122): realm scope, then retention, then 3b-4 (flight fares, postage, AH deposits; D-112; needs its own approval). Phases 0..3b-3 closed. Build on main: 0.5.6-passive.
+CURRENT PHASE:            Phase 4 (sessions, activity, live aggregates): P4-M1 merged (PR #7); P4-M2 on PR #9 as 0.6.2-passive, in live validation (P4-M3); live check 3 found two failures, 0.6.3 proposed (D-123); PR #9 merged only after 0.6.3 passes. Next, after PR #9 (D-121, D-122): realm scope, then retention, then 3b-4 (flight fares, postage, AH deposits; D-112; needs its own approval). Phases 0..3b-3 closed. Build on main: 0.5.6-passive.
 IMPLEMENTATION APPROVED:  Phase 4 P4-M2 and its live-check fixes (D-102, D-113, D-115, D-118). Standing permissions for work branches (D-114, D-116). Docs-only merges (D-105, D-108); merges with the REST command (D-106, D-118). Everything else is NOT approved: 3b-4 waits for its own approval; soft travel across zones, retention, the main window and the price plan are PLAN ONLY.
-OPEN BLOCKERS:            None. Waiting on the user: live check 3 of 0.6.2 (reminder (a)-(c), combat hide, Settings window, boss encounter); EmpireIntel screenshot (later, D-116).
+OPEN BLOCKERS:            None. Waiting on the user: approve (or not) the 0.6.3 proposal; the boss-fight character file; EmpireIntel screenshot (later, D-116).
 ```
 
 Rules: work only on what is approved above. Do not start the next increment or phase without Shawn's explicit approval.
@@ -20,12 +20,15 @@ newest Session_Handoff section.
 - [x] P4-M2 built as 0.6.0-passive (D-102); live check 1 (D-115) -> 0.6.1; live check 2 (D-117) -> 0.6.2 (D-118).
 - [x] Live check 3, part 1 (D-120, 2026-11-20): popup at 120 minutes, Reload Now, Ignore with no re-show for 22 minutes,
   total = session, no frame over 500 ms.
-- [ ] User: live check 3, rest: (a) a full interval after Configure, Ignore and Reload Now (2-minute steps); (b) no immediate
-  re-show after Ignore; (c) clicks and the client's own closes logged apart; Settings window shows the real value and
-  "Saved"; one "GoldIntel:" prefix; a boss encounter (no popup during it; not tested yet).
-- [ ] User: live check 3, combat hide (D-122, its own step): with the reminder popup open, start any fight; the popup
-  hides, and comes back about a minute after combat ends, without starting a new interval.
-- [ ] After live check 3 passes: merge PR #9 (with the user's approval in chat), then the Phase 4 closure
+- [x] Live check 3, rest (D-123, 2026-11-21, reloadMinutes 2): Settings window text, (b) Ignore, combat hide and Reload
+  Now pass; (a) Configure FAILS (popup 171-221 s after the click: 60 s polling, a combat-blocked check, the count starts
+  at the click, not at Close); boss fight FAILS (popup during a dungeon boss fight; not in the attached files).
+  Details: Phase4_P4-M3_LiveCheck3.md (on PR #9).
+- [ ] 0.6.3-passive PROPOSED (F1 to F6 and tests in Phase4_P4-M3_LiveCheck3.md section 5); NOT built, waits for approval.
+- [ ] User: the character file of the character that fought the boss (and of the one where the popup never came back),
+  with the dungeon, the boss and roughly when.
+- [ ] Live check 4 on 0.6.3 (after approval and install): Configure then Close, a fight, a dungeon boss fight.
+- [ ] After 0.6.3 passes: merge PR #9 (with the user's approval in chat), then the Phase 4 closure
   recommendation.
 - [ ] Phase 4 requirement items still to map against what 0.6.x does: 4.1 ActivityEngine (v1 activities, manual
   override, idle), 4.2 SessionEngine and segment rotation, 4.3 metrics (Cash, Wealth GPH; explain-breakdown data),

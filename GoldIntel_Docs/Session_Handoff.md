@@ -4,6 +4,15 @@ Append newest section at the TOP. The newest section wins over older ones. Forma
 
 ---
 
+## S-081 | 2026-11-21 | Claude (Claude Code cloud session "GoldIntel Code", same session) | STATE UPDATE (S-080 holds except as below)
+- Live check 3 of 0.6.2 (account file and one character file, a low-level Shaman, attached in this session): Settings text, (b) Ignore, combat hide, Reload Now pass; (a) Configure FAILS (popup 178, 171 and 221 s after the click: 60 s polling, a combat-blocked check, count from the click); boss fight FAILS (not in the attached files; ENCOUNTER events 0 delivered in the two sessions counted, both without a dungeon). D-123 with the user's words.
+- 0.6.3-passive PROPOSED in Phase4_P4-M3_LiveCheck3.md on p4/m2-live (0424ba3): F1 to F6 and tests. NOT built, NOT approved.
+- The saved setting at logout is reloadMinutes 180.
+PENDING (needs Shawn): approve (or not) the 0.6.3 proposal; attach the character file of the character that fought the boss (and of the one where the popup never came back), naming the dungeon, boss and rough time.
+BRANCHES AND PULL REQUESTS: #9 open (p4/m2-live, head 0424ba3 plus any docs-only merge of main after this section, 0.6.2-passive; stays unmerged until 0.6.3 passes). Merged and kept: #1 to #8, #10 to #31 and this docs PR.
+INSTALLED: 0.6.2-passive. Rollback: 0.6.1-passive zip plus /reload.
+NEXT: 0.6.3 after approval, live check 4; after it passes and #9 merges: realm scope, retention, then 3b-4 (needs approval).
+
 ## S-080 | 2026-11-20 | Claude (Claude Code cloud session "GoldIntel Code", new session; the S-079 session makes no further commits, D-105) | STATE UPDATE (S-079 holds except as below)
 - First report (read-only) verified S-079: main 3e2190a = 0.5.6-passive, contract 1.14.0, 1,343 tests; #9 head e13a8aa = 0.6.2-passive, contract 1.17.0, 1,403 tests, 59 add-on files parse under Lua 5.1; its add-on files differ from the 0.6.2 package commit ad83a6d only in two comments. Four conflicts reported.
 - D-122 (user's words in Decisions.md): order after #9 is realm scope, retention, then 3b-4 (own approval); combat hide is its own live-check-3 step (popup open, start a fight: it hides, comes back about a minute after combat, no new interval); rollback for 0.6.2 is the 0.6.1 zip plus /reload; OI-16 scrub of GUIDs and the account folder (names stay).
